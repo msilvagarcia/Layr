@@ -1,0 +1,10 @@
+language: java
+script: mvn -f coffeeframework-parent/pom.xml clean install
+# whitelist
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    - miere00@gmail.com

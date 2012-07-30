@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>coffeeframework</groupId>
+	<version>1.0-SNAPSHOT</version>
+	<artifactId>coffeeframework-parent</artifactId>
+	<name>Coffee Framework</name>
+	<description>Coffee Web Development Framework</description>
+	<packaging>pom</packaging>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<properties>
+		<javaee.version>6.0</javaee.version>
+		<junit.version>4.10</junit.version>
+		<eclipse.plugin.version>2.8</eclipse.plugin.version>
+	</properties>
+
+	<build>
+		<plugins>			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>				
+				<version>${eclipse.plugin.version}</version>
+				<configuration>
+					<projectNameTemplate>[artifactId]</projectNameTemplate>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<modules>
+		<module>../coffeeframework-core</module>
+		<module>../coffeeframework-test</module>
+		<module>../coffeeframework-samples</module>
+		<module>../coffeeframework-archetype-application</module>
+	</modules>
+</project>

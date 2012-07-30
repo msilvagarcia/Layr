@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<coffee>
+
+	<cacheEnabled>true</cacheEnabled>
+	<defaultResource>/home</defaultResource>
+
+</coffee>

@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import layr.LifeCycle;
 import layr.RequestContext;
 import layr.sample.HelloResource;
+import layr.sample.World;
 import layr.test.LifeCycleTestFactory;
 import layr.test.HttpServletRequestStub;
 import layr.util.Dictionary;
@@ -56,7 +57,7 @@ public class LayrLifeCycleTest {
 				.set("sum", "52.04")
 				.set("name", "Test")
 				.set("hello.countries", "[\"String1\",\"String2\"]")
-				.set("worlds", "[{\"name\":\"Ramon Valdes\",\"id\":431},{\"name\":\"Roberto Bolaños\",\"id\":681}]")
+				.set("worlds", "[{\"name\":\"Ramon Valdes\",\"hello\":{ \"countries\": [\"Brazil\",\"London\"]},\"id\":431},{\"name\":\"Roberto Bolaños\",\"id\":681}]")
 				.set("hello.myWorld", "{\"name\":\"Ramon Valdes\",\"id\":431}")
 			);
 	}
@@ -89,7 +90,9 @@ public class LayrLifeCycleTest {
 		assertNotNull("Ramon Valdes", resource.getHello().getMyWorld().getName());
 
 		assertNotNull(resource.getWorlds());
-		assertNotNull("Ramon Valdes", resource.getWorlds().get(0).getName());
+		World world = resource.getWorlds().get(0);
+		assertNotNull("Ramon Valdes", world.getName());
+		assertNotNull("Brazil", world.getHello().getCountries().get(0));
 	}
 
 	@Test

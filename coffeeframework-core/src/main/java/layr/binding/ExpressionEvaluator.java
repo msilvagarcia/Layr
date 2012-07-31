@@ -192,8 +192,8 @@ public class ExpressionEvaluator {
 				return setValue(target, matcher, value);
 			}
 		} catch (Exception e) {
-			//XXX: e.printStackTrace();
-			//XXX: System.err.println("WARN: " + e.getMessage());
+//			System.err.println("WARN: " + e.getMessage());
+//			e.printStackTrace();
 			return false;
 		}
 	}

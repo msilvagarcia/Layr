@@ -1,16 +1,15 @@
 package layr.sample;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import layr.annotation.Converter;
-
 
 public class Hello {
 	private String world; // = "Earth"
 	private World realworld;
 	private Integer size;
-	private ArrayList<String> countries;
+	private List<String> countries;
 	private World myWorld;
 
 	@Converter(BrazilianFormatDateConverter.class)
@@ -40,11 +39,11 @@ public class Hello {
 		return size;
 	}
 
-	public void setCountries(ArrayList<String> countries) {
+	public void setCountries(List<String> countries) {
 		this.countries = countries;
 	}
 
-	public ArrayList<String> getCountries() {
+	public List<String> getCountries() {
 		return countries;
 	}
 

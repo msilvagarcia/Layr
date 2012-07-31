@@ -1,12 +1,11 @@
-package coffee;
+package layr.sample;
 
 import java.util.List;
 
 import layr.annotation.Action;
 import layr.annotation.Parameter;
 import layr.annotation.WebResource;
-import coffee.sample.Hello;
-import coffee.sample.World;
+
 
 @WebResource(rootURL="/hello/", template="/hello.xhtml")
 public class HelloResource{

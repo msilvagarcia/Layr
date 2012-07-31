@@ -1,4 +1,4 @@
-package coffee.sample;
+package layr.sample;
 
 public class World {
 	private String name;

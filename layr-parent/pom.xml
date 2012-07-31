@@ -2,11 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>coffeeframework</groupId>
+	<groupId>layr</groupId>
 	<version>1.0-SNAPSHOT</version>
-	<artifactId>coffeeframework-parent</artifactId>
-	<name>Coffee Framework</name>
-	<description>Coffee Web Development Framework</description>
+	<artifactId>layr-parent</artifactId>
+	<name>Layr</name>
+	<description>Layr Web Development Framework</description>
 	<packaging>pom</packaging>
 
 	<licenses>
@@ -37,9 +37,9 @@
 	</build>
 
 	<modules>
-		<module>../coffeeframework-core</module>
-		<module>../coffeeframework-test</module>
-		<module>../coffeeframework-samples</module>
-		<module>../coffeeframework-archetype-application</module>
+		<module>../layr-core</module>
+		<module>../layr-samples</module>
+		<module>../layr-archetype-application</module>
+		<module>../layr-test-suite</module>
 	</modules>
 </project>

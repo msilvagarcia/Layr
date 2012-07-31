@@ -1,4 +1,4 @@
-package coffee.sample;
+package layr.sample;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import layr.util.IConverter;
+
 
 public class BrazilianFormatDateConverter implements IConverter {
 

@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 
 public class ApplicationContext {
 
-    public static final String COFFEE_CACHE_ENABLED = "layr.cache.enabled";
+    public static final String LAYR_CACHE_ENABLED = "layr.cache.enabled";
 
 	private HashMap<String, IComponent> resourceCache;
 	private ServletContext servletContext;

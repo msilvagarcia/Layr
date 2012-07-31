@@ -25,7 +25,7 @@ import layr.components.IComponent;
 
 public class Var extends GenericComponent {
 	
-	public static final String COFFEE_COMPONENTS_TEMPLATE_VALUE = "COFFEE_COMPONENTS_TEMPLATE_VALUE.";
+	public static final String LAYR_COMPONENTS_TEMPLATE_VALUE = "LAYR_COMPONENTS_TEMPLATE_VALUE.";
 
 	@Override
 	public void configure() {}
@@ -33,7 +33,7 @@ public class Var extends GenericComponent {
 	@Override
 	public void render() throws IOException {
 		String name = getAttributeAsString("name");
-		Object definedValue = getLayrContext().get(COFFEE_COMPONENTS_TEMPLATE_VALUE + name);
+		Object definedValue = getLayrContext().get(LAYR_COMPONENTS_TEMPLATE_VALUE + name);
 		
 		if (definedValue == null)
 			return;

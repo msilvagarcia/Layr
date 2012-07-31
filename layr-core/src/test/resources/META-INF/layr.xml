@@ -1,22 +1,8 @@
 <?xml version="1.0"?>
-<coffee>
+<layr>
 
 	<cacheEnabled>false</cacheEnabled>
 	<equationsDisabled>false</equationsDisabled>
 	<defaultResource>/home</defaultResource>
 
-	<bundle url="/javascript" content-type="text/javascript">
-		<rootDirectory>/scripts</rootDirectory>
-		<targetDirectory>/</targetDirectory>
-		<filePattern>\.js$</filePattern>
-		<excludedFile>*./jquery.js$</excludedFile>
-		<template>coffee.template</template>
-	</bundle>
-
-	<bundle url="/style" content-type="text/css">
-		<rootDirectory>/</rootDirectory>
-		<targetDirectory>/</targetDirectory>
-		<filePattern>\.css$</filePattern>
-	</bundle>
-
-</coffee>
+</layr>

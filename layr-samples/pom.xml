@@ -10,7 +10,7 @@
 	</parent>
 
 	<artifactId>layr-samples</artifactId>
-	<name>Layr: Coffee Sample Implementation</name>
+	<name>Layr: Sample Implementation</name>
 	<description>A Sample Project using Layr Web Framework Development</description>
 	<packaging>war</packaging>
 

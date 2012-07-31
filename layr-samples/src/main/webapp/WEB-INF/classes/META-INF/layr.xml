@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<coffee>
+<layr>
 
 	<cacheEnabled>true</cacheEnabled>
 	<defaultResource>/home</defaultResource>
 
-</coffee>
+</layr>

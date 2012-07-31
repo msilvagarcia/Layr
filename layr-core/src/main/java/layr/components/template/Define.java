@@ -26,7 +26,7 @@ public class Define extends GenericComponent {
 	@Override
 	public void configure() {
 		String name = getAttributeAsString("name");
-		layrContext.put(Var.COFFEE_COMPONENTS_TEMPLATE_VALUE + name, getDefinedValue());
+		layrContext.put(Var.LAYR_COMPONENTS_TEMPLATE_VALUE + name, getDefinedValue());
 	}
 
 	@Override

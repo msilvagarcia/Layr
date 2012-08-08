@@ -17,6 +17,7 @@ package layr.components;
 
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -74,6 +75,7 @@ public class GenericComponent implements IComponent {
 	private String rootdir = "";
 	private String extension = "xhtml";
 	private String componentName;
+	private String qualifiedName;
 
 	public GenericComponent() {
 		super();
@@ -105,11 +107,11 @@ public class GenericComponent implements IComponent {
 		attributes.put("styles", buffer.toString());
 	}
 
-/**
- * Based on {@link ArrayList#contains(Object)} implementation.
- * @param object
- * @return
- */
+	/**
+	 * Based on {@link ArrayList#contains(Object)} implementation.
+	 * @param object
+	 * @return
+	 */
 	public boolean isValidEvent(String object) {
 		for (int i = 0; i < events.length; i++) {
 			if (object.equals(events[i])) {
@@ -125,12 +127,6 @@ public class GenericComponent implements IComponent {
 	@Override
 	public void render() throws IOException {
 		try {
-			
-			ArrayList<String> attributes = new ArrayList<String>();
-			for (String attribute : getAttributeKeys()) {
-				getLayrContext().put(getComponentName() + ":" + attribute, getParsedAttribute(attribute));
-				attributes.add(getComponentName() + ":" + attribute);
-			}
 
 			HolderComponent holder = new HolderComponent();
 			holder.setChildren(getChildren());
@@ -140,17 +136,16 @@ public class GenericComponent implements IComponent {
 
 			ApplicationContext applicationContext = LayrFactory
 					.getOrCreateApplicationContext(layrContext);
-			IComponent compiledTemplate = applicationContext.compile(
-						getTemplate(), layrContext);
+			IComponent compiledTemplate = 
+					applicationContext.compile(getTemplate(), layrContext);
 
-            if ( compiledTemplate == null )
-    			throw new IOException("Can't find template '" + getTemplate() + "'.");
+			if ( compiledTemplate == null ){
+				//throw new IOException("Can't find template '" + getTemplate() + "'.");
+				renderAsComponentStub();
+				return;
+			}
 
-			compiledTemplate.render();
-
-			for (String attribute : attributes)
-				getLayrContext().put(attribute, null);
-
+			renderCompiledTemplate(compiledTemplate);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (CloneNotSupportedException e) {
@@ -164,10 +159,66 @@ public class GenericComponent implements IComponent {
 		}
 	}
 
+	/**
+	 * Render component as stub.
+	 * @throws IOException 
+	 */
+	public void renderAsComponentStub() throws IOException {
+		PrintWriter writer = layrContext.getResponse().getWriter();
+		writer.append('<')
+			  .append(getQualifiedName())
+			  .append(' ');
+		
+		for ( String attribute: getAttributeKeys() )
+			writer.append( attribute )
+				  .append( "=\"" )
+				  .append( getAttributeAsString(attribute) )
+				  .append( "\" " );
+		
+		List<IComponent> children = getChildren();
+		if ( children == null || children.size() == 0 ){
+			writer.append("/>");
+			return;
+		}
+
+		writer.append('>');
+		for ( IComponent child : children )
+			child.render();
+		writer.append("</")
+			  .append(getQualifiedName())
+			  .append('>');
+	}
+
+	/**
+	 * Render compiled template.
+	 * 
+	 * @param compiledTemplate
+	 * @throws IOException
+	 */
+	public void renderCompiledTemplate(IComponent compiledTemplate) throws IOException {
+
+		ArrayList<String> attributes = new ArrayList<String>();
+		for (String attribute : getAttributeKeys()) {
+			getLayrContext().put(getComponentName() + ":" + attribute, getParsedAttribute(attribute));
+			attributes.add(getComponentName() + ":" + attribute);
+		}
+
+		compiledTemplate.render();
+
+		for (String attribute : attributes)
+			getLayrContext().put(attribute, null);
+	}
+
+	/**
+	 * @return
+	 */
 	public String getTemplate() {
 		return getRootdir() + "/" + getComponentName() + "." + getExtension();
 	}
 
+	/* (non-Javadoc)
+	 * @see layr.components.IComponent#clone(layr.RequestContext)
+	 */
 	@Override
 	public Object clone(RequestContext context)
 			throws CloneNotSupportedException, ServletException, IOException {
@@ -387,6 +438,14 @@ public class GenericComponent implements IComponent {
 
 	public String getExtension() {
 		return extension;
+	}
+
+	public String getQualifiedName() {
+		return qualifiedName;
+	}
+
+	public void setQualifiedName(String qualifiedName) {
+		this.qualifiedName = qualifiedName;
 	}
 
 }

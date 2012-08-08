@@ -40,6 +40,6 @@ public interface IComponentFactory {
  * @see IComponent#setLayrContext(RequestContext)
  * @see IComponent#configure()
  */
-	public IComponent newComponent(String name, RequestContext context) throws InstantiationException, IllegalAccessException;
+	public IComponent newComponent(String name, String qName, RequestContext context) throws InstantiationException, IllegalAccessException;
 
 }

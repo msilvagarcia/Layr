@@ -192,4 +192,8 @@ public interface IComponent extends Cloneable {
 	Object getParsedAttribute(String attribute, boolean shouldBeEncoded);
 
 	String getAttributeAsString(String attribute);
+
+	void setQualifiedName(String qualifiedName);
+
+	String getQualifiedName();
 }

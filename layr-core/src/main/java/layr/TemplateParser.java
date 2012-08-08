@@ -108,8 +108,8 @@ public class TemplateParser extends DefaultHandler {
 
 		try {
 			IComponentFactory factory = layrContext.getComponentFactory(uri);
-			IComponent newComponent = factory.newComponent(localName,
-					layrContext);
+			IComponent newComponent = factory.newComponent(
+					localName, qName, layrContext);
 
 			if (newComponent == null)
 				throw new SAXException("Can't parse the unknown element '"

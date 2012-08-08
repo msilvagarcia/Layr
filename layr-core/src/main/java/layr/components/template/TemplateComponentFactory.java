@@ -35,7 +35,7 @@ public class TemplateComponentFactory extends DefaultComponentFactory {
 		register("var", Var.class);
 		register("template", Template.class);
 		register("component", HolderComponent.class);
-                register("children", TemplateBasedComponentChildren.class);
+        register("children", TemplateBasedComponentChildren.class);
 	}
 
 }

@@ -6,7 +6,6 @@ import java.util.Collection;
 import layr.components.GenericComponent;
 import layr.components.IComponent;
 
-
 public class Foreach extends GenericComponent {
 
 	@Override
@@ -15,7 +14,6 @@ public class Foreach extends GenericComponent {
 	@Override
 	public void render() throws IOException {
 		String string = getAttribute("var").toString();
-
 		Object collection = getParsedAttribute("value");
 
 		Collection<?> values = (Collection<?>)collection;

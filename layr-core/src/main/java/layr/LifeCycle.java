@@ -111,8 +111,6 @@ public class LifeCycle {
                 return;
             }
 
-            bindEntities();
-
             String redirectTo = action.redirectTo();
 			if ( !StringUtil.isEmpty(redirectTo) ) {
 				redirectToResource( (String) ComplexExpressionEvaluator.getValue(redirectTo, layrContext) );
@@ -142,6 +140,7 @@ public class LifeCycle {
 			SAXException, CloneNotSupportedException {
 		Object[] parameters = retrieveActionMethodParametersFromRequest(actionMethod);
 		Object returnedObject = actionMethod.invoke(targetInstance, parameters);
+        bindEntities();
 		renderWebPageOrActionReturnedObject(template, returnedObject);
 	}
 
@@ -242,6 +241,7 @@ public class LifeCycle {
         try {
             PrintWriter writer = getLayrRequestContext().getResponse().getWriter();
             Object returnedValue = actionMethod.invoke(targetInstance, parameters);
+            bindEntities();
             String json = new Gson().toJson(returnedValue);
             writer.write(json);
         } catch (Exception e) {

@@ -51,7 +51,7 @@ public class XHtmlComponentFactory implements IComponentFactory {
 	}
 
 	@Override
-	public IComponent newComponent(String name, RequestContext context) throws InstantiationException, IllegalAccessException {
+	public IComponent newComponent(String name, String qName, RequestContext context) throws InstantiationException, IllegalAccessException {
 		if (components.containsKey(name)) {
 			IComponent newInstance = components.get(name).newInstance();
 			newInstance.setLayrContext(context);
@@ -60,6 +60,7 @@ public class XHtmlComponentFactory implements IComponentFactory {
 
 		XHtmlComponent component = new XHtmlComponent();
 		component.setComponentName(name);
+		component.setQualifiedName(qName);
 		component.setLayrContext(context);
 		component.setSelfCloseable(
 			selfCloseableComponents.contains(name)

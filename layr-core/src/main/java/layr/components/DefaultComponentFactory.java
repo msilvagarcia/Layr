@@ -30,7 +30,7 @@ public class DefaultComponentFactory implements IComponentFactory {
 	}
 
 	@Override
-	public IComponent newComponent(String name, RequestContext context)
+	public IComponent newComponent(String name, String qName, RequestContext context)
 			throws InstantiationException, IllegalAccessException {
 		IComponent component = null;
 		
@@ -41,6 +41,7 @@ public class DefaultComponentFactory implements IComponentFactory {
 		component = clazz.newInstance();
 		component.setComponentName(name);
 		component.setLayrContext(context);
+		component.setQualifiedName(qName);
 
 		if (rootDir != null)
 			component.setRootdir(rootDir);

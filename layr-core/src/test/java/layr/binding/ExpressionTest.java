@@ -79,6 +79,16 @@ public class ExpressionTest {
 		String returnString = value.toString();
 		assertEquals("Miereblah", returnString);
 	}
+	
+	@Test
+	public void evalExpressionWhenTheresNoPlaceholderButThisIsSetAtContext(){
+		String expected = "Miere";
+		layrContext.put("nome", expected);
+		Object value = ComplexExpressionEvaluator.getValue(NAME, layrContext );
+		assertNotNull(value);
+		String returnString = value.toString();
+		assertEquals(expected, returnString);
+	}
 
 	public class Usuario {
 		private String nome;

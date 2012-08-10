@@ -92,11 +92,15 @@ public abstract class JsonUploadServlet<E> extends HttpServlet {
 	 * @throws IOException
 	 */
 	public void writeFile(Part part, String fileName) throws IOException {
+		String uploadDir = getUploadDir();
+		part.write(uploadDir+"/"+fileName);
+	}
+
+	public static String getUploadDir(){
 		String uploadDir = System.getProperty("layr.upload.dir");
 		if (StringUtil.isEmpty(uploadDir))
 			uploadDir = DEFAULT_UPLOAD_DIR;
-
-		part.write(uploadDir+"/"+fileName);
+		return uploadDir;
 	}
 
 }

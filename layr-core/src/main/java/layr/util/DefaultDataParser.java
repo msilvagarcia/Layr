@@ -81,7 +81,14 @@ public class DefaultDataParser implements IConverter {
 		else if (object.getClass().getPackage().getName().equals("java.lang"))
 			return String.valueOf(object);
 
-		return new Gson().toJson(object);
+		return encodeAsJSON(object);
+	}
+	
+	public String encodeAsJSON(Object object) {
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Class.class, new InvalidTypeSerializer());
+		Gson gson = builder.create();
+		return gson.toJson(object);
 	}
 
 }

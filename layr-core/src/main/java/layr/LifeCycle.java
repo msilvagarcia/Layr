@@ -24,6 +24,7 @@ import layr.annotation.WebResource;
 import layr.binding.ComplexExpressionEvaluator;
 import layr.binding.ExpressionEvaluator;
 import layr.components.IComponent;
+import layr.util.DefaultDataParser;
 import layr.util.Reflection;
 import layr.util.StringUtil;
 
@@ -242,7 +243,8 @@ public class LifeCycle {
             PrintWriter writer = getLayrRequestContext().getResponse().getWriter();
             Object returnedValue = actionMethod.invoke(targetInstance, parameters);
             bindEntities();
-            String json = new Gson().toJson(returnedValue);
+//            String json = new Gson().toJson(returnedValue);
+            String json = new DefaultDataParser().encode(returnedValue);
             writer.write(json);
         } catch (Exception e) {
             throw new ServletException(e.getMessage(), e);

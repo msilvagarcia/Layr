@@ -29,7 +29,7 @@ public class BooleanEquationsTest {
 	@Test
 	public void assertThatAMultiBlockEquationWorks() {
 		layrContext.put("age", 31);
-		String expression = "#{age} >= 18 && #{age} < 20 || #{age} == 31";
+		String expression = "#{age} >= 18 and #{age} < 20 or #{age} == 31";
 		Object result = ComplexExpressionEvaluator.getValue(expression, layrContext);
 		assertEquals(true, result);
 	}
@@ -37,7 +37,7 @@ public class BooleanEquationsTest {
 	@Test
 	public void assertThatAMultiBlockEquationWorksAndMatchesFalse() {
 		layrContext.put("age", 31);
-		String expression = "#{age} >= 18 && #{age} < 20";
+		String expression = "#{age} >= 18 and #{age} < 20";
 		Object result = ComplexExpressionEvaluator.getValue(expression, layrContext);
 		assertFalse((Boolean)result);
 	}
@@ -122,6 +122,31 @@ public class BooleanEquationsTest {
 		assertTrue(expression.matches(ComplexExpressionEvaluator.RE_IS_NEGATIVE_EQUATION));
 		assertEquals(false, ComplexExpressionEvaluator.evaluateAsEquationMember(expression, layrContext));
 		assertFalse((Boolean)ComplexExpressionEvaluator.getValue(expression, layrContext));	
+	}
+	
+	@Test
+	public void grantThatWorksWhenExpressionIsNull(){
+		layrContext.put("age", null);
+		String expression = "#{age} == null";
+		assertTrue((Boolean)ComplexExpressionEvaluator.getValue(expression, layrContext));
+	}
+	
+	@Test
+	public void grantThatWorksWhenExpressionIsEmpty(){
+		layrContext.put("age", "");
+		String expression = "#{age} == ''";
+		assertTrue((Boolean)ComplexExpressionEvaluator.getValue(expression, layrContext));
+	}
+
+	@Test
+	public void grantThatWorksWhenExpressionShouldReturnTrueIfAgeIsNotNullNorEmpty(){
+		String expression = "#{age} != '' and #{age} != null";
+
+		layrContext.put("age", "123");
+		assertTrue((Boolean)ComplexExpressionEvaluator.getValue(expression, layrContext));
+
+		layrContext.put("age", null);
+		assertFalse((Boolean)ComplexExpressionEvaluator.getValue(expression, layrContext));
 	}
 	
 	@Test

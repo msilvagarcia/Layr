@@ -31,13 +31,13 @@ public class ComplexExpressionEvaluator {
 
 	// Equation Support Constants
 	public static final String RE_EQUATION_EXPRESSION_COMPARATOR = "(<=|>=|<|==|!=|>)";
-	public static final String RE_EQUATION_CONCATENATION_DELIMITER = "(&&|\\|\\||$)";
+	public static final String RE_EQUATION_CONCATENATION_DELIMITER = "( and | or |$)";
 	public static final String RE_EQUATION_NOT_OPERATOR = "^( *! *)";
 	public static final String RE_IS_NEGATIVE_EQUATION = 
 			RE_EQUATION_NOT_OPERATOR + "("+ExpressionEvaluator.RE_IS_VALID_EXPRESSION+"| *true *| *false *)";
 	public static final String RE_IS_EQUATION = "(.*)"+RE_EQUATION_EXPRESSION_COMPARATOR+"(.*)";
-	private static final String AND = "&&";
-	private static final String OR = "||";
+	private static final String AND = "and";
+	private static final String OR = "or";
 
 	private static Map<String, Pattern> patternCache;
 	
@@ -102,9 +102,9 @@ public class ComplexExpressionEvaluator {
 				throw new RuntimeException("Invalid Expression: " + expression);
 
 			actualResult = evaluateEquation(expressionMatcher, context);
-			if (OR.equals(comparator))
+			if (OR.equals(comparator.trim()))
 				lastResult = ( lastResult || actualResult );
-			else if (AND.equals(comparator))
+			else if (AND.equals(comparator.trim()))
 				lastResult = ( lastResult && actualResult );
 
 			comparator = matcher.group();

@@ -260,7 +260,7 @@ public class Reflection {
 	 * @throws NoSuchFieldException
 	 */
 	public static Class<?> extractReturnTypeFor (Object target, String attribute) 
-			throws SecurityException, NoSuchFieldException {
+			throws SecurityException {
 		Field field = extractFieldFor(target, attribute);
 		if (field == null)
 			return null;

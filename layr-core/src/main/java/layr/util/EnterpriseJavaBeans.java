@@ -41,7 +41,7 @@ public class EnterpriseJavaBeans {
 		if (stateless == null && stateful == null && singleton == null)
 			return ;
 
-		registerEJBViewsInterfaces(clazz);
+		registerAnnotatedEJBViewsInterfaces(clazz);
 		registerEJBViewsFromImplementedInterface(clazz);
 		register(clazz);
 
@@ -52,22 +52,16 @@ public class EnterpriseJavaBeans {
 	 * @param clazz
 	 */
 	public void registerEJBViewsFromImplementedInterface(Class<?> clazz) {
-		Local local;
-		Remote remote;
 		Class<?>[] interfaces = clazz.getInterfaces();
 
-		for (Class<?> interfaceClass : interfaces) {
-			local = interfaceClass.getAnnotation(Local.class);
-			remote = interfaceClass.getAnnotation(Remote.class);
-			if (local != null || remote != null)
-				register(clazz, interfaceClass);
-		}
+		for (Class<?> interfaceClass : interfaces)
+			register(clazz, interfaceClass);
 	}
 
 	/**
 	 * @param clazz
 	 */
-	public void registerEJBViewsInterfaces(Class<?> clazz) {
+	public void registerAnnotatedEJBViewsInterfaces(Class<?> clazz) {
 		Local local = clazz.getAnnotation(Local.class);
 		Remote remote = clazz.getAnnotation(Remote.class);
 
@@ -112,22 +106,22 @@ public class EnterpriseJavaBeans {
 	}
 
 	/**
-	 * @param object
+	 * @param target
 	 * @param field
 	 */
-	public void injectEJB(Object object, Field field) {
+	public void injectEJB(Object target, Field field) {
 		try {
 			EJB ejb = field.getAnnotation(EJB.class);
 			if (ejb != null) {
 				Class<?> declaringClass = field.getType();
 				Object lookup = lookupJNDI(ejb, declaringClass);
-				
-				Method setter = Reflection.extractSetterFor(object, field.getName());
+
+				Method setter = Reflection.extractSetterFor(target, field.getName());
 				if( setter != null ) {
-					setter.invoke(object, lookup);
+					setter.invoke(target, lookup);
 				} else {
 					field.setAccessible(true);
-					field.set(object, lookup);
+					field.set(target, lookup);
 				}
 			}
 		} catch (Throwable e) {

@@ -79,16 +79,20 @@ public class EnterpriseJavaBeans {
 	 * @param interfaceClass
 	 */
 	public void register(Class<?> clazz, Class<?> interfaceClass) {
-		getRegisteredEJBViews().put(
-				interfaceClass.getCanonicalName(),
-				clazz.getSimpleName() + "!" + interfaceClass.getCanonicalName());
+		register(
+			interfaceClass.getCanonicalName(),
+			clazz.getSimpleName() + "!" + interfaceClass.getCanonicalName());
 	}
 
 	/**
 	 * @param clazz
 	 */
 	public void register(Class<?> clazz) {
-		getRegisteredEJBViews().put(clazz.getCanonicalName(), clazz.getSimpleName());
+		register(clazz.getCanonicalName(), clazz.getSimpleName());
+	}
+	
+	public void register(String clazz, String jndiPath) {
+		getRegisteredEJBViews().put(clazz, jndiPath);
 	}
 
 	/**

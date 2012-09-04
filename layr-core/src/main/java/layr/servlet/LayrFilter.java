@@ -75,7 +75,7 @@ public class LayrFilter implements Filter {
 	public boolean renderTheWebPageAsXHTML( RequestContext layrContext ) 
 			throws IOException, ParserConfigurationException, SAXException, CloneNotSupportedException, ServletException {
 
-		String relativePath = layrContext.getRelativePath();
+		String relativePath = layrContext.getRelativePath().replaceFirst("/$", "");
 		if ( !relativePath.endsWith(".xhtml") )
 			relativePath += ".xhtml";
 

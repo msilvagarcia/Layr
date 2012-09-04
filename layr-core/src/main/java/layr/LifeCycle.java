@@ -44,8 +44,6 @@ public class LifeCycle {
     public LifeCycle() {}
 
     public void run() throws ServletException, IOException {
-        layrContext.setCharacterEncoding("UTF-8");
-        layrContext.setContentType("text/html");
         measureTargetInstanceAvailableActions();
 
         Method actionMethod = getActionMethod();

@@ -18,6 +18,7 @@ package layr;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -293,9 +294,13 @@ public class RequestContext {
      * @param encoding
      * @throws IOException
      */
-    public void setCharacterEncoding(String encoding) throws IOException {
-        getRequest().setCharacterEncoding(encoding);
-        getResponse().setCharacterEncoding(encoding);
+    public void setCharacterEncoding(String encoding) {
+        try {
+			getRequest().setCharacterEncoding(encoding);
+			getResponse().setCharacterEncoding(encoding);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
     }
 
     /**

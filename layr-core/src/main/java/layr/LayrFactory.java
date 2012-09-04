@@ -37,6 +37,9 @@ public class LayrFactory {
 		context.setResponse(response);
 		context.setServletContext(servletContext);
 
+        context.setCharacterEncoding("UTF-8");
+        context.setContentType("text/html");
+
 		if (servletContext != null) {
 			ApplicationContext applicationContext = getOrCreateApplicationContext(servletContext);
 			context.setApplicationContext(applicationContext);

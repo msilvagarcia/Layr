@@ -15,8 +15,8 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 
-import layr.LayrFactory;
 import layr.ApplicationContext;
+import layr.LayrFactory;
 import layr.LifeCycle;
 import layr.RequestContext;
 import layr.components.IComponent;

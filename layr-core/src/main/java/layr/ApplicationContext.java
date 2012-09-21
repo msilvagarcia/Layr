@@ -42,7 +42,6 @@ import layr.util.EnterpriseJavaBeans;
 
 import org.xml.sax.SAXException;
 
-
 public class ApplicationContext {
 
     public static final String LAYR_CACHE_ENABLED = "layr.cache.enabled";
@@ -92,9 +91,9 @@ public class ApplicationContext {
 	            application.setAttribute(Html.DOCTYPE_ATTRIBUTE, parser.getDoctype());
 	        cacheCompiledPage(templateName, application);
 			return application;
-		} catch (NullPointerException e) {
-			System.err.println("ERROR compiling " + templateName);
-			throw e;
+
+		} catch (Throwable e){
+			throw new ServletException("Can't parse '" + templateName + "' as XHTML.", e);
 		}
 	}
 

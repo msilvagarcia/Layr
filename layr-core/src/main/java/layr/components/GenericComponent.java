@@ -49,7 +49,6 @@ import org.xml.sax.SAXException;
  * @see IComponent#clone()
  * @see IComponent#getChildren()
  * @see IComponent#getId()
- * @see IComponent#getTextContent()
  * @see IComponent#render()
  */
 public class GenericComponent implements IComponent {

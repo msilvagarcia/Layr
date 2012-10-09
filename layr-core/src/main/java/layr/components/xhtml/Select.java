@@ -24,11 +24,15 @@ public class Select extends XHtmlComponent {
 	@Override
 	public void configure() throws ServletException, IOException {
 		setComponentName("select");
-
+		super.configure();
+	}
+	
+	@Override
+	public void render() throws IOException {
 		String name = getAttributeAsString("name");
 		if (name == null)
 			setAttribute("name", getId());
 
-		super.configure();
+		super.render();
 	}
 }

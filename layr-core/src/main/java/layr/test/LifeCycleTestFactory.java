@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 import layr.LayrFactory;
 import layr.LifeCycle;
@@ -14,7 +15,6 @@ import layr.RequestContext;
 import layr.annotation.Action;
 import layr.servlet.LayrInitializer;
 import layr.util.Reflection;
-
 
 public class LifeCycleTestFactory {
 
@@ -30,7 +30,8 @@ public class LifeCycleTestFactory {
 	public static RequestContext createFullRequestContext() throws IOException, ClassNotFoundException, ServletException {
 		ServletContext servletContext = createServletContext();
 		ServletRequest servletRequest = new HttpServletRequestStub();
-		return LayrFactory.createRequestContext(servletRequest, null, servletContext);
+		ServletResponse servletResponse = new HttpServletResponseStub();
+		return LayrFactory.createRequestContext(servletRequest, servletResponse, servletContext);
 	}
 
 	public static Object invokeCurrentRequestMethod( LifeCycle lifeCycle, Object resource ) throws ServletException,

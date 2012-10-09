@@ -59,10 +59,20 @@ public class DefaultDataParser implements IConverter {
 	public Object tryToParseAsJSON(String serializedDataAsString, Class<?> type) {
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(Collection.class, new CollectionDeserializer());
+		builder.setExclusionStrategies(new GsonTransientAttributesExclusionStrategy());
+		builder.setDateFormat(getDefaultDateFormat());
+
 		Gson gson = builder.create();
 		return gson.fromJson(serializedDataAsString, type);
 	}
-    
+
+	public String getDefaultDateFormat() {
+		String defaultDateFormat = (String)System.getProperty("google.gson.dateFormat");
+		if ( defaultDateFormat == null )
+			 defaultDateFormat = "dd/MM/yyyy";
+		return defaultDateFormat;
+	}
+
 	public <T> List<T> decodeRawArray( String serializedData, T genericType ) {
     	CollectionDeserializer deserializer = new CollectionDeserializer();
     	JsonElement jsonElement = new JsonParser().parse(serializedData);
@@ -87,6 +97,7 @@ public class DefaultDataParser implements IConverter {
 	public String encodeAsJSON(Object object) {
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(Class.class, new InvalidTypeSerializer());
+		builder.setExclusionStrategies(new GsonTransientAttributesExclusionStrategy());
 		Gson gson = builder.create();
 		return gson.toJson(object);
 	}

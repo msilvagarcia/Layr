@@ -27,7 +27,11 @@ public class TextArea extends XHtmlComponent {
 	@Override
 	public void configure() throws ServletException, IOException {
 		setComponentName("textarea");
+		super.configure();
+	}
 
+	@Override
+	public void render() throws IOException {
 		String name = getAttributeAsString("name");
 		if (StringUtil.isEmpty(name))
 			setAttribute("name", getId());
@@ -36,7 +40,6 @@ public class TextArea extends XHtmlComponent {
 		if ( StringUtil.isEmpty(textContent) )
 			setTextContent("#{"+name+"}");
 
-		super.configure();
+		super.render();
 	}
-
 }

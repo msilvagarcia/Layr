@@ -44,7 +44,10 @@ public abstract class LayrTest<R> {
 		if ( webResource == null )
 			throw new InstantiationException("Resource isn't annotated as @WebResource.");
 		
-		setServletPath(webResource.rootURL());
+		setServletPath(
+			webResource.value().isEmpty()
+				? webResource.rootURL()
+				: webResource.value());
 		lifeCycle.setTargetInstance(resource);
 	}
 
@@ -53,7 +56,11 @@ public abstract class LayrTest<R> {
 	public void setRequestURL(String url) {
 		((HttpServletRequestStub)layrContext.getRequest()).setRequestURL(url);
 	}
-	
+
+	public void setLoggedInUser(String userName){
+		((HttpServletRequestStub)layrContext.getRequest()).setRemoteUser(userName);
+	}
+
 	public void setServletPath( String servletPath ) {
 		layrContext.setServletPath(servletPath);
 	}
@@ -65,6 +72,10 @@ public abstract class LayrTest<R> {
 	
 	public void sendParameters(Map<String, String> parameters) {
 		((HttpServletRequestStub)layrContext.getRequest()).setParameters(parameters);
+	}
+	
+	public void sendParameter( String name, String value ){
+		((HttpServletRequestStub)layrContext.getRequest()).getParameters().put(name, value);
 	}
 
 	public Object invokeCurrentRequestMethod() throws ServletException,

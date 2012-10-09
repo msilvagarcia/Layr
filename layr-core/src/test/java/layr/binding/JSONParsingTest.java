@@ -29,7 +29,7 @@ public class JSONParsingTest {
 	public void grantThatJSONParserWorksWithObjectArray() {
 		String worldAsString = "{\"worlds\": [" +
 					"{\"name\":\"name1\",\"hello\":null,\"id\":1}," +
-					"{\"name\":\"name2\",\"hello\":null,\"id\":2}," +
+					"{\"name\":\"name2\",\"hello\":null,\"id\":2, \"somethingBad\": \"Pagode\"}," +
 					"{\"name\":\"name3\",\"hello\":null,\"id\":3}" +
 				"]}";
 		
@@ -42,6 +42,7 @@ public class JSONParsingTest {
 		JSONParsingTest decodedObject = (JSONParsingTest)decoded;
 		assertEquals(3, decodedObject.worlds.size());
 		assertEquals((Long)2L, decodedObject.worlds.get(1).getId());
+		assertNull(decodedObject.worlds.get(1).getSomethingBad());
 
 	}
 	

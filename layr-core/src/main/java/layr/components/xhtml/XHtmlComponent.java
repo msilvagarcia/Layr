@@ -91,10 +91,6 @@ public class XHtmlComponent extends GenericComponent {
 
 		renderChildren();
 
-		String textContent = getTextContent();
-		if (textContent != null)
-			writer.append(textContent);
-
 		writer.append("</").append(componentName).append('>');
 	}
 

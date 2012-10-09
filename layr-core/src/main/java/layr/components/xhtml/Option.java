@@ -12,7 +12,11 @@ public class Option extends XHtmlComponent {
 	@Override
 	public void configure() throws ServletException, IOException {
 		setComponentName("option");
-
+		super.configure();
+	}
+	
+	@Override
+	public void render() throws IOException {
 		String name = getParent().getAttributeAsString("name");
 		Object value = ComplexExpressionEvaluator.getValue("#{"+name+"}", layrContext, true);
 		if (value == null || !value.equals(getAttributeAsString("value")))
@@ -20,7 +24,7 @@ public class Option extends XHtmlComponent {
 		else
 			setAttribute("selected","selected");
 
-		super.configure();
+		super.render();
 	}
 
 }

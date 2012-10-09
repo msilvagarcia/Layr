@@ -34,6 +34,8 @@ public class HttpServletRequestStub implements HttpServletRequest {
 	private Map<String, String> parameters;
 	private String requestURI;
 	private String contextPath;
+	private String remoteUser;
+	private PrincipalStub principal;
 	
 	public HttpServletRequestStub() {
 	}
@@ -344,8 +346,12 @@ public class HttpServletRequestStub implements HttpServletRequest {
 
 	@Override
 	public String getRemoteUser() {
-		// TODO Auto-generated method stub
-		return null;
+		return remoteUser;
+	}
+	
+	public void setRemoteUser(String remoteUser) {
+		this.remoteUser = remoteUser;
+		((PrincipalStub)getUserPrincipal()).setName(remoteUser);
 	}
 
 	@Override
@@ -377,7 +383,7 @@ public class HttpServletRequestStub implements HttpServletRequest {
 				String[] keyvalue = param.split("=");
 				dictionary.put(keyvalue[0], keyvalue[1]);
 			}
-			parameters = dictionary;
+			parameters.putAll(dictionary);
 		}
 		
 		requestURI = url;
@@ -403,8 +409,9 @@ public class HttpServletRequestStub implements HttpServletRequest {
 
 	@Override
 	public Principal getUserPrincipal() {
-		// TODO Auto-generated method stub
-		return null;
+		if ( principal == null )
+			principal = new PrincipalStub();
+		return principal;
 	}
 
 	@Override

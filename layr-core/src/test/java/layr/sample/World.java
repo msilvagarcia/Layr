@@ -1,9 +1,14 @@
 package layr.sample;
 
+import layr.annotation.JsonTransient;
+
 public class World {
 	private String name;
 	private Hello hello;
 	private Long id;
+	
+	@JsonTransient
+	private String somethingBad;
 
 	public void setName(String name) {
 		this.name = name;
@@ -27,6 +32,14 @@ public class World {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getSomethingBad() {
+		return somethingBad;
+	}
+
+	public void setSomethingBad(String somethingBad) {
+		this.somethingBad = somethingBad;
 	}
 	
 }

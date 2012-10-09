@@ -20,7 +20,6 @@ import java.io.PrintWriter;
 
 import layr.util.StringUtil;
 
-
 public class TextNode extends GenericComponent {
 
 	public TextNode() {}

@@ -30,9 +30,6 @@ import layr.util.StringUtil;
 
 import org.xml.sax.SAXException;
 
-
-import com.google.gson.Gson;
-
 public class LifeCycle {
 
 	private static Map<Class<?>, List<Method>> actionMethodCache;
@@ -41,7 +38,11 @@ public class LifeCycle {
     private List<Method> actions;
     private Object targetInstance;
 
-    public LifeCycle() {}
+	private DefaultDataParser defaultDataParser;
+
+    public LifeCycle() {
+        defaultDataParser = new DefaultDataParser();
+    }
 
     public void run() throws ServletException, IOException {
         measureTargetInstanceAvailableActions();
@@ -112,7 +113,7 @@ public class LifeCycle {
 
             String redirectTo = action.redirectTo();
 			if ( !StringUtil.isEmpty(redirectTo) ) {
-				redirectToResource( (String) ComplexExpressionEvaluator.getValue(redirectTo, layrContext) );
+				redirectToResource( actionMethod, redirectTo );
                 return;
             }
 
@@ -241,8 +242,7 @@ public class LifeCycle {
             PrintWriter writer = getLayrRequestContext().getResponse().getWriter();
             Object returnedValue = actionMethod.invoke(targetInstance, parameters);
             bindEntities();
-//            String json = new Gson().toJson(returnedValue);
-            String json = new DefaultDataParser().encode(returnedValue);
+			String json = defaultDataParser.encode(returnedValue);
             writer.write(json);
         } catch (Exception e) {
             throw new ServletException(e.getMessage(), e);
@@ -288,7 +288,8 @@ public class LifeCycle {
                     }
 
                     if ( String.class.isInstance(parameter) ) {
-	                    Object fromJson = new Gson().fromJson((String)parameter, parameterTypes[counter]);
+                    	Object fromJson = defaultDataParser.decode(
+                			(String)parameter, parameterTypes[counter], null);
 	                    parameters[counter] = fromJson;
                     } else if ( parameterTypes[counter].equals(parameter.getClass()) )
                     	parameters[counter] = parameter;
@@ -302,7 +303,7 @@ public class LifeCycle {
         }
 		return parameters;
 	}
-	
+
     /**
      * Execute the Parameters Bind step from Layr Life Cycle. By default,
      * auto-bind any sent parameter from HTTP client against field attributes
@@ -448,10 +449,18 @@ public class LifeCycle {
     }
 
     /**
+     * @param actionMethod 
      * @param url
      * @throws IOException
+     * @throws ServletException 
+     * @throws InvocationTargetException 
+     * @throws IllegalAccessException 
+     * @throws IllegalArgumentException 
      */
-    public void redirectToResource(String url) throws IOException {
+    public void redirectToResource(Method actionMethod, String urlPattern) throws IOException, ServletException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    	Object[] retrievedParameters = retrieveActionMethodParametersFromRequest(actionMethod);
+    	actionMethod.invoke(targetInstance, retrievedParameters);
+    	String url = (String) ComplexExpressionEvaluator.getValue(urlPattern, layrContext);
 		if ( !url.startsWith("/") )
 			url = layrContext.getServletPath() + url;
         redirect(layrContext.getContextPath() + url);

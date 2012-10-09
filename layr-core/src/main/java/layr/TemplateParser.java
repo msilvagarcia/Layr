@@ -141,9 +141,17 @@ public class TemplateParser extends DefaultHandler {
 	public void extractTextContentBeforeNesting() {
 		String string = textContent.toString();
 		if (currentComponent != null
-				&& !string.replaceAll("[\\n\\r]", "").trim().isEmpty())
-			currentComponent.addChild(new TextNode(string));
+				&& !string.replaceAll("[\\n\\r]", "").trim().isEmpty()){
+			currentComponent.addChild( createTextNode(string) );
+			currentComponent.setTextContent(string);
+		}
 		textContent.delete(0, textContent.length());
+	}
+
+	public TextNode createTextNode( String string ) {
+		TextNode textNode = new TextNode(string);
+		textNode.setLayrContext(getLayrContext());
+		return textNode;
 	}
 
 	@Override
@@ -154,9 +162,8 @@ public class TemplateParser extends DefaultHandler {
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 		try {
-			currentComponent.setTextContent(textContent.toString());
+			extractTextContentBeforeNesting();
 			currentComponent.configure();
-			textContent.delete(0, textContent.length());
 			currentComponent = currentComponent.getParent();
 		} catch (ServletException e) {
 			throw new SAXException(e.getMessage(), e);

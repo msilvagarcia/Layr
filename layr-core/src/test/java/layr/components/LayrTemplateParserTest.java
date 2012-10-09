@@ -47,8 +47,8 @@ public class LayrTemplateParserTest {
 		TemplateParser parser = new TemplateParser(layrContext);
 		IComponent application = parser.parse(template);
 		assertNotNull(application);
-		assertEquals(2, application.getNumChildren());
-		assertEquals(" Home!", application.getTextContent());
+		assertEquals(3, application.getNumChildren());
+		assertEquals(" Home!", application.getChildren().get(2).getTextContent());
 	}
 
 	@Test

@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 
+import layr.IResource;
 import layr.LifeCycle;
 import layr.RequestContext;
 import layr.annotation.WebResource;
@@ -48,6 +49,10 @@ public abstract class LayrTest<R> {
 			webResource.value().isEmpty()
 				? webResource.rootURL()
 				: webResource.value());
+		
+		if ( IResource.class.isInstance(resource) )
+			((IResource)resource).initialize(layrContext);
+
 		lifeCycle.setTargetInstance(resource);
 	}
 

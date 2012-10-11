@@ -32,13 +32,13 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.xml.parsers.ParserConfigurationException;
 
+import layr.commons.EnterpriseJavaBeans;
 import layr.components.IComponent;
 import layr.components.IComponentFactory;
 import layr.components.xhtml.Html;
 import layr.resources.AbstractSystemResourceLoader;
 import layr.resources.ClassPathResourceLoader;
 import layr.resources.ServletContextResourceLoader;
-import layr.util.EnterpriseJavaBeans;
 
 import org.xml.sax.SAXException;
 

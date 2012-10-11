@@ -31,9 +31,9 @@ import layr.LayrFactory;
 import layr.ApplicationContext;
 import layr.RequestContext;
 import layr.binding.ComplexExpressionEvaluator;
+import layr.commons.StringUtil;
 import layr.components.template.HolderComponent;
 import layr.components.template.TemplateBasedComponentChildren;
-import layr.util.StringUtil;
 
 import org.xml.sax.SAXException;
 

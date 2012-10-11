@@ -18,7 +18,7 @@ package layr.components.xhtml;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import layr.util.StringUtil;
+import layr.commons.StringUtil;
 
 public class Html extends XHtmlComponent {
 

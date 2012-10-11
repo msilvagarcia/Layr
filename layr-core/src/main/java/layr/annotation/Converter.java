@@ -20,7 +20,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import layr.util.IConverter;
+import layr.commons.IConverter;
 
 
 @Retention(RetentionPolicy.RUNTIME)

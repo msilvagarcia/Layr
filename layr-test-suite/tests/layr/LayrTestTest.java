@@ -10,9 +10,9 @@ import java.util.GregorianCalendar;
 
 import javax.servlet.ServletException;
 
+import layr.commons.Dictionary;
 import layr.sample.HelloResource;
 import layr.test.LayrTest;
-import layr.util.Dictionary;
 
 import org.junit.Test;
 

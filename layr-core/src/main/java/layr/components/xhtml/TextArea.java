@@ -19,7 +19,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 
-import layr.util.StringUtil;
+import layr.commons.StringUtil;
 
 
 public class TextArea extends XHtmlComponent {

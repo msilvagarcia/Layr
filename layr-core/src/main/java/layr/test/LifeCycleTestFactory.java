@@ -13,8 +13,8 @@ import layr.LayrFactory;
 import layr.LifeCycle;
 import layr.RequestContext;
 import layr.annotation.Action;
+import layr.commons.Reflection;
 import layr.servlet.LayrInitializer;
-import layr.util.Reflection;
 
 public class LifeCycleTestFactory {
 

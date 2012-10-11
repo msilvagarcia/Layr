@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-import layr.util.Dictionary;
+import layr.commons.Dictionary;
 
 
 public class HttpServletRequestStub implements HttpServletRequest {

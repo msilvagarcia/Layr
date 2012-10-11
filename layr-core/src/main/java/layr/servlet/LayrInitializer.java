@@ -22,13 +22,13 @@ import layr.Configuration;
 import layr.LayrFactory;
 import layr.annotation.TagLib;
 import layr.annotation.WebResource;
+import layr.commons.EnterpriseJavaBeans;
+import layr.commons.StringUtil;
 import layr.components.DefaultComponentFactory;
 import layr.components.IComponentFactory;
 import layr.resources.AbstractSystemResourceLoader;
 import layr.resources.ClassPathResourceLoader;
 import layr.resources.ServletContextResourceLoader;
-import layr.util.EnterpriseJavaBeans;
-import layr.util.StringUtil;
 
 import org.xml.sax.SAXException;
 

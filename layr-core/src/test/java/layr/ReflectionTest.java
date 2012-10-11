@@ -3,7 +3,7 @@ package layr;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import layr.util.Reflection;
+import layr.commons.Reflection;
 
 import org.junit.Test;
 

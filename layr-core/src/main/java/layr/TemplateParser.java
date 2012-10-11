@@ -23,11 +23,11 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import layr.commons.StringUtil;
 import layr.components.DefaultComponentFactory;
 import layr.components.IComponent;
 import layr.components.IComponentFactory;
 import layr.components.TextNode;
-import layr.util.StringUtil;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;

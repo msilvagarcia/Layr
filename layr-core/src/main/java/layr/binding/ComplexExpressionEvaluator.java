@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import layr.RequestContext;
-import layr.util.Dictionary;
+import layr.commons.Dictionary;
 
 
 public class ComplexExpressionEvaluator {

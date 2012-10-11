@@ -4,7 +4,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 import layr.binding.ComplexExpressionEvaluator;
-import layr.util.StringUtil;
+import layr.commons.StringUtil;
 
 import org.junit.Test;
 

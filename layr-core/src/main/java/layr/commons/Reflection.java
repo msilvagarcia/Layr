@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package layr.util;
+package layr.commons;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

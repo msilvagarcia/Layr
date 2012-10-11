@@ -12,11 +12,11 @@ import javax.servlet.ServletException;
 
 import layr.LifeCycle;
 import layr.RequestContext;
+import layr.commons.Dictionary;
 import layr.sample.HelloResource;
 import layr.sample.World;
 import layr.test.LifeCycleTestFactory;
 import layr.test.HttpServletRequestStub;
-import layr.util.Dictionary;
 
 import org.junit.Before;
 import org.junit.Test;

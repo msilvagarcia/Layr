@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import layr.commons.DefaultDataParser;
 import layr.sample.World;
-import layr.util.DefaultDataParser;
 
 import org.junit.Test;
 

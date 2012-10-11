@@ -23,9 +23,9 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
+import layr.commons.StringUtil;
 import layr.components.GenericComponent;
 import layr.components.IComponent;
-import layr.util.StringUtil;
 
 
 

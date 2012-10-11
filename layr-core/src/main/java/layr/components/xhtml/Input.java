@@ -20,7 +20,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 import layr.binding.ComplexExpressionEvaluator;
-import layr.util.StringUtil;
+import layr.commons.StringUtil;
 
 
 public class Input extends XHtmlComponent {

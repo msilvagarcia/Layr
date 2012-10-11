@@ -23,10 +23,10 @@ import layr.annotation.Parameter;
 import layr.annotation.WebResource;
 import layr.binding.ComplexExpressionEvaluator;
 import layr.binding.ExpressionEvaluator;
+import layr.commons.DefaultDataParser;
+import layr.commons.Reflection;
+import layr.commons.StringUtil;
 import layr.components.IComponent;
-import layr.util.DefaultDataParser;
-import layr.util.Reflection;
-import layr.util.StringUtil;
 
 import org.xml.sax.SAXException;
 

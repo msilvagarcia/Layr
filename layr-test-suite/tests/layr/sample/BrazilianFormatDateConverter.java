@@ -5,7 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import layr.util.IConverter;
+import layr.commons.IConverter;
 
 
 public class BrazilianFormatDateConverter implements IConverter {

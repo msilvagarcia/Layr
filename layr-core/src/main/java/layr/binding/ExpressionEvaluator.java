@@ -21,8 +21,8 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import layr.util.Reflection;
-import layr.util.StringUtil;
+import layr.commons.Reflection;
+import layr.commons.StringUtil;
 
 
 /**

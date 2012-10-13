@@ -38,8 +38,5 @@
 
 	<modules>
 		<module>../layr-core</module>
-		<module>../layr-samples</module>
-		<module>../layr-archetype-application</module>
-		<module>../layr-test-suite</module>
 	</modules>
 </project>

@@ -4,4 +4,5 @@ output
 .project
 .metadata
 .settings
+.DS_Store
 

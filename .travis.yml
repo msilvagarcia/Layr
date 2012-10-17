@@ -1,5 +1,5 @@
 language: java
-script: mvn -f coffeeframework-parent/pom.xml clean install
+script: mvn -f layr-parent/pom.xml clean install
 # whitelist
 branches:
   only:

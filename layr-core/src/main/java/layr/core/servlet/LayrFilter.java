@@ -26,7 +26,7 @@ public class LayrFilter implements Filter {
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
-		filterConfig.getServletContext().log( "[Layr] Initializing Main Filter defined by " + this.getClass().getCanonicalName());
+		filterConfig.getServletContext().log( "[Layr] Initializing Layr Routing Filter");
 		layrApplicationContext = LayrFactory.getOrCreateApplicationContext(filterConfig.getServletContext());
 		this.filterConfig = filterConfig;
 	}
@@ -42,8 +42,10 @@ public class LayrFilter implements Filter {
 				response, filterConfig.getServletContext());
 
 		try {
-			if (!haveFoundTheWebPageXHTMLAndRenderedSuccessfully( layrContext ) )
+			if (!haveFoundTheWebPageXHTMLAndRenderedSuccessfully( layrContext ) ){
+				System.out.println(getClass().getCanonicalName() + " is ignoring " + layrContext.getRelativePath());
 				chain.doFilter(request, response);
+			}
 		} catch (Exception e) {
 			throw new ServletException(e.getMessage(), e);
 		}

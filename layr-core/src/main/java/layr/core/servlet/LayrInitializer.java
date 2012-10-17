@@ -46,7 +46,7 @@ public class LayrInitializer implements ServletContainerInitializer {
 
 		try {
 			initializeApplicationContext(servletContext);
-			readConfiguration();
+			readConfiguration(servletContext);
 		
 			for (Class<?> clazz : classes) {
 				handleClass(clazz);
@@ -93,7 +93,7 @@ public class LayrInitializer implements ServletContainerInitializer {
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 */
-	public void readConfiguration() throws IOException, ParserConfigurationException, SAXException {
+	public void readConfiguration(ServletContext servletContext) throws IOException, ParserConfigurationException, SAXException {
 		applicationContext.setLayrConfiguration(new Configuration());
 	}
 

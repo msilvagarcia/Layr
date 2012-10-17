@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import layr.core.commons.DefaultDataParser;
+import layr.core.commons.gson.DefaultDataParser;
 import layr.core.sample.World;
 
 import org.junit.Test;

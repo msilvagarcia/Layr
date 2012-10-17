@@ -25,7 +25,6 @@ import layr.core.components.IComponent;
 import layr.core.components.IComponentFactory;
 import layr.core.components.TagLib;
 
-
 @TagLib("http://www.w3.org/1999/xhtml")
 public class XHtmlComponentFactory implements IComponentFactory {
 	

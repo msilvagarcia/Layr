@@ -56,7 +56,7 @@ public class XHtmlComponent extends GenericComponent {
 	
 	@Override
 	public void configure() throws ServletException, IOException {
-		super.configure();
+//		super.configure();
 		ignoreAttribute("styles");
 		ignoreAttribute("eventsAsJSON");
 	}

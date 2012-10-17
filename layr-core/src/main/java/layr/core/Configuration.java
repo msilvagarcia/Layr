@@ -9,7 +9,7 @@ public class Configuration {
 	public Configuration() {
 		setEquationsDisabled( readSystemProperty("equationDisabled", "false") );
 		setCacheEnabled( readSystemProperty("cacheEnabled", "false") );
-		setDefaultResource( readSystemProperty("defaultResource", "/theme/") );
+		setDefaultResource( "/theme/" );
 	}
 
 	public String readSystemProperty( String propertyName, String defaultValue ){

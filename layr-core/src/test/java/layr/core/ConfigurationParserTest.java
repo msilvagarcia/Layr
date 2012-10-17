@@ -24,12 +24,11 @@ public class ConfigurationParserTest {
 	public void testConfigurationSettedValues() throws IOException, ParserConfigurationException, SAXException {
 		System.setProperty("layr.config.equationDisabled", "true");
 		System.setProperty("layr.config.cacheEnabled", "true");
-		System.setProperty("layr.config.defaultResource", "/home/");
 
 		Configuration configuration = new Configuration();
 		Assert.assertTrue(configuration.isEquationsDisabled());
 		Assert.assertTrue(configuration.isCacheEnabled());
-		Assert.assertEquals("/home/", configuration.getDefaultResource());
+		Assert.assertEquals("/theme/", configuration.getDefaultResource());
 	}
 
 }

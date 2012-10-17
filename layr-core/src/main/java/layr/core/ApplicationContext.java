@@ -51,7 +51,6 @@ public class ApplicationContext {
 
 	private AbstractSystemResourceLoader[] applicationContexts;
 	private Map<String, IComponentFactory> registeredTagLibs;
-	private Map<String, Object> registeredWebResources;
 	private EnterpriseJavaBeans ejbManager;
 	private Set<String> availableLocalResourceFiles;
 	private Configuration layrConfiguration;
@@ -184,6 +183,14 @@ public class ApplicationContext {
 	public ServletContext getServletContext() {
 		return servletContext;
 	}
+	
+	public void register( String key, Object something ){
+		servletContext.setAttribute(key, something);
+	}
+	
+	public Object retrieve( String key ){
+		return servletContext.getAttribute(key);
+	}
 
 	public Map<String, IComponentFactory> getRegisteredTagLibs() {
 		if (registeredTagLibs == null)
@@ -222,16 +229,6 @@ public class ApplicationContext {
 			}
 	}
 
-	public Map<String, Object> getRegisteredWebResources() {
-		if (registeredWebResources == null)
-			registeredWebResources = new HashMap<String, Object>();
-		return registeredWebResources;
-	}
-
-	public void setRegisteredWebResources(Map<String, Object> registeredWebResources) {
-		this.registeredWebResources = registeredWebResources;
-	}
-
 	public EnterpriseJavaBeans getEjbManager() {
 		return ejbManager;
 	}
@@ -263,9 +260,6 @@ public class ApplicationContext {
 		applicationContexts = null;
 		registeredTagLibs.clear();
 		registeredTagLibs = null;
-		
-		registeredWebResources.clear();
-		registeredWebResources = null;
 		
 		ejbManager.getRegisteredEJBViews().clear();
 		ejbManager.setRegisteredEJBViews(null);

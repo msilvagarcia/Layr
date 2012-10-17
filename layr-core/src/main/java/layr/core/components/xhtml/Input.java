@@ -35,8 +35,8 @@ public class Input extends XHtmlComponent {
 	private String type;
 	private String checked;
 	private boolean checkedCanBeNull = false;
-
-	private String name;
+	private Object originalCheckedAttribute;
+	private Object originalValueAttribute;
 
 	private Object value;
 
@@ -44,39 +44,44 @@ public class Input extends XHtmlComponent {
 	public void configure() throws ServletException, IOException {
 		setComponentName("input");
 		setSelfCloseable(true);
-		type = getType();
-		value = getParsedAttribute("value");
+		saveOriginalAttributeValues();
 		super.configure();
+	}
+
+	public void saveOriginalAttributeValues() {
+		if ( originalCheckedAttribute == null )
+			originalCheckedAttribute = getAttribute("checked");
+		else
+			setAttribute( "checked", null );
+
+		if ( originalValueAttribute == null )
+			originalValueAttribute = getAttribute("value");
+		else
+			setAttribute("value", null);
 	}
 
 	@Override
 	public void render() throws IOException {
-		String name = configureNullNameAttribute();
+		type = getType();
+		value = parseExpression(originalValueAttribute);
+
+		String name = getAttributeAsString("name");
 		configureTextInputValueAttribute(name);
 		configureDefaultCheckboxValueAttribute();
 		configureRadioAndCheckbox(name, value);
+
 		super.render();
 	}
 
-	public String configureNullNameAttribute() {
-		name = getAttributeAsString("name");
-		if (StringUtil.isEmpty(name)) {
-			setAttribute("name", getId());
-			name = getId();
-		}
-		return name;
-	}
-
 	public void configureTextInputValueAttribute(String name) {
-		if ( isTextInput() ) {
-			if ( name != null && getAttribute("value") == null )
+		if ( isTextInput()
+		&&   StringUtil.isEmpty(name)
+		&&   originalValueAttribute == null )
 				setAttribute("value", "#{"+name+"}");
-			return;
-		}
 	}
 
 	public void configureDefaultCheckboxValueAttribute() {
-		if (type.equals("checkbox") && value == null ) {
+		if (type.equals("checkbox") && originalValueAttribute == null ) {
 			setAttribute("value","true");
 			value = "true";
 		}
@@ -88,11 +93,17 @@ public class Input extends XHtmlComponent {
 
 		Object checked = getChecked();
 		if  ( (checked == null && value != null 
-		&&     value.equals(ComplexExpressionEvaluator.getValue("#{"+name+"}", layrContext, true)) )
+		&&     value.equals( parseExpression("#{"+name+"}") ))
 		||  ( checked != null && (checked.equals(true) || checked.equals("true")) ) )
 			setAttribute("checked","checked");
 		else
 			setAttribute("checked",checked);
+	}
+
+	public Object parseExpression( Object expression ){
+		if ( expression == null )
+			return null;
+		return ComplexExpressionEvaluator.getValue(expression.toString(), layrContext, true);
 	}
 
 	public boolean isTextInput () {
@@ -105,13 +116,14 @@ public class Input extends XHtmlComponent {
 
 	public String getChecked() {
 		if ( checked == null && !checkedCanBeNull ){
-			Object parsedAttribute = getParsedAttribute("checked");
+			Object parsedAttribute = parseExpression( originalCheckedAttribute );
 			if ( parsedAttribute != null )
 				checked = Boolean.class.isInstance(parsedAttribute)
 					? ((Boolean)parsedAttribute).toString()
 					:  (String) parsedAttribute;
 		}
 		checkedCanBeNull = true;
+		System.out.println("checked:" + checked);
 		return checked;
 	}
 

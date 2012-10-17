@@ -190,7 +190,10 @@ public class RequestContext {
 	 * @param property
 	 */
 	public RequestContext put(String name, Object property) {
-		properties.put(name, property);
+		if ( property == null )
+			properties.remove(name);
+		else
+			properties.put(name, property);
 		return this;
 	}
 

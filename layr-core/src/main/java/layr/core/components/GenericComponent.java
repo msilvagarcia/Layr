@@ -15,7 +15,6 @@
  */
 package layr.core.components;
 
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -36,8 +35,6 @@ import layr.core.components.template.TemplateBasedComponentChildren;
 import layr.core.expressions.ComplexExpressionEvaluator;
 
 import org.xml.sax.SAXException;
-
-
 
 /**
  * Default implementation for components. Software developers can override the

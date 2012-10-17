@@ -1,4 +1,4 @@
-package layr.core.commons;
+package layr.core.commons.gson;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -6,9 +6,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 
-import layr.core.commons.gson.CollectionDeserializer;
-import layr.core.commons.gson.GsonTransientAttributesExclusionStrategy;
-import layr.core.commons.gson.InvalidTypeSerializer;
+import layr.core.commons.IConverter;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

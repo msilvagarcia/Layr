@@ -26,6 +26,7 @@ public class PooledExpressionTest {
 
 	@Before
 	public void setup() throws IOException, ClassNotFoundException, ServletException{
+		System.setProperty("layr.config.equationDisabled", "false");
 		layrContext = StubsFactory.createFullRequestContext();
 	}
 

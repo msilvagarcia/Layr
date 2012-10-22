@@ -43,7 +43,6 @@ public class LayrFilter implements Filter {
 
 		try {
 			if (!haveFoundTheWebPageXHTMLAndRenderedSuccessfully( layrContext ) ){
-				System.out.println(getClass().getCanonicalName() + " is ignoring " + layrContext.getRelativePath());
 				chain.doFilter(request, response);
 			}
 		} catch (Exception e) {

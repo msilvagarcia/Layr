@@ -25,7 +25,7 @@ public class ConfigurationParserTest {
 		
 		JEEConfiguration configuration = new JEEConfiguration(StubsFactory.createServletContext());
 		Assert.assertFalse(configuration.isCacheEnabled());
-		Assert.assertEquals("/theme/", configuration.getDefaultResource());
+		Assert.assertEquals("/home/", configuration.getDefaultResource());
 	}
 
 	@Test
@@ -34,7 +34,7 @@ public class ConfigurationParserTest {
 
 		JEEConfiguration configuration = new JEEConfiguration(StubsFactory.createServletContext());
 		Assert.assertTrue(configuration.isCacheEnabled());
-		Assert.assertEquals("/theme/", configuration.getDefaultResource());
+		Assert.assertEquals("/home/", configuration.getDefaultResource());
 	}
 
 }

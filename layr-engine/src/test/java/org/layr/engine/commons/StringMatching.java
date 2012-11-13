@@ -4,10 +4,8 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.layr.commons.Cache;
 import org.layr.commons.StringUtil;
 import org.layr.engine.expressions.ComplexExpressionEvaluator;
 
@@ -19,11 +17,6 @@ public class StringMatching {
 	@Before
 	public void setup(){
 		evaluator = ComplexExpressionEvaluator.newInstance();
-	}
-	
-	@After
-	public void tearDown(){
-		Cache.clearAllCaches();
 	}
 
 	@Test

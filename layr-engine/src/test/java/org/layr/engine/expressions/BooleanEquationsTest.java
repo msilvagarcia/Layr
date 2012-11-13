@@ -9,12 +9,9 @@ import java.util.regex.Matcher;
 
 import javax.servlet.ServletException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.layr.commons.Cache;
 import org.layr.engine.IRequestContext;
-import org.layr.engine.expressions.ComplexExpressionEvaluator;
 import org.layr.engine.sample.StubRequestContext;
 
 public class BooleanEquationsTest {
@@ -27,11 +24,6 @@ public class BooleanEquationsTest {
 		System.setProperty("layr.config.equationDisabled", "false");
 		layrContext = new StubRequestContext();
 		evaluator = ComplexExpressionEvaluator.newInstance();
-	}
-	
-	@After
-	public void tearDown(){
-		Cache.clearAllCaches();
 	}
 
 	@Test

@@ -9,10 +9,8 @@ import java.util.regex.Matcher;
 
 import javax.servlet.ServletException;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
-import org.layr.commons.Cache;
 import org.layr.engine.IRequestContext;
 import org.layr.engine.sample.StubRequestContext;
 
@@ -30,11 +28,6 @@ public class PooledExpressionTest {
 		System.setProperty("layr.config.equationDisabled", "false");
 		layrContext = new StubRequestContext();
 		evaluator = ComplexExpressionEvaluator.newInstance();
-	}
-	
-	@AfterClass
-	public static void tearDown(){
-		Cache.clearAllCaches();
 	}
 
 	@Test

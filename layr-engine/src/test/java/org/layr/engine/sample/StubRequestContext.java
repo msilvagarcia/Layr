@@ -17,7 +17,7 @@ public class StubRequestContext extends AbstractRequestContext {
 		Set<String> availableResources = manuallyClassPathReader.readAvailableResources();
 		setAvailableLocalResourceFiles(availableResources);
 		
-		Cache cache = Cache.newInstance("test");
+		Cache cache = new Cache();
 		setCache(cache);
 		setApplicationRootPath("test");
 	}

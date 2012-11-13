@@ -15,7 +15,7 @@ public class CacheTest {
 
 	@Before
 	public void setup(){
-		cache = Cache.newInstance("test");
+		cache = new Cache();
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class CacheTest {
 		cache.put("D", cachedMap);
 		assertEquals( 4, cachedMap.size() );
 		assertEquals( 1, cache.size() );
-		Cache.clearAllCaches();
+		cache.clearCache();
 		assertEquals( 0, cache.size() );
 		assertEquals( 0, cachedMap.size() );
 	}

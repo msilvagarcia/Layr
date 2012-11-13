@@ -1,7 +1,6 @@
 package org.layr.jee.commons;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -27,13 +26,7 @@ public class JEEConfiguration {
 		setServletContext(servletContext);
 		setCacheEnabled( readSystemProperty("cacheEnabled", "false") );
 		setDefaultResource( "/home/" );
-		createCache();
-	}
-
-	public void createCache(){
-		String contextPath = getServletContext().getContextPath();
-		String now = String.valueOf( new Date().getTime() );
-		setCache( Cache.newInstance( contextPath + now ) );
+		setCache( new Cache() );
 	}
 
 	public void setApplicationContexts(AbstractSystemResourceLoader[] applicationContexts) {

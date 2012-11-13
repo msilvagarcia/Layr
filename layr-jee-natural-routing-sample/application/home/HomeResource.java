@@ -5,7 +5,7 @@ import javax.ejb.EJB;
 import org.layr.jee.routing.business.Route;
 import org.layr.jee.routing.business.WebResource;
 
-@WebResource("/theme/")
+@WebResource("/home/")
 public class HomeResource {
 
 	@EJB ProfileMeasurer profileMeasurer;

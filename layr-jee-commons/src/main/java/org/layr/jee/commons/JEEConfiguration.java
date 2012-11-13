@@ -26,7 +26,7 @@ public class JEEConfiguration {
 	public JEEConfiguration( ServletContext servletContext ) {
 		setServletContext(servletContext);
 		setCacheEnabled( readSystemProperty("cacheEnabled", "false") );
-		setDefaultResource( "/theme/" );
+		setDefaultResource( "/home/" );
 		createCache();
 	}
 

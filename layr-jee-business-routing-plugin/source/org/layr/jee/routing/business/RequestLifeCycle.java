@@ -169,10 +169,13 @@ public class RequestLifeCycle {
 		String template = getGeneralTemplate();
 		if ( !StringUtil.isEmpty(route.template()) )
 		    template = route.template();
-		return ExpressionEvaluator
+		Object measuredTemplate = ExpressionEvaluator
 				.eval(targetInstance, template)
-				.getValue()
-				.toString();
+				.getValue();
+		
+		return measuredTemplate != null
+					? measuredTemplate.toString()
+					: null;
 	}
 
 	/**

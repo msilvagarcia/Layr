@@ -142,9 +142,18 @@ public class EnterpriseJavaBeans {
 	 */
 	public Object lookupJNDI(EJB ejbAnnotation, Class<?> clazz) throws NamingException {
 		String jndiName = ejbAnnotation.mappedName();
+		return lookupJNDI(clazz, jndiName); 
+	}
+
+	public Object lookupJNDI(Class<?> clazz, String jndiName)
+			throws NamingException {
 		if ( StringUtil.isEmpty(jndiName) )
 				jndiName = "java:module/" + getRegisteredEJBViews().get(clazz.getCanonicalName());
-		return context.lookup(jndiName); 
+		return lookup(jndiName);
+	}
+
+	public Object lookup(String jndiName) throws NamingException {
+		return context.lookup(jndiName);
 	}
 
 	public Map<String, String> getRegisteredEJBViews() {

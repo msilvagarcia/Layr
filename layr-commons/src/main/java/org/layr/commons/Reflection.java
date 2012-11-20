@@ -26,9 +26,6 @@ import java.util.List;
 
 import org.layr.commons.gson.DefaultDataParser;
 
-
-
-
 public class Reflection {
 
 	/**
@@ -64,6 +61,20 @@ public class Reflection {
 	 */
 	public static String getAttributeAndEncodeReturnedValue ( Object target, String attribute ) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException, InstantiationException {
 		Field field = extractFieldFor(target, attribute);
+		if ( field != null )
+			return (String)getAttributeAndEncodeReturnedValue(target, attribute, field);
+		else {
+			Method getter = extractGetterFor(target, attribute);
+			if (getter != null)
+				return (String)getter.invoke(target);
+		}
+
+		return null;
+	}
+
+	public static Object getAttributeAndEncodeReturnedValue(Object target, String attribute, Field field)
+			throws IllegalAccessException, InvocationTargetException,
+			InstantiationException {
 		Class<?> type = field.getType();
 		Converter annotation = field.getAnnotation(Converter.class);
 		Object object = getAttribute(target, attribute);
@@ -73,8 +84,7 @@ public class Reflection {
 					? annotation.value().newInstance() : new DefaultDataParser();
 			object = converter.encode(object);
 		}
-
-		return (String) object;
+		return object;
 	}
 
 	/**
@@ -166,9 +176,14 @@ public class Reflection {
 	 * @return
 	 */
 	public static List<Field>  extractAnnotatedFieldsFor(Class<? extends Annotation> annotation, Object target) {
-		ArrayList<Field> fields = new ArrayList<Field>();
-
 		Class<? extends Object> clazz = target.getClass();
+		return extractAnnotatedFieldsFor(annotation, clazz);
+	}
+
+	public static List<Field> extractAnnotatedFieldsFor(
+			Class<? extends Annotation> annotation,
+			Class<? extends Object> clazz) {
+		ArrayList<Field> fields = new ArrayList<Field>();
 		while (!clazz.equals(Object.class)) {
 			for (Field field : clazz.getDeclaredFields()) {
 				if (field.isAnnotationPresent(annotation))
@@ -179,21 +194,28 @@ public class Reflection {
 
 		return fields;
 	}
-        
-        public static List<Method> extractAnnotatedMethodsFor(Class<? extends Annotation> annotation, Object target) {
-            ArrayList<Method> methods = new ArrayList<Method>();
-            
-            Class<? extends Object> clazz = target.getClass();
-            while (!clazz.equals(Object.class)) {
+
+	public static List<Method> extractAnnotatedMethodsFor(
+			Class<? extends Annotation> annotation, Object target) {
+		Class<? extends Object> clazz = target.getClass();
+		return extractAnnotatedMethodsFor(annotation, clazz);
+	}
+
+	public static List<Method> extractAnnotatedMethodsFor(
+			Class<? extends Annotation> annotation,
+			Class<? extends Object> clazz) {
+		ArrayList<Method> methods = new ArrayList<Method>();
+
+		while (!clazz.equals(Object.class)) {
 			for (Method method : clazz.getDeclaredMethods()) {
 				if (method.isAnnotationPresent(annotation))
 					methods.add(method);
 			}
 			clazz = clazz.getSuperclass();
 		}
-            
-            return methods;
-        }
+
+		return methods;
+	}
 
 	/**
 	 * @param attribute

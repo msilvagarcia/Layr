@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Miere Liniel Teixeira
+ * Copyright 2012 Miere Liniel Teixeira
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,9 @@ public class JEERequestContext extends AbstractRequestContext {
 	public JEERequestContext(
 			HttpServletRequest request, HttpServletResponse response,
 			JEEConfiguration configuration ) {
+		setConfiguration(configuration);
 		setRequest(request);
 		setResponse(response);
-		setConfiguration(configuration);
 	}
 
 	/* (non-Javadoc)

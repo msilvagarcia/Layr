@@ -15,6 +15,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.layr.commons.Cache;
 import org.layr.engine.components.IComponent;
 import org.layr.engine.components.IComponentFactory;
+import org.layr.engine.components.template.TemplateComponentFactory;
+import org.layr.engine.components.xhtml.XHtmlComponentFactory;
 import org.xml.sax.SAXException;
 
 public abstract class AbstractRequestContext implements IRequestContext {
@@ -103,20 +105,8 @@ public abstract class AbstractRequestContext implements IRequestContext {
 	 */
 	public InputStream getResourceAsStream(String resourceName)
 			throws IOException {
-		InputStream stream = null;
 		resourceName = stripURLFirstSlash(resourceName);
-
-		Set<String> resourceFiles = getAvailableLocalResourceFiles();
-		if (resourceFiles != null)
-			for (String url : resourceFiles) {
-				String parsedUrl = stripURLFirstSlash( url );
-				if (parsedUrl.equals(resourceName)) {
-					stream = openStream(parsedUrl);
-					if (stream != null)
-						return stream;
-				}
-			}
-
+		InputStream stream = openStream(resourceName);
 		return stream;
 	}
 
@@ -281,6 +271,14 @@ public abstract class AbstractRequestContext implements IRequestContext {
 	}
 
 	public void setRegisteredTagLibs(Map<String, IComponentFactory> registeredTagLibs) {
+		populateWithDefaultTagLibs(registeredTagLibs);
 		this.registeredTagLibs = registeredTagLibs;
+	}
+
+	public void populateWithDefaultTagLibs(Map<String, IComponentFactory> registeredTagLibs) {
+		XHtmlComponentFactory xHtmlComponentFactory = new XHtmlComponentFactory();
+		registeredTagLibs.put("", xHtmlComponentFactory);
+		registeredTagLibs.put("http://www.w3.org/1999/xhtml", xHtmlComponentFactory);
+		registeredTagLibs.put("urn:layr:template", new TemplateComponentFactory());
 	}
 }

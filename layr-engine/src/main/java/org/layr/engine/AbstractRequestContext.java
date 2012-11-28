@@ -34,7 +34,6 @@ public abstract class AbstractRequestContext implements IRequestContext {
 
 	public AbstractRequestContext() {
 		properties = new HashMap<String, Object>();
-		setRegisteredTagLibs(new HashMap<String, IComponentFactory>());
 	}
 
 	@Override
@@ -271,11 +270,10 @@ public abstract class AbstractRequestContext implements IRequestContext {
 	}
 
 	public void setRegisteredTagLibs(Map<String, IComponentFactory> registeredTagLibs) {
-		populateWithDefaultTagLibs(registeredTagLibs);
 		this.registeredTagLibs = registeredTagLibs;
 	}
 
-	public void populateWithDefaultTagLibs(Map<String, IComponentFactory> registeredTagLibs) {
+	public static void populateWithDefaultTagLibs(Map<String, IComponentFactory> registeredTagLibs) {
 		XHtmlComponentFactory xHtmlComponentFactory = new XHtmlComponentFactory();
 		registeredTagLibs.put("", xHtmlComponentFactory);
 		registeredTagLibs.put("http://www.w3.org/1999/xhtml", xHtmlComponentFactory);

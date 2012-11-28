@@ -10,6 +10,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
 
+import org.layr.engine.AbstractRequestContext;
 import org.layr.engine.components.DefaultComponentFactory;
 import org.layr.engine.components.IComponentFactory;
 import org.layr.engine.components.TagLib;
@@ -25,7 +26,7 @@ public class PluginInitializer implements ServletContainerInitializer {
 	public void onStartup(Set<Class<?>> classes, ServletContext servletContext)
 			throws ServletException {
 		try {
-			initializeApplicationContext(servletContext);
+			initializeConfiguration(servletContext);
 			for (Class<?> clazz : classes)
 				handleClass(clazz);
 			reportLayrInitializationStatus(servletContext);
@@ -46,15 +47,22 @@ public class PluginInitializer implements ServletContainerInitializer {
 	}
 
 	/**
-	 * Initialize Layr Application Context and configure it for further use.
+	 * Initialize Layr Natural Routing Configuration and configure it for further use.
 	 * @param servletContext
 	 */
-	public void initializeApplicationContext(ServletContext servletContext) throws NamingException {
-		registeredTagLibs = new HashMap<String, IComponentFactory>();
+	public void initializeConfiguration(ServletContext servletContext) throws NamingException {
+		registeredTagLibs = initializeTagLibs();
+
 		setJeeConfiguration(new JEEConfiguration(servletContext));
 		getJeeConfiguration().setRegisteredTagLibs(registeredTagLibs);
 		getJeeConfiguration().initializeApplicationContexts();
 		servletContext.setAttribute(JEEConfiguration.class.getCanonicalName(), getJeeConfiguration());
+	}
+	
+	public Map<String, IComponentFactory> initializeTagLibs(){
+		HashMap<String, IComponentFactory> registeredTagLibs = new HashMap<String, IComponentFactory>();
+		AbstractRequestContext.populateWithDefaultTagLibs(registeredTagLibs);
+		return registeredTagLibs;
 	}
 
 	/**

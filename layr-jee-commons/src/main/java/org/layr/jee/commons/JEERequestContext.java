@@ -42,6 +42,7 @@ public class JEERequestContext extends AbstractRequestContext {
 	public JEERequestContext(
 			HttpServletRequest request, HttpServletResponse response,
 			JEEConfiguration configuration ) {
+		super();
 		setConfiguration(configuration);
 		setRequest(request);
 		setResponse(response);
@@ -171,9 +172,12 @@ public class JEERequestContext extends AbstractRequestContext {
 	}
 
 	public static JEERequestContext configureRequestContext( JEERequestContext context ) {
-        context.setCharacterEncoding("UTF-8");
+		JEEConfiguration configuration = context.getConfiguration();
+
+		context.setCharacterEncoding("UTF-8");
         context.setContentType("text/html");
-        context.setCache( createCache( context.getConfiguration() ) );
+		context.setCache( createCache( configuration ) );
+        context.setRegisteredTagLibs( configuration.getRegisteredTagLibs() );
 
 		HttpServletRequest httpRequest = context.getRequest();
 		if (httpRequest  != null) {

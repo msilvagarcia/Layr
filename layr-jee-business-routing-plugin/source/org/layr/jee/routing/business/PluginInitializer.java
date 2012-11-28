@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
 
 import org.layr.commons.StringUtil;
+import org.layr.engine.AbstractRequestContext;
 import org.layr.engine.components.DefaultComponentFactory;
 import org.layr.engine.components.IComponentFactory;
 import org.layr.engine.components.TagLib;
@@ -62,7 +63,7 @@ public class PluginInitializer implements ServletContainerInitializer {
 	public void initializeApplicationContext(ServletContext servletContext) throws NamingException {
 		ejbManager = new EnterpriseJavaBeans();
 		registeredWebResources = new HashMap<String, Object>();
-		registeredTagLibs = new HashMap<String, IComponentFactory>();
+		registeredTagLibs = initializeTagLibs();
 
 		JEEBusinessRoutingConfiguration configuration = new JEEBusinessRoutingConfiguration(servletContext);
 		configuration.setWebResources(registeredWebResources);
@@ -71,6 +72,12 @@ public class PluginInitializer implements ServletContainerInitializer {
 		configuration.initializeApplicationContexts();
 
 		servletContext.setAttribute(JEEBusinessRoutingConfiguration.class.getCanonicalName(), configuration);
+	}
+	
+	public HashMap<String, IComponentFactory> initializeTagLibs(){
+		HashMap<String, IComponentFactory> registeredTagLibs = new HashMap<String, IComponentFactory>();
+		AbstractRequestContext.populateWithDefaultTagLibs(registeredTagLibs);
+		return registeredTagLibs;
 	}
 
 	public void tryToRegisterATag(Class<?> clazz)

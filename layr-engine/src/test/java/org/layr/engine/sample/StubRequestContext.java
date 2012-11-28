@@ -2,24 +2,31 @@ package org.layr.engine.sample;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Set;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 
 import org.layr.commons.Cache;
-import org.layr.commons.classpath.ManuallyClassPathReader;
 import org.layr.engine.AbstractRequestContext;
+import org.layr.engine.components.IComponentFactory;
 
 public class StubRequestContext extends AbstractRequestContext {
 	
 	public StubRequestContext() throws IOException {
-		ManuallyClassPathReader manuallyClassPathReader = new ManuallyClassPathReader();
-		Set<String> availableResources = manuallyClassPathReader.readAvailableResources();
-		setAvailableLocalResourceFiles(availableResources);
-		
+		populateWithDefaultTagLibs();
+		createCache();
+		setApplicationRootPath("test");
+	}
+
+	public void createCache() {
 		Cache cache = new Cache();
 		setCache(cache);
-		setApplicationRootPath("test");
+	}
+
+	public void populateWithDefaultTagLibs() {
+		HashMap<String, IComponentFactory> registeredTagLibs = new HashMap<String, IComponentFactory>();
+		AbstractRequestContext.populateWithDefaultTagLibs(registeredTagLibs);
+		setRegisteredTagLibs( registeredTagLibs );
 	}
 
 	@Override

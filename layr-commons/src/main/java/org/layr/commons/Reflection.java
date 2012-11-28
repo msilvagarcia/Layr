@@ -128,10 +128,12 @@ public class Reflection {
 	 * @throws InvocationTargetException
 	 */
 	public static void setAttribute ( Object target, String attribute, Object value ) throws SecurityException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		Method setter = extractSetterFor(target, attribute, value.getClass());
-		if ( setter != null ) {
-			setter.invoke(target, value);
-			return;
+		if ( value != null ) {
+			Method setter = extractSetterFor(target, attribute, value.getClass());
+			if ( setter != null ) {
+				setter.invoke(target, value);
+				return;
+			}
 		}
 
 		Field field = extractFieldFor(target.getClass(), attribute);

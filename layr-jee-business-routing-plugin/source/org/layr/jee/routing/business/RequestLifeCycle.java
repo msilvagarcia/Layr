@@ -24,7 +24,9 @@ import org.layr.commons.Cache;
 import org.layr.commons.Reflection;
 import org.layr.commons.StringUtil;
 import org.layr.commons.gson.DefaultDataParser;
+import org.layr.engine.TemplateParser;
 import org.layr.engine.components.IComponent;
+import org.layr.engine.components.TemplateParsingException;
 import org.layr.engine.expressions.ComplexExpressionEvaluator;
 import org.layr.engine.expressions.ExpressionEvaluator;
 import org.layr.jee.commons.EnterpriseJavaBeans;
@@ -141,11 +143,12 @@ public class RequestLifeCycle {
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws CloneNotSupportedException
+	 * @throws TemplateParsingException 
 	 */
 	public void runMethodAndRenderResponse(Method routeMethod, Route route)
 			throws ServletException, IOException, IllegalAccessException,
 			InvocationTargetException, ParserConfigurationException,
-			SAXException, CloneNotSupportedException {
+			SAXException, CloneNotSupportedException, TemplateParsingException {
 		Object[] parameters = retrieveRouteMethodParametersFromRequest(routeMethod);
 		Object returnedObject = routeMethod.invoke(targetInstance, parameters);
         bindEntities();
@@ -175,7 +178,7 @@ public class RequestLifeCycle {
 		
 		return measuredTemplate != null
 					? measuredTemplate.toString()
-					: null;
+					: template;
 	}
 
 	/**
@@ -188,20 +191,19 @@ public class RequestLifeCycle {
 	 * @throws CloneNotSupportedException 
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
+	 * @throws TemplateParsingException 
 	 */
 	public void renderWebPageOrRouteReturnedObject(String templateName, Object returnedObject)
-			throws IOException, ParserConfigurationException, SAXException, CloneNotSupportedException, ServletException {
-		
+			throws IOException, ParserConfigurationException, SAXException, CloneNotSupportedException, ServletException, TemplateParsingException {
 		HttpServletResponse response = requestContext.getResponse();
-		if (returnedObject != null && returnedObject.getClass().getPackage().getName().equals("java.lang")) {
+		if (returnedObject != null && returnedObject.getClass().getPackage().getName().equals("java.lang"))
 			response.getWriter().append(returnedObject.toString());
-		}
-		else if (returnedObject != null && InputStream.class.isInstance(returnedObject)) {
+
+		else if (returnedObject != null && InputStream.class.isInstance(returnedObject))
 			renderABinaryObject(returnedObject, response);
-		}
-		else if (!StringUtil.isEmpty(templateName)) {
+
+		else if (!StringUtil.isEmpty(templateName))
             renderRouteTemplate(templateName);
-		}
 	}
 
 	/**
@@ -211,14 +213,21 @@ public class RequestLifeCycle {
 	 * @throws SAXException
 	 * @throws CloneNotSupportedException
 	 * @throws ServletException
+	 * @throws TemplateParsingException 
 	 */
 	public void renderRouteTemplate(String templateName) throws IOException,
 			ParserConfigurationException, SAXException,
-			CloneNotSupportedException, ServletException {
-		IComponent webpage = requestContext.compile(templateName);
+			CloneNotSupportedException, ServletException, TemplateParsingException {
+		IComponent webpage = compileTemplate(templateName);
 		if ( webpage == null )
 			throw new IOException("Can't find template '" + templateName + "'.");
 		webpage.render();
+	}
+
+	public IComponent compileTemplate(String templateName) throws TemplateParsingException{
+		TemplateParser parser = new TemplateParser(getRequestContext());
+		IComponent compiledComponent = parser.compile(templateName);
+		return compiledComponent;
 	}
 
 	/**

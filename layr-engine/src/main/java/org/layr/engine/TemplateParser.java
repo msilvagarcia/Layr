@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Miere Liniel Teixeira
+ * Copyright 2012 Miere Liniel Teixeira
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import org.layr.commons.StringUtil;
 import org.layr.engine.components.DefaultComponentFactory;
 import org.layr.engine.components.IComponent;
 import org.layr.engine.components.IComponentFactory;
+import org.layr.engine.components.TemplateParsingException;
 import org.layr.engine.components.TextNode;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
@@ -43,22 +44,46 @@ public class TemplateParser extends DefaultHandler {
 	private StringBuffer textContent;
 	private IRequestContext layrContext;
 	private String doctype;
+	private String currentTemplateName;
 
 	public TemplateParser(IRequestContext context) {
 		this.textContent = new StringBuffer();
 		setLayrContext(context);
 	}
 
+	public IComponent compile(String templateName) throws TemplateParsingException {
+		try{
+			IComponent component = layrContext.getResourceFromCache( templateName );
+			if (component != null)
+				return (IComponent) component.clone(layrContext);
+			component = parse(templateName);
+			putInTheCacheCompiledResource(templateName, component);
+			return component;
+		} catch (Throwable e){
+			throw new TemplateParsingException("Can't parse '" + templateName + "' as XHTML.", e);
+		}
+	}
+
+	public IComponent parse(String templateName) throws ParserConfigurationException, SAXException, IOException {
+		setCurrentTemplateName(templateName);
+		IComponent parsedComponent = parse( layrContext.getResourceAsStream(templateName) );
+		if ( parsedComponent != null )
+			parsedComponent.setDocTypeDefinition(getDoctype());
+		return parsedComponent;
+	}
+
 	/**
-	 * 
 	 * @param template
+	 * @param templateName 
 	 * @return
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws IOException
 	 */
-	public IComponent parse(InputStream template)
-			throws ParserConfigurationException, SAXException, IOException {
+	public IComponent parse(InputStream template) throws ParserConfigurationException, SAXException, IOException {
+		if ( template == null )
+			return null;
+
 		SAXParserFactory sax = SAXParserFactory.newInstance();
 		sax.setValidating(false);
 		sax.setNamespaceAware(true);
@@ -69,6 +94,18 @@ public class TemplateParser extends DefaultHandler {
 		return rootComponent;
 	}
 
+	/**
+	 * @param templateName
+	 * @param component
+	 */
+	public void putInTheCacheCompiledResource(String templateName, IComponent component) {
+		if ( component != null )
+			layrContext.putInCacheTheCompiledResource(templateName, component);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.xml.sax.helpers.DefaultHandler#resolveEntity(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public InputSource resolveEntity(String publicId, String systemId)
 			throws IOException, SAXException {
@@ -104,31 +141,43 @@ public class TemplateParser extends DefaultHandler {
 		extractTextContentBeforeNesting();
 
 		try {
-			IComponentFactory factory = layrContext.getComponentFactory(uri);
-			IComponent newComponent = factory.newComponent(
-					localName, qName, layrContext);
-
+			IComponent newComponent = createNewComponent(uri, localName, qName);
 			if (newComponent == null)
-				throw new SAXException("Can't parse the unknown element '"
-						+ localName + "'");
+				throw new SAXException("Can't parse the unknown element '" + localName + "'");
 
-			for (int i = 0; i < attributes.getLength(); i++) {
-				newComponent.setAttribute(attributes.getQName(i),
-						attributes.getValue(i));
-			}
-
-			if (currentComponent != null) {
-				newComponent.setParent(currentComponent);
-				currentComponent.addChild(newComponent);
-			} else
-				rootComponent = newComponent;
-			currentComponent = newComponent;
-
+			setComponentAttributes(newComponent, attributes);
+			defineCurrentParsedComponent(newComponent);
 		} catch (InstantiationException e) {
 			throw new SAXException(e.getMessage(), e);
 		} catch (IllegalAccessException e) {
 			throw new SAXException(e.getMessage(), e);
 		}
+	}
+
+	public void defineCurrentParsedComponent(IComponent newComponent) {
+		if (currentComponent != null) {
+			newComponent.setParent(currentComponent);
+			currentComponent.addChild(newComponent);
+		} else
+			rootComponent = newComponent;
+		currentComponent = newComponent;
+	}
+
+	public void setComponentAttributes(IComponent newComponent, Attributes attributes) {
+		for (int i = 0; i < attributes.getLength(); i++)
+			newComponent.setAttribute(attributes.getQName(i),
+					attributes.getValue(i));
+	}
+
+	public IComponent createNewComponent(String uri, String localName, String qName)
+			throws InstantiationException, IllegalAccessException {
+		IComponentFactory factory = layrContext.getComponentFactory(uri);
+		IComponent newComponent = factory.newComponent(
+				localName, qName, layrContext);
+		
+		if ( newComponent != null )
+			newComponent.setSnippetName(currentTemplateName);
+		return newComponent;
 	}
 
 	/**
@@ -204,5 +253,13 @@ public class TemplateParser extends DefaultHandler {
     public void setDoctype(String doctype) {
         this.doctype = doctype;
     }
+
+	public String getCurrentTemplateName() {
+		return currentTemplateName;
+	}
+
+	public void setCurrentTemplateName(String currentTemplateName) {
+		this.currentTemplateName = currentTemplateName;
+	}
 
 }

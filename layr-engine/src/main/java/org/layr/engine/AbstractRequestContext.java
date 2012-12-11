@@ -2,22 +2,17 @@ package org.layr.engine;
 
 import static org.layr.commons.StringUtil.stripURLFirstSlash;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletException;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.layr.commons.Cache;
 import org.layr.engine.components.IComponent;
 import org.layr.engine.components.IComponentFactory;
 import org.layr.engine.components.template.TemplateComponentFactory;
 import org.layr.engine.components.xhtml.XHtmlComponentFactory;
-import org.xml.sax.SAXException;
 
 public abstract class AbstractRequestContext implements IRequestContext {
 
@@ -121,28 +116,6 @@ public abstract class AbstractRequestContext implements IRequestContext {
 		return Thread.currentThread().getContextClassLoader();
 	}
 
-	/**
-	 * Get a resource and read it as a StringBufffer.
-	 * 
-	 * @param fileName
-	 * @return
-	 * @throws IOException
-	 */
-	public StringBuilder getResourceAsStringBuilder(String fileName) throws IOException {
-		InputStream stream = getResourceAsStream(fileName);
-		StringBuilder buffer = new StringBuilder();
-		
-		if (stream == null)
-			throw new FileNotFoundException("Can't read filename '" + fileName + "'");
-
-		byte[] b = new byte[4096];
-		for (int n; (n = stream.read(b)) != -1;) {
-			buffer.append(new String(b, 0, n));
-		}
-
-		return buffer;
-	}
-
 	public Set<String> getAvailableLocalResourceFiles() {
 		return availableLocalResourceFiles;
 	}
@@ -153,59 +126,26 @@ public abstract class AbstractRequestContext implements IRequestContext {
 	}
 
 	/**
-	 * Compiles the resource. For performance improvements it caches
-	 * compiled templates for further usage.
-	 * 
-	 * @param teplateName
-	 * @param layrContext
-	 * @return IComponent implementation of compiled template
-	 * @throws IOException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws CloneNotSupportedException
-	 * @throws ServletException 
-	 */
-	public IComponent compile(String templateName)
-			throws IOException, ParserConfigurationException, SAXException,
-				CloneNotSupportedException, ServletException {
-		IComponent component = getResourceFromCache( templateName );
-		if (component != null)
-			return (IComponent) component.clone(this);
-
-		InputStream template = this.getResourceAsStream(templateName);
-		if (template == null)
-			return null;
-
-		try{
-			IComponent application = compileTemplate(template);
-	        cacheCompiledPage(templateName, application);
-			return application;
-		} catch (Throwable e){
-			throw new ServletException("Can't parse '" + templateName + "' as XHTML.", e);
-		}
-	}
-
-	/**
-	 * @param context
-	 * @param template
+	 * @param templateName
 	 * @return
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
-	 * @throws IOException
 	 */
-	public IComponent compileTemplate(InputStream template)
-			throws ParserConfigurationException, SAXException, IOException {
-		TemplateParser parser = new TemplateParser(this);
-		IComponent application = parser.parse(template);
-	    application.setDocTypeDefinition(parser.getDoctype());
-		return application;
+	public IComponent getResourceFromCache(String templateName) {
+		Map<String, IComponent> cachedComponents = getCachedComponents();
+		if ( cachedComponents == null )
+			return null;
+		return cachedComponents.get(templateName);
 	}
 
 	/**
 	 * @param templateName
 	 * @param application
 	 */
-	public void cacheCompiledPage(String templateName, IComponent application) {
+	public void putInCacheTheCompiledResource(String templateName, IComponent application) {
+		if ( application == null
+		||   templateName == null
+		||   templateName.isEmpty())
+			return;
+
 		Map<String, IComponent> compiledComponents = getCachedComponents();
 		if ( compiledComponents != null )
 			compiledComponents.put(templateName, application);
@@ -225,17 +165,6 @@ public abstract class AbstractRequestContext implements IRequestContext {
 			cache.put(COMPONENTS, compiledComponents);
 		}
 		return compiledComponents;
-	}
-
-	/**
-	 * @param templateName
-	 * @return
-	 */
-	public IComponent getResourceFromCache(String templateName) {
-		Map<String, IComponent> cachedComponents = getCachedComponents();
-		if ( cachedComponents == null )
-			return null;
-		return cachedComponents.get(templateName);
 	}
 
 	public Cache getCache() {

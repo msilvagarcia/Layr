@@ -13,7 +13,9 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.layr.engine.TemplateParser;
 import org.layr.engine.components.IComponent;
+import org.layr.engine.components.TemplateParsingException;
 import org.layr.jee.commons.JEERequestContext;
 import org.xml.sax.SAXException;
 
@@ -51,16 +53,17 @@ public class PluginFilter implements Filter {
 	 * @throws CloneNotSupportedException 
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
+	 * @throws TemplateParsingException 
 	 */
 	public boolean haveFoundTheWebPageXHTMLAndRenderedSuccessfully( JEERequestContext requestContext ) 
-			throws IOException, ParserConfigurationException, SAXException, CloneNotSupportedException, ServletException {
+			throws IOException, ParserConfigurationException, SAXException, CloneNotSupportedException, ServletException, TemplateParsingException {
 
 		String relativePath = requestContext.getRelativePath().replaceFirst("/$", "");
 		if ( !relativePath.endsWith(".xhtml") )
 			relativePath += ".xhtml";
 
 		IComponent webpage = null;
-		webpage = requestContext.compile( relativePath );
+		webpage = compile( relativePath, requestContext );
 		if ( webpage == null )
 			return false;
 
@@ -75,6 +78,12 @@ public class PluginFilter implements Filter {
 
 		webpage.render();
 		return true;
+	}
+
+	public IComponent compile(String templateName, JEERequestContext requestContext) throws TemplateParsingException {
+		TemplateParser parser = new TemplateParser(requestContext);
+		IComponent compiledTemplate = parser.compile(templateName);
+		return compiledTemplate;
 	}
 
 	@Override

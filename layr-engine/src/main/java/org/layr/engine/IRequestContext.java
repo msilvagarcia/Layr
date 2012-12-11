@@ -6,6 +6,7 @@ import java.io.Writer;
 
 import javax.servlet.ServletException;
 
+import org.layr.engine.components.IComponent;
 import org.layr.engine.components.IComponentFactory;
 
 
@@ -55,5 +56,9 @@ public interface IRequestContext {
 	public abstract void setApplicationRootPath( String contextPath );
 
 	public abstract void setRelativePath(String relativePath);
+
+	void putInCacheTheCompiledResource(String templateName, IComponent application);
+
+	IComponent getResourceFromCache(String templateName);
 
 }

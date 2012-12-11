@@ -201,4 +201,8 @@ public interface IComponent extends Cloneable {
 	String getDocTypeDefinition();
 	
 	void setDocTypeDefinition( String docType );
+
+	String getSnippetName();
+
+	void setSnippetName(String templateName);
 }

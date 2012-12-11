@@ -1,7 +1,8 @@
 package org.layr.engine.sample;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.HashMap;
 
 import javax.servlet.ServletException;
@@ -12,7 +13,10 @@ import org.layr.engine.components.IComponentFactory;
 
 public class StubRequestContext extends AbstractRequestContext {
 	
+	StringWriter writer;
+	
 	public StubRequestContext() throws IOException {
+		writer = new StringWriter();
 		populateWithDefaultTagLibs();
 		createCache();
 		setApplicationRootPath("test");
@@ -49,9 +53,11 @@ public class StubRequestContext extends AbstractRequestContext {
 	}
 
 	@Override
-	public PrintWriter getWriter() {
-		// TODO Auto-generated method stub
-		return null;
+	public Writer getWriter() {
+		return writer;
 	}
 
+	public String getBuffedWroteContentToOutput(){
+		return writer.getBuffer().toString();
+	}
 }

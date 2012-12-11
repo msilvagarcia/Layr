@@ -24,15 +24,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.layr.commons.StringUtil;
-import org.layr.engine.AbstractRequestContext;
 import org.layr.engine.IRequestContext;
+import org.layr.engine.TemplateParser;
 import org.layr.engine.components.template.HolderComponent;
-import org.layr.engine.components.template.TemplateBasedComponentChildren;
 import org.layr.engine.expressions.ComplexExpressionEvaluator;
-import org.xml.sax.SAXException;
 
 /**
  * Default implementation for components. Software developers can override the
@@ -48,7 +45,7 @@ import org.xml.sax.SAXException;
  */
 public class GenericComponent implements IComponent {
 
-	public static final String COMPONENT_CHILDREN = "GenericComponent.CHILDREN";
+	public static final String CHILDREN = "TemplateParser.CHILDREN/";
 	public static final String DOCTYPE_ATTRIBUTE = "GenericComponent.DOCTYPE_ATTRIBUTE";
 
 	private static final String[] styles = new String[] {
@@ -62,7 +59,7 @@ public class GenericComponent implements IComponent {
 		"mouseout", "mouseover", "mouseup", "keydown",
 		"keypress", "keyup", "select" };
 
-	protected List<IComponent> children;
+	private List<IComponent> children;
 	private Map<String, Object> attributes;
 	private IComponent parent;
 	private String textContent;
@@ -74,6 +71,7 @@ public class GenericComponent implements IComponent {
 	private String componentName;
 	private String qualifiedName;
 	private String docTypeDefinition;
+	private String snippetName;
 
 	public GenericComponent() {
 		super();
@@ -81,6 +79,9 @@ public class GenericComponent implements IComponent {
 		attributes = new HashMap<String, Object>();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#configure()
+	 */
 	public void configure() throws ServletException, IOException {
 		setStylesDefinition();
 	}
@@ -125,48 +126,61 @@ public class GenericComponent implements IComponent {
 	@Override
 	public void render() throws IOException {
 		try {
-			renderDocType();
-
-			HolderComponent holder = new HolderComponent();
-			holder.setChildren(getChildren());
-			holder.configure();
-
-			IRequestContext layrContext = getRequestContext();
-			layrContext.put(TemplateBasedComponentChildren.COMPONENT_CHILDREN, holder);
-			IComponent compiledTemplate = compile(getTemplate(), layrContext);
-
+			IComponent compiledTemplate = compile(getTemplate());
 			if ( compiledTemplate == null ){
+				System.out.println("Cant found: " + getTemplate());
 				renderAsComponentStub();
 				return;
 			}
 
+			renderDocType();
 			renderCompiledTemplate(compiledTemplate);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (ServletException e) {
+		} catch ( TemplateParsingException e ) {
 			throw new IOException(e);
 		}
 	}
 
-	public IComponent compile(String template, IRequestContext layrContext) throws
-			IOException, ParserConfigurationException, SAXException,
-			CloneNotSupportedException, ServletException {
-		if ( !AbstractRequestContext.class.isInstance(layrContext) )
-			return null;
-		return ((AbstractRequestContext) layrContext).compile(template);
-	}
-
+	/**
+	 * @throws IOException
+	 */
 	public void renderDocType() throws IOException {
 		if ( StringUtil.isEmpty(docTypeDefinition) )
 			return;
-
 		getWriter().append( String.format( docTypeDefinition , getComponentName() ) );
+	}
+
+	/**
+	 * @param template
+	 * @return
+	 * @throws TemplateParsingException
+	 */
+	public IComponent compile(String template) throws TemplateParsingException {
+		TemplateParser templateParser = new TemplateParser(getRequestContext());
+		IComponent compiledComponent = templateParser.compile(template);
+		createHolderComponentToMemorizeCurrentComponentChilden( compiledComponent );
+		return compiledComponent;
+	}
+
+	/**
+	 * @param component
+	 * @return
+	 */
+	public void createHolderComponentToMemorizeCurrentComponentChilden( IComponent component ) {
+		if ( component == null )
+			return;
+		
+		HolderComponent holder = new HolderComponent();
+		holder.setChildren(getChildren());
+		holder.configure();
+		getRequestContext().put(CHILDREN + component.getSnippetName(), holder);
+	}
+
+	/**
+	 * @return
+	 */
+	public IComponent retrieveMemorizedCurrentChildren(){
+		return (IComponent)getRequestContext()
+					.get(CHILDREN + getSnippetName());
 	}
 
 	/**
@@ -175,7 +189,7 @@ public class GenericComponent implements IComponent {
 	 */
 	public void renderAsComponentStub() throws IOException {
 		Writer writer = getWriter();
-		writer.append('<')
+		getWriter().append('<')
 			  .append(getQualifiedName())
 			  .append(' ');
 		
@@ -199,6 +213,9 @@ public class GenericComponent implements IComponent {
 			  .append('>');
 	}
 
+	/**
+	 * @return
+	 */
 	public Writer getWriter() {
 		return requestContext.getWriter();
 	}
@@ -210,15 +227,14 @@ public class GenericComponent implements IComponent {
 	 * @throws IOException
 	 */
 	public void renderCompiledTemplate(IComponent compiledTemplate) throws IOException {
-
 		ArrayList<String> attributes = new ArrayList<String>();
 		for (String attribute : getAttributeKeys()) {
-			getRequestContext().put(getComponentName() + ":" + attribute, getParsedAttribute(attribute));
-			attributes.add(getComponentName() + ":" + attribute);
+			String componentAttributeReferenceName = getComponentName() + ":" + attribute;
+			getRequestContext().put(componentAttributeReferenceName, getParsedAttribute(attribute));
+			attributes.add(componentAttributeReferenceName);
 		}
 
 		compiledTemplate.render();
-
 		for (String attribute : attributes)
 			getRequestContext().put(attribute, null);
 	}
@@ -280,12 +296,18 @@ public class GenericComponent implements IComponent {
 		children.add(index, child);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setTextContent(java.lang.String)
+	 */
 	@Override
 	public IComponent setTextContent(String content) {
 		this.textContent = content;
 		return this;
 	}
 
+    /* (non-Javadoc)
+     * @see org.layr.engine.components.IComponent#getTextContent()
+     */
     @Override
 	public String getTextContent() {
 		if (textContent == null)
@@ -294,6 +316,9 @@ public class GenericComponent implements IComponent {
 		return (String) ComplexExpressionEvaluator.getValue(textContent, getRequestContext(), true);
 	}
     
+    /**
+     * @return
+     */
     public String getNonParsedTextContent() {
     	return textContent;
     }
@@ -363,15 +388,24 @@ public class GenericComponent implements IComponent {
 		return this;
 	}
 
+	/**
+	 * @return
+	 */
 	public Collection<String> getAttributeKeys() {
 		return attributes.keySet();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getParent()
+	 */
 	@Override
 	public IComponent getParent() {
 		return parent;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setParent(org.layr.engine.components.IComponent)
+	 */
 	@Override
 	public IComponent setParent(IComponent parent) {
 		this.parent = parent;
@@ -470,6 +504,14 @@ public class GenericComponent implements IComponent {
 	@Override
 	public void setDocTypeDefinition(String docTypeDefinition) {
 		this.docTypeDefinition = docTypeDefinition;
+	}
+
+	public String getSnippetName() {
+		return snippetName;
+	}
+
+	public void setSnippetName(String templateName) {
+		this.snippetName = templateName;
 	}
 
 }

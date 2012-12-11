@@ -30,11 +30,11 @@ import org.layr.engine.components.IComponent;
  * Default implementation for HTML Components.
  */
 public class XHtmlComponent extends GenericComponent {
-	
+
 	private boolean selfCloseable;
 	private List<String> ignoredAttributes;
 	private String componentName;
-	
+
 	public XHtmlComponent() {
 		ignoredAttributes = new ArrayList<String>();
 	}
@@ -98,7 +98,7 @@ public class XHtmlComponent extends GenericComponent {
  * @throws IOException 
  */
 	public void renderChildren() throws IOException {
-		for (IComponent child : children) {
+		for (IComponent child : getChildren()) {
 			child.setRequestContext(getRequestContext());
 			child.render();
 		}

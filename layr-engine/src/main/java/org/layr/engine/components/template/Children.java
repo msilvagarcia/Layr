@@ -5,16 +5,14 @@ import java.io.IOException;
 import org.layr.engine.components.GenericComponent;
 import org.layr.engine.components.IComponent;
 
-
-
-public class TemplateBasedComponentChildren extends GenericComponent {
+public class Children extends GenericComponent {
 
 	@Override
 	public void configure() {}
 
 	@Override
 	public void render() throws IOException {
-		IComponent children = (IComponent)getRequestContext().get(COMPONENT_CHILDREN);
+		IComponent children = retrieveMemorizedCurrentChildren();
 		children.setRequestContext(getRequestContext());
 		children.render();
 	}

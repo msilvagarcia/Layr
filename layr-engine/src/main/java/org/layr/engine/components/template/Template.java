@@ -17,12 +17,9 @@ package org.layr.engine.components.template;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.layr.engine.components.GenericComponent;
 import org.layr.engine.components.IComponent;
-import org.xml.sax.SAXException;
+import org.layr.engine.components.TemplateParsingException;
 
 public class Template extends GenericComponent {
 	
@@ -33,17 +30,11 @@ public class Template extends GenericComponent {
 	public void render() throws IOException {
 		String src = getAttributeAsString("src");
 		try {
-			IComponent template = compile(src, getRequestContext());
+			IComponent template = compile(src);
             if ( template == null )
     			throw new IOException("Can't find template '" + src + "'.");
 			template.render();
-		} catch (ParserConfigurationException e) {
-			throw new IOException(e);
-		} catch (SAXException e) {
-			throw new IOException(e);
-		} catch (CloneNotSupportedException e) {
-			throw new IOException(e);
-		} catch (ServletException e) {
+		} catch (TemplateParsingException e) {
 			throw new IOException(e);
 		}
 	}

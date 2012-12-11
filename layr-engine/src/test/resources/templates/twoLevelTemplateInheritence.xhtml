@@ -1,7 +1,10 @@
 <tpl:template
 	xmlns:tpl="urn:layr:template"
+	xmlns:l="urn:l"
 	src="templates/oneLevelTempleteInheritence.xhtml">
 
-	<tpl:define name="world" value="Earth" />
+	<tpl:define name="world">
+		<l:config module="stubcomponent" />
+	</tpl:define>
 
 </tpl:template>

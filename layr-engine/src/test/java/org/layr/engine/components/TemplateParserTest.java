@@ -78,11 +78,11 @@ public class TemplateParserTest {
 	@Test
 	public void grantThatParseTwoLevelInheritenceTemplateAsExpected() throws TemplateParsingException, IOException{
 		TemplateParser parser = new TemplateParser(layrContext);
-		IComponent compiledSnippets = parser.compile("templates/twoLevelTempleteInheritence.xhtml");
+		IComponent compiledSnippets = parser.compile("templates/twoLevelTemplateInheritence.xhtml");
 		compiledSnippets.render();
 		
 		String output = ((StubRequestContext)layrContext).getBuffedWroteContentToOutput();
-		String expectedOutput = FileUtils.readFileAsString("templates/twoLevelNestedSnippet.output.xhtml");
+		String expectedOutput = FileUtils.readFileAsString("templates/twoLevelTemplateInheritence.output.xhtml");
 		assertEquals( expectedOutput, output );
 	}
 }

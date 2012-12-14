@@ -1,27 +1,35 @@
-# Layr - The Fast Web Prototyping Framework
+# Layr - Faça aplicações web mais legíveis e fáceis de se manutenir
 
 ## O que é?
 
-O Layr é um framework desenvolvido com o intuito de se desenvolver aplicações Web tendo em mente
-Free Logic Markup, mas sem romper com os padrões da Web. Ele permite rápido reaproveitamento de
-código HTML, provendo componentização e modularização do Front-End através do já conhecido XHTML 1/1.1/5.
+O Layr é uma ferramenta open-source com foco em Free-Logic Markup, modularização e componentização, cujo o intuito é encurtar o tempo de desenvolvimento e manutenção de aplicações Web.
+
+## Por que usar Layr?
+
+ - Re-aproveitamento de códigos do front-end: Aplicações desenvolvidas com o Layr utilizam-se de algumas técnicas do XHTML para enriquecer o HTML/HTML5 e re-aproveitar trechos utilizados com frequência em suas aplicações;
+ - Rápida manutenção: Seu design de software limpo te ajuda a manter suas lógicas de negócio completamente desvinculadas do front-end, facilitando a manutenção e evolução da aplicação;
+ - Convention over configuration: baseado no conceito de navegação intuitiva e roteamento baseado em negócio, Layr os traz consigo como convenções durante o desenvolvimento do software, inibindo a necessidade de configurações em arquivos externos.
 
 ## Por que Free-Logic Markup ?
 
- - qdo trabalhamos com logica no front-end ( *SP - Server Pages )
-   - manutenção das lógicas de interface é mais dificultosa ->
-      - impede a reutilização de lógicas que se repetem em visões (telas) diferentes
-      - dificulta os testes unitários das regras de interface - obriga a fazer teste de integração para testar
-        lógicas simples
- - o processo de diagramação deveria ser simples a ponto de qualquer designer com noções de HTML conseguir dar
-   manutenção. Se usarmos ferramentas de template baseadas em JavaScript ( Dusty.js, JQuery Templates, etc..),
-   ou misturarmos lógica no cógido, iremos dificultar o processo de diagramação de um designer.
+O paradigma mais comum de desenvolvimento de software (web) são as tão difundidas Server Pages. Quando este paradigma foi projetado os navegadores eram menos poderosos, e a maior parte do conteúdo dinâmico precisava ser processado pelo servidor, que trazia a página renderizada. Interações JavaScript eram raras, e normalmente tratavam apenas operações de mouse e teclado.
+
+O tempo passou e os navegadores evoluiram. Deixou-se de pensar em páginas e passou-se a pensar em aplicações que rodam no navegador. Muitas das aplicações passaram a tratar cada página em que o usuário interage com o conteúdo como visões, onde cada visão tem sua experiência tratada caso a caso para melhor expor o conteúdo ao usuário. Neste modelo, cada detalhe aplicado a tela requer cada vez mais dos recursos do navegador. Ao trabalhar-se livre de lógica no markup, nossos HTML's passam a focar apenas na apresentação do conteúdo, e deixamos a interação sob controle total do JavaScript dos navegadores.
+
+As vantagens deste paradigma sobre as Server Pages são enúmeras. A principal delas é o fato de que com as regras separadas da marcação é possível re-aproveitar lógicas que se repetem com frequencia na interface. A manutenção da interface fica tão simples que qualquer pessoa com conhecimento em HTML e CSS consegue dar manutenção É possível isolar lógicas de interface e criar testes unitários que garantam a sua integridade, não nos obrigando a recorrer a testes de integração para ter os mesmos resultados.
+
+ - trabalhar com HTML ( marcação ) sem lógica ( Logic-Free Markup )
+ permite que o processo de diagramação fique mais simples, a ponto de qualquer pessoa com noções de HTML conseguir dar
+   manutenção.
+
+ - Quando utilizamos ferramentas de template baseadas em JavaScript ( Dusty.js, JQuery Templates, etc..),
+   ou misturarmos lógica no cógido, iremos dificultar o processo de diagramação para um designer, por exemplo.
 
 ## Por que XHTML?
 
  - todos os navegadores já interpretam bem este modelo de marcação ( afinal já é um padrão amplamente adotado )
  - inclusive, na prática, o que os navegadores exibem sempre é HTML, se fossemos usar um outro de tipo marcação para
-   gerar o HTML, iriamos trazer mais um ponto de aprendizado na hora de dar manutenção no código fonte.
+   gerar o HTML, iriamos trazer mais um ponto de aprendizado na hora de dar manutenção no código fonte. E também um outro ponto de falha.
  - não requer o conhecimento de nada além daquilo que o navegador oferece por padrão
 
 ## Componentização de modo simples e fácil
@@ -108,6 +116,15 @@ código HTML, provendo componentização e modularização do Front-End através
    **tpl** ). Esta TagLib acompanha o Layr e foi desenhada para auxliar no desenvolvimento de suas
    telas. Você pode usar esta mesma abordagem para traduzir qualquer conjunto de tags em componentes,
    não há limitação de tamanho ou quantidade de componente.
+
+## Organização Natural
+
+ - Organização de arquivos
+
+  - Hoje as pessoas já organizam os conteúdos dos seus sistemas/apps. Porque para cada camada da aplicação, existe uma organização diferente ? Porque não usar a mesma convenção organização/nomeclatura/sintaxe ?
+
+ - Organização nos arquivos
+   - Dentro do HTML, é montada a maneira como os conteúdos serão apresentados. Porque não expandir essa organização para os componentes que devem ser reusados, diminuindo assim o quanto de código é escrito ?
 
 ## Navegação Natural
 

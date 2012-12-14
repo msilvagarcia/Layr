@@ -8,7 +8,7 @@ O Layr é uma ferramenta open-source com foco em Free-Logic Markup, modularizaç
 
  - Re-aproveitamento de códigos do front-end: Aplicações desenvolvidas com o Layr utilizam-se de algumas técnicas do XHTML para enriquecer o HTML/HTML5 e re-aproveitar trechos utilizados com frequência em suas aplicações;
  - Rápida manutenção: Seu design de software limpo te ajuda a manter suas lógicas de negócio completamente desvinculadas do front-end, facilitando a manutenção e evolução da aplicação;
- - Convention over configuration: baseado no conceito de navegação intuitiva e roteamento baseado em negócio, Layr os traz consigo como convenções durante o desenvolvimento do software, inibindo a necessidade de configurações em arquivos externos.
+ - Convention over configuration: Layr transformou dois conceitos de desenvolvimento web em convenção: navegação intuitiva e roteamento baseado em negócio. Desta forma não é necessário configurações em arquivos externos, diminuindo o tempo de setup da aplicação.
 
 ## Por que Free-Logic Markup ?
 

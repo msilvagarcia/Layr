@@ -34,13 +34,13 @@ import org.xml.sax.SAXException;
 
 public class RequestLifeCycle {
 
-    private static final String AVAILABLES_ROUTES = "AVAILABLES_ROUTES";
+    static final String AVAILABLES_ROUTES = "AVAILABLES_ROUTES";
 
-    private JEEBusinessRoutingRequestContext requestContext;
-    private List<Method> routes;
-    private Object targetInstance;
-    private EnterpriseJavaBeans ejbManager;
-	private DefaultDataParser defaultDataParser;
+    JEEBusinessRoutingRequestContext requestContext;
+    List<Method> routes;
+    Object targetInstance;
+    EnterpriseJavaBeans ejbManager;
+	DefaultDataParser defaultDataParser;
 
     public RequestLifeCycle() {
         defaultDataParser = new DefaultDataParser();
@@ -455,9 +455,6 @@ public class RequestLifeCycle {
     }
 
     /**
-     * Changes the layrContext navigation. Whenever you chance the layr
-     * layrContext navigation the user will be redirected to the new URI.
-     *
      * @param uri
      * @throws IOException
      */
@@ -478,9 +475,20 @@ public class RequestLifeCycle {
     	Object[] retrievedParameters = retrieveRouteMethodParametersFromRequest(routeMethod);
     	routeMethod.invoke(targetInstance, retrievedParameters);
     	String url = (String) ComplexExpressionEvaluator.getValue(urlPattern, requestContext);
-		if ( !url.startsWith("/") )
-			url = requestContext.getWebResourceRootPath() + url;
-        redirect(requestContext.getApplicationRootPath() + url);
+
+    	if (!isOutsideRedirectRequest(url)){
+			if ( !url.startsWith("/") )
+				url = requestContext.getWebResourceRootPath() + url;
+			url = (requestContext.getApplicationRootPath() + url)
+					.replaceAll("//+", "/");
+    	}
+
+        redirect( url );
+    }
+
+    public boolean isOutsideRedirectRequest( String url ) {
+    	return url.startsWith("http://")
+    		|| url.startsWith("https://");
     }
 
 	public Object getTargetInstance() {

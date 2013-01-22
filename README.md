@@ -18,24 +18,20 @@ O tempo passou e os navegadores evoluiram. Deixou-se de pensar em páginas e pas
 
 As vantagens deste paradigma sobre as Server Pages são enúmeras. A principal delas é o fato de que com as regras separadas da marcação é possível re-aproveitar lógicas que se repetem com frequencia na interface. A manutenção da interface fica tão simples que qualquer pessoa com conhecimento em HTML e CSS consegue dar manutenção É possível isolar lógicas de interface e criar testes unitários que garantam a sua integridade, não nos obrigando a recorrer a testes de integração para ter os mesmos resultados.
 
- - trabalhar com HTML ( marcação ) sem lógica ( Logic-Free Markup )
- permite que o processo de diagramação fique mais simples, a ponto de qualquer pessoa com noções de HTML conseguir dar
-   manutenção.
-
- - Quando utilizamos ferramentas de template baseadas em JavaScript ( Dusty.js, JQuery Templates, etc..),
-   ou misturarmos lógica no cógido, iremos dificultar o processo de diagramação para um designer, por exemplo.
 
 ## Por que XHTML?
 
- - todos os navegadores já interpretam bem este modelo de marcação ( afinal já é um padrão amplamente adotado )
- - inclusive, na prática, o que os navegadores exibem sempre é HTML, se fossemos usar um outro de tipo marcação para
-   gerar o HTML, iriamos trazer mais um ponto de aprendizado na hora de dar manutenção no código fonte. E também um outro ponto de falha.
- - não requer o conhecimento de nada além daquilo que o navegador oferece por padrão
+Sempre que incluímos uma biblioteca nova durante a construção do software, incluímos também mais um ponto de manutenção no código fonte. O mesmo acontece com as bibliotecas de template. Além do fato de que, ao longo do tempo, pouca adoção bibliotecas podem deixar de ser manutenidas, vale lembrar que no final todas elas vão gerar HTML para o navegador interpretar.
+
+O modelo bem definido de XML, permite dar versatilidade aos editores de texto ao se editar um HTML ( auto-identação e auto-complete, por exemplo). É através desta junção ( sintaxe XML + HTML ) que conseguimos mais facil a diagramação da tela e reutilização de lógicas de telas.
+
+## É possível gerar HTML5 mesmo usando XHTML?
+
+Layr vale-se apenas da notação XML do XHTML. Isso significa que se todas as tags forem corretamente fechadas, e termos apenas um único nós raíz, teremos um HTML5 válido e componentizável. Inclusive, o DOCTYPE padrão do Layr é o do HTML5 ```<!DOCTYPE html>```.
 
 ## Componentização de modo simples e fácil
 
- - graças aos namespaces temos a capacidade de criar tags customizadas sem ferir o HTML padrão. O formulário
-   abaixo foi escrito usando a taxonomia do tema Bootstrap ( do Twitter ).
+O formulário abaixo foi escrito usando a taxonomia do tema Bootstrap ( do Twitter ).
 
 ```xhtml
 <div xmlns="http://www.w3.org/1999/xhtml">
@@ -66,9 +62,7 @@ As vantagens deste paradigma sobre as Server Pages são enúmeras. A principal d
 </div>
 ```
 
- - Note que as tags que representam um item do formulário está se repetindo com frequencia. Memorizar
-   as classes CSS e sua estrutura nem sempre é fácil. Mas, e se pudessemos usar uma sintaxe mais amigável
-   que nos permita re-utilizar estas estruturas sem repetição de código?
+Note que as tags que representam um item do formulário está se repetindo com frequência. Memorizar as classes CSS e sua estrutura nem sempre é fácil. Mas, e se pudessemos usar uma sintaxe mais amigável que nos permita re-utilizar estas estruturas sem repetição de código?
 
 ```xhtml
 <div xmlns="http://www.w3.org/1999/xhtml"
@@ -94,11 +88,7 @@ As vantagens deste paradigma sobre as Server Pages são enúmeras. A principal d
 </div>
 ```
 
- - Você deve ter notado que a quantidade de código escrita diminuiu um pouco. Para isso, foram criados
-   vários arquivos .xhtml com os seus antigos conteúdos. O nome da tag deve ser o nome do arquivo. A
-   localização destes arquivos foram definidos através do namespace **ui**, especificada na tag raíz do
-   documento. Através da notação urn, definifimos que eles ficarão na pasta **components** ( raíz do
-   class-path da aplicação* ). Veja como ficou o corpo do componente FormItem:
+Você deve ter notado que a quantidade de código escrita diminuiu um pouco. Graças aos namespaces temos a capacidade de criar tags customizadas sem ferir o HTML padrão. Para isso, foram criados vários arquivos .xhtml com os seus antigos conteúdos. O nome da tag deve ser o nome do arquivo. A localização destes arquivos foram definidos através do namespace **ui**, especificada na tag raíz do documento. Através da notação urn, definifimos que eles ficarão na pasta **components** ( raíz do class-path da aplicação* ). Veja como ficou o corpo do componente _FormItem_:
 
 ```xhtml
 <div xmlns="http://www.w3.org/1999/xhtml"
@@ -111,11 +101,7 @@ As vantagens deste paradigma sobre as Server Pages são enúmeras. A principal d
 </div>
 ```
 
- - O componente **children** define o local aonde os filhos do componente serão renderizados. Esta
-   tag foi desenvolvida através do conjunto de tags ( TagLibs ) de template ( definido pelo namespace
-   **tpl** ). Esta TagLib acompanha o Layr e foi desenhada para auxliar no desenvolvimento de suas
-   telas. Você pode usar esta mesma abordagem para traduzir qualquer conjunto de tags em componentes,
-   não há limitação de tamanho ou quantidade de componente.
+O componente **children** define o local aonde os filhos do componente serão renderizados. Esta tag foi desenvolvida através do conjunto de tags ( TagLibs ) de template ( definido pelo namespace **tpl** ). Esta TagLib acompanha o Layr e foi desenhada para auxliar no desenvolvimento de suas telas. Você pode usar esta mesma abordagem para traduzir qualquer conjunto de tags em componentes, não há limitação de tamanho ou quantidade de componente.
 
 ## Organização Natural
 

@@ -15,14 +15,26 @@
  */
 package org.layr.engine.components.xhtml;
 
+import java.io.IOException;
+
+import org.layr.commons.StringUtil;
+
 public class Html extends XHtmlComponent {
 
 	@Override
 	public void configure() {
 		setComponentName("html");
+		
+		if ( StringUtil.isEmpty( getDocTypeDefinition() ))
+			setDocTypeDefinition("<!DOCTYPE %s>");
 
 		if (getAttribute("xmlns") == null)
 			setAttribute("xmlns", "http://www.w3.org/1999/xhtml");
+	}
+
+	@Override
+	public void render() throws IOException {
+		super.render();
 	}
 
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Miere Liniel Teixeira
+ * Copyright 2013 Miere Liniel Teixeira
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,26 +48,17 @@ public class GenericComponent implements IComponent {
 	public static final String CHILDREN = "TemplateParser.CHILDREN/";
 	public static final String DOCTYPE_ATTRIBUTE = "GenericComponent.DOCTYPE_ATTRIBUTE";
 
-	private static final String[] styles = new String[] {
-		"align","border","background","height","display","min-height","max-height", "width",
-		"max-width","min-width","top","left","position","margin","padding","bottom","right"
-	};
-
-	private final static String[] events = new String[] {
-		"blur", "change", "click",
-		"dblclick", "focus", "mousedown", "mousemove",
-		"mouseout", "mouseover", "mouseup", "keydown",
-		"keypress", "keyup", "select" };
-
 	private List<IComponent> children;
 	private Map<String, Object> attributes;
 	private IComponent parent;
 	private String textContent;
 	private String id;
 	protected IRequestContext requestContext;
+	private boolean selfCloseable;
+	private List<String> ignoredAttributes;
 
-	private String rootdir = "";
-	private String extension = "xhtml";
+	private String rootdir;
+	private String extension;
 	private String componentName;
 	private String qualifiedName;
 	private String docTypeDefinition;
@@ -75,50 +66,18 @@ public class GenericComponent implements IComponent {
 
 	public GenericComponent() {
 		super();
-		children = new ArrayList<IComponent>();
-		attributes = new HashMap<String, Object>();
+		setChildren(new ArrayList<IComponent>());
+		setAttributes(new HashMap<String, Object>());
+		setIgnoredAttributes(new ArrayList<String>());
+		setSelfCloseable(false);
+		setRootdir("");
+		setExtension("xhtml");
 	}
 
 	/* (non-Javadoc)
 	 * @see org.layr.engine.components.IComponent#configure()
 	 */
-	public void configure() throws ServletException, IOException {
-		setStylesDefinition();
-	}
-
-	/**
-	 * Group all styles in "styles" component attribute
-	 */
-	public void setStylesDefinition() {
-		StringBuilder buffer = new StringBuilder();
-		
-		for (String style : styles) {
-			String value = getAttributeAsString(style);
-			if (StringUtil.isEmpty(value))
-				continue;
-			
-			buffer.append(style)
-				.append(':')
-				.append(value)
-				.append(';');
-		}
-
-		attributes.put("styles", buffer.toString());
-	}
-
-	/**
-	 * Based on {@link ArrayList#contains(Object)} implementation.
-	 * @param object
-	 * @return
-	 */
-	public boolean isValidEvent(String object) {
-		for (int i = 0; i < events.length; i++) {
-			if (object.equals(events[i])) {
-				return true;
-			}
-		}
-		return false;
-	}
+	public void configure() throws ServletException, IOException {}
 
 	/* (non-Javadoc)
 	 * @see layr.components.IComponent#render()
@@ -126,15 +85,12 @@ public class GenericComponent implements IComponent {
 	@Override
 	public void render() throws IOException {
 		try {
-			IComponent compiledTemplate = compile(getTemplate());
-			if ( compiledTemplate == null ){
-				System.out.println("Cant found: " + getTemplate());
-				renderAsComponentStub();
-				return;
-			}
-
-			renderDocType();
-			renderCompiledTemplate(compiledTemplate);
+			String templateFilePath = measureAndRetrieveComponentTemplateFilePath();
+			IComponent compiledTemplate = compile(templateFilePath);
+			if ( compiledTemplate == null )
+				renderComponentAsStub();
+			else
+				renderCompiledTemplate(compiledTemplate);
 		} catch ( TemplateParsingException e ) {
 			throw new IOException(e);
 		}
@@ -143,10 +99,10 @@ public class GenericComponent implements IComponent {
 	/**
 	 * @throws IOException
 	 */
-	public void renderDocType() throws IOException {
-		if ( StringUtil.isEmpty(docTypeDefinition) )
-			return;
-		getWriter().append( String.format( docTypeDefinition , getComponentName() ) );
+	public void renderComponentAsStub() throws IOException {
+		GenericXHtmlRenderer xHtmlRenderer = 
+			getXhtmlRenderer().shouldVerifyChildrenNumberToGrantThatComponentIsSelfCloseable();
+		xHtmlRenderer.render();
 	}
 
 	/**
@@ -168,7 +124,7 @@ public class GenericComponent implements IComponent {
 	public void createHolderComponentToMemorizeCurrentComponentChilden( IComponent component ) {
 		if ( component == null )
 			return;
-		
+
 		HolderComponent holder = new HolderComponent();
 		holder.setChildren(getChildren());
 		holder.configure();
@@ -184,49 +140,28 @@ public class GenericComponent implements IComponent {
 	}
 
 	/**
-	 * Render component as stub.
-	 * @throws IOException 
-	 */
-	public void renderAsComponentStub() throws IOException {
-		Writer writer = getWriter();
-		getWriter().append('<')
-			  .append(getQualifiedName())
-			  .append(' ');
-		
-		for ( String attribute: getAttributeKeys() )
-			writer.append( attribute )
-				  .append( "=\"" )
-				  .append( getAttributeAsString(attribute) )
-				  .append( "\" " );
-		
-		List<IComponent> children = getChildren();
-		if ( children == null || children.size() == 0 ){
-			writer.append("/>");
-			return;
-		}
-
-		writer.append('>');
-		for ( IComponent child : children )
-			child.render();
-		writer.append("</")
-			  .append(getQualifiedName())
-			  .append('>');
-	}
-
-	/**
-	 * @return
-	 */
-	public Writer getWriter() {
-		return requestContext.getWriter();
-	}
-
-	/**
 	 * Render compiled template.
 	 * 
 	 * @param compiledTemplate
 	 * @throws IOException
 	 */
 	public void renderCompiledTemplate(IComponent compiledTemplate) throws IOException {
+		ArrayList<String> memorizedAttributes = 
+				memorizeComponentAttributeThatCouldBePassedThroughComponentParameter();
+
+		compiledTemplate.render();
+		for (String attribute : memorizedAttributes)
+			forgetComponentAttributeReference(attribute);
+	}
+
+	public IRequestContext forgetComponentAttributeReference(String attribute) {
+		return getRequestContext().put(attribute, null);
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList<String> memorizeComponentAttributeThatCouldBePassedThroughComponentParameter() {
 		ArrayList<String> attributes = new ArrayList<String>();
 		for (String attribute : getAttributeKeys()) {
 			String componentAttributeReferenceName = getComponentName() + ":" + attribute;
@@ -234,15 +169,13 @@ public class GenericComponent implements IComponent {
 			attributes.add(componentAttributeReferenceName);
 		}
 
-		compiledTemplate.render();
-		for (String attribute : attributes)
-			getRequestContext().put(attribute, null);
+		return attributes;
 	}
 
 	/**
 	 * @return
 	 */
-	public String getTemplate() {
+	public String measureAndRetrieveComponentTemplateFilePath() {
 		return getRootdir() + "/" + getComponentName() + "." + getExtension();
 	}
 
@@ -254,15 +187,11 @@ public class GenericComponent implements IComponent {
 			throws CloneNotSupportedException, ServletException, IOException {
 		flush();
 
-		List<IComponent> children = new ArrayList<IComponent>();
 		GenericComponent clone = (GenericComponent) super.clone();
 		clone.setRequestContext(context);
 
-		for (IComponent child : getChildren()) {
-			child.setParent(clone);
-			children.add((IComponent) child.clone(context));
-		}
-
+		List<IComponent> children = cloneChildren(context, clone);
+	
 		clone.setChildren(children);
 		clone.setTextContent(textContent);
 		clone.configure();
@@ -271,29 +200,41 @@ public class GenericComponent implements IComponent {
 	}
 
 	/**
+	 * @param requestContext
+	 * @param parentComponent
+	 * @return
+	 * @throws CloneNotSupportedException
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	public List<IComponent> cloneChildren(
+				IRequestContext requestContext, GenericComponent parentComponent)
+			throws CloneNotSupportedException, ServletException, IOException {
+		List<IComponent> children = new ArrayList<IComponent>();
+
+		for (IComponent child : getChildren()) {
+			IComponent clonedChild = (IComponent) child.clone(requestContext);
+			clonedChild.setParent(parentComponent);
+			children.add(clonedChild);
+		}
+
+		return children;
+	}
+
+	/**
 	 * Flushes objects that will be never used after component's rendering.
 	 * Custom components should override this method to clean some variables to
 	 * avoid memory leaks. Note that you should always call super.flush() to
 	 * clean the {@link GenericComponent} internal variables.
 	 */
-	protected void flush() {
+	public void flush() {
+		this.setIgnoredAttributes(new ArrayList<String>());
 		this.setRequestContext(null);
 	}
 
 	@Override
 	public void addChild(IComponent child) {
 		children.add(child);
-	}
-
-	/**
-	 * Insert a child on the children list at position defined by <i>index</i>
-	 * parameter.
-	 * 
-	 * @param child
-	 * @param index
-	 */
-	public void addChild(IComponent child, int index) {
-		children.add(index, child);
 	}
 
 	/* (non-Javadoc)
@@ -313,7 +254,8 @@ public class GenericComponent implements IComponent {
 		if (textContent == null)
 			return null;
 
-		return (String) ComplexExpressionEvaluator.getValue(textContent, getRequestContext(), true);
+		return (String) ComplexExpressionEvaluator.getValue(
+				textContent, getRequestContext(), true);
 	}
     
     /**
@@ -323,34 +265,23 @@ public class GenericComponent implements IComponent {
     	return textContent;
     }
 
-	@Override
-	/**
-	 * Retrieves the component's attribute value as an Object.<br/>
-	 * <br/>
-	 * If the component implementation has a setter method with same name of the attribute
-	 * it will be dispatched and ignoring the value binding. Otherwise, it will try to
-	 * retrieve the value from a possible defined binding expression.
-	 * 
-	 * @param attribute
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getAttribute(java.lang.String)
 	 */
+	@Override
 	public Object getAttribute(String attribute) {
 		return attributes.get(attribute);
 	}
-	
-	/**
-	 * @param attribute
-	 * @return
+
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getParsedAttribute(java.lang.String)
 	 */
 	public Object getParsedAttribute(String attribute) {
 		return getParsedAttribute(attribute, false);
 	}
 
-	/**
-	 * Retrieves the attribute value and, if it is an valid expression, returns
-	 * the value of the parsed expression
-	 * 
-	 * @param attribute
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getParsedAttribute(java.lang.String, boolean)
 	 */
 	public Object getParsedAttribute(String attribute, boolean shouldBeEncoded) {
 		Object object = attributes.get(attribute);
@@ -359,11 +290,8 @@ public class GenericComponent implements IComponent {
 		return ComplexExpressionEvaluator.getValue(object.toString(), getRequestContext(), shouldBeEncoded);
 	}
 
-	/**
-	 * Retrieves the component's attribute value as an String.
-	 * 
-	 * @param attr
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getAttributeAsString(java.lang.String)
 	 */
 	public String getAttributeAsString(String attr) {
 		Object value = getParsedAttribute(attr, true);
@@ -376,13 +304,10 @@ public class GenericComponent implements IComponent {
 		return value.toString();
 	}
 
-	@Override
-	/**
-	 * Sets an attribute value.<br/>
-	 * <br/>
-	 * After stores the value, if the component implementation has a setter method with same name of the attribute
-	 * it will be dispatched too.
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setAttribute(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public IComponent setAttribute(String attribute, Object value) {
 		this.attributes.put(attribute, value);
 		return this;
@@ -412,28 +337,43 @@ public class GenericComponent implements IComponent {
 		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getNumChildren()
+	 */
 	@Override
 	public int getNumChildren() {
 		return children.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getChildren()
+	 */
 	@Override
 	public List<IComponent> getChildren() {
 		return children;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setChildren(java.util.List)
+	 */
 	@Override
 	public IComponent setChildren(List<IComponent> value) {
 		this.children = value;
 		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setId(java.lang.String)
+	 */
 	@Override
 	public IComponent setId(String id) {
 		this.id = id;
 		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getId()
+	 */
 	@Override
 	public String getId() {
 		if (this.id == null) {
@@ -445,73 +385,178 @@ public class GenericComponent implements IComponent {
 		return this.id;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setRequestContext(org.layr.engine.IRequestContext)
+	 */
 	@Override
 	public IComponent setRequestContext(IRequestContext context) {
 		this.requestContext = context;
 		return this;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getRequestContext()
+	 */
 	@Override
 	public IRequestContext getRequestContext() {
 		return this.requestContext;
 	}
 
-	public void setAttributes(Map<String, Object> attributes) {
+	/**
+	 * @param attributes
+	 */
+	public IComponent setAttributes(Map<String, Object> attributes) {
 		this.attributes = attributes;
+		return this;
 	}
 
+	/**
+	 * @return
+	 */
 	public Map<String, Object> getAttributes() {
 		return attributes;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setComponentName(java.lang.String)
+	 */
 	public void setComponentName(String componentName) {
 		this.componentName = componentName;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getComponentName() {
 		return componentName;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setRootdir(java.lang.String)
+	 */
 	public void setRootdir(String rootdir) {
 		this.rootdir = rootdir;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getRootdir() {
 		return rootdir;
 	}
 
+	/**
+	 * @param extension
+	 */
 	public void setExtension(String extension) {
 		this.extension = extension;
 	}
 
+	/**
+	 * @return
+	 */
 	public String getExtension() {
 		return extension;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getQualifiedName()
+	 */
 	public String getQualifiedName() {
 		return qualifiedName;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setQualifiedName(java.lang.String)
+	 */
 	public void setQualifiedName(String qualifiedName) {
 		this.qualifiedName = qualifiedName;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getDocTypeDefinition()
+	 */
 	@Override
 	public String getDocTypeDefinition() {
 		return docTypeDefinition;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setDocTypeDefinition(java.lang.String)
+	 */
 	@Override
 	public void setDocTypeDefinition(String docTypeDefinition) {
 		this.docTypeDefinition = docTypeDefinition;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#getSnippetName()
+	 */
 	public String getSnippetName() {
 		return snippetName;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.layr.engine.components.IComponent#setSnippetName(java.lang.String)
+	 */
 	public void setSnippetName(String templateName) {
 		this.snippetName = templateName;
+	}
+
+	/**
+	 * @param selfCloseable
+	 */
+	public void setSelfCloseable(boolean selfCloseable) {
+		this.selfCloseable = selfCloseable;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isSelfCloseable() {
+		return selfCloseable;
+	}
+
+	/**
+	 * @param attribute
+	 */
+	public void ignoreAttribute(String attribute) {
+		ignoredAttributes.add(attribute);
+	}
+	
+	/**
+	 * @return
+	 */
+	public List<String> getIgnoredAttributes() {
+		return ignoredAttributes;
+	}
+	
+	/**
+	 * @param ignoredAttributes
+	 */
+	public void setIgnoredAttributes(List<String> ignoredAttributes) {
+		this.ignoredAttributes = ignoredAttributes;
+	}
+	
+	/**
+	 * @return
+	 */
+	public GenericXHtmlRenderer getXhtmlRenderer(){
+		return new GenericXHtmlRenderer( getWriter(), this );
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean hasChildren(){
+		return getChildren() != null && getChildren().size() > 0;
+	}
+
+	/**
+	 * @return
+	 */
+	public Writer getWriter() {
+		return requestContext.getWriter();
 	}
 
 }

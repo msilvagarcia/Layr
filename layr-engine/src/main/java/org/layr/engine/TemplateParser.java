@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Miere Liniel Teixeira
+ * Copyright 2013 Miere Liniel Teixeira
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,27 +35,38 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * @since Layr 1.0
+ * @author Miere Liniel Teixeira
+ *
  */
 public class TemplateParser extends DefaultHandler {
+
+	public static final String HTML5_DOCTYPE = "<!DOCTYPE %s>";
 
 	private IComponent rootComponent;
 	private IComponent currentComponent;
 	private StringBuffer textContent;
-	private IRequestContext layrContext;
+	private IRequestContext requestContext;
 	private String doctype;
 	private String currentTemplateName;
 
+	/**
+	 * @param context
+	 */
 	public TemplateParser(IRequestContext context) {
 		this.textContent = new StringBuffer();
-		setLayrContext(context);
+		setRequestContext(context);
 	}
 
+	/**
+	 * @param templateName
+	 * @return
+	 * @throws TemplateParsingException
+	 */
 	public IComponent compile(String templateName) throws TemplateParsingException {
 		try{
-			IComponent component = layrContext.getResourceFromCache( templateName );
+			IComponent component = requestContext.getResourceFromCache( templateName );
 			if (component != null)
-				return (IComponent) component.clone(layrContext);
+				return (IComponent) component.clone(requestContext);
 			component = parse(templateName);
 			putInTheCacheCompiledResource(templateName, component);
 			return component;
@@ -64,10 +75,17 @@ public class TemplateParser extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * @param templateName
+	 * @return
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 */
 	public IComponent parse(String templateName) throws ParserConfigurationException, SAXException, IOException {
 		setCurrentTemplateName(templateName);
-		IComponent parsedComponent = parse( layrContext.getResourceAsStream(templateName) );
-		if ( parsedComponent != null )
+		IComponent parsedComponent = parse( requestContext.getResourceAsStream(templateName) );
+		if ( parsedComponent != null && !StringUtil.isEmpty( getDoctype() ) )
 			parsedComponent.setDocTypeDefinition(getDoctype());
 		return parsedComponent;
 	}
@@ -100,7 +118,7 @@ public class TemplateParser extends DefaultHandler {
 	 */
 	public void putInTheCacheCompiledResource(String templateName, IComponent component) {
 		if ( component != null )
-			layrContext.putInCacheTheCompiledResource(templateName, component);
+			requestContext.putInCacheTheCompiledResource(templateName, component);
 	}
 
 	/* (non-Javadoc)
@@ -110,7 +128,7 @@ public class TemplateParser extends DefaultHandler {
 	public InputSource resolveEntity(String publicId, String systemId)
 			throws IOException, SAXException {
 		if (publicId == null || systemId == null)
-			setDoctype("<!DOCTYPE %s>");
+			setDoctype(HTML5_DOCTYPE);
 		else
 			setDoctype("<!DOCTYPE %s PUBLIC \"" + publicId + "\" \""
 					+ systemId + "\">");
@@ -123,12 +141,12 @@ public class TemplateParser extends DefaultHandler {
 	 */
 	public void startPrefixMapping(String prefix, String uri)
 			throws SAXException {
-		if (layrContext.isRegisteredNamespace(uri))
+		if (requestContext.isRegisteredNamespace(uri))
 			return;
 
 		DefaultComponentFactory factory = new DefaultComponentFactory();
 		factory.setRootDir(StringUtil.join(uri.replace("urn:", "").split(":"), "/"));
-		layrContext.registerNamespace(uri, factory);
+		requestContext.registerNamespace(uri, factory);
 	}
 
 	@Override
@@ -154,6 +172,9 @@ public class TemplateParser extends DefaultHandler {
 		}
 	}
 
+	/**
+	 * @param newComponent
+	 */
 	public void defineCurrentParsedComponent(IComponent newComponent) {
 		if (currentComponent != null) {
 			newComponent.setParent(currentComponent);
@@ -163,17 +184,29 @@ public class TemplateParser extends DefaultHandler {
 		currentComponent = newComponent;
 	}
 
+	/**
+	 * @param newComponent
+	 * @param attributes
+	 */
 	public void setComponentAttributes(IComponent newComponent, Attributes attributes) {
 		for (int i = 0; i < attributes.getLength(); i++)
 			newComponent.setAttribute(attributes.getQName(i),
 					attributes.getValue(i));
 	}
 
+	/**
+	 * @param uri
+	 * @param localName
+	 * @param qName
+	 * @return
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
 	public IComponent createNewComponent(String uri, String localName, String qName)
 			throws InstantiationException, IllegalAccessException {
-		IComponentFactory factory = layrContext.getComponentFactory(uri);
+		IComponentFactory factory = requestContext.getComponentFactory(uri);
 		IComponent newComponent = factory.newComponent(
-				localName, qName, layrContext);
+				localName, qName, requestContext);
 		
 		if ( newComponent != null )
 			newComponent.setSnippetName(currentTemplateName);
@@ -194,9 +227,13 @@ public class TemplateParser extends DefaultHandler {
 		textContent.delete(0, textContent.length());
 	}
 
+	/**
+	 * @param string
+	 * @return
+	 */
 	public TextNode createTextNode( String string ) {
 		TextNode textNode = new TextNode(string);
-		textNode.setRequestContext(getLayrContext());
+		textNode.setRequestContext(getRequestContext());
 		return textNode;
 	}
 
@@ -218,26 +255,41 @@ public class TemplateParser extends DefaultHandler {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.xml.sax.helpers.DefaultHandler#characters(char[], int, int)
+	 */
 	@Override
 	public void characters(char[] ch, int start, int length)
 			throws SAXException {
 		textContent.append(ch, start, length);
 	}
 
+	/**
+	 * @param rootComponent
+	 */
 	public void setRootComponent(IComponent rootComponent) {
 		this.rootComponent = rootComponent;
 	}
 
+	/**
+	 * @return
+	 */
 	public IComponent getRootComponent() {
 		return rootComponent;
 	}
 
-	public IRequestContext getLayrContext() {
-		return layrContext;
+	/**
+	 * @return
+	 */
+	public IRequestContext getRequestContext() {
+		return requestContext;
 	}
 
-	public void setLayrContext(IRequestContext layrContext) {
-		this.layrContext = layrContext;
+	/**
+	 * @param layrContext
+	 */
+	public void setRequestContext(IRequestContext layrContext) {
+		this.requestContext = layrContext;
 	}
 
     /**
@@ -254,10 +306,16 @@ public class TemplateParser extends DefaultHandler {
         this.doctype = doctype;
     }
 
+	/**
+	 * @return
+	 */
 	public String getCurrentTemplateName() {
 		return currentTemplateName;
 	}
 
+	/**
+	 * @param currentTemplateName
+	 */
 	public void setCurrentTemplateName(String currentTemplateName) {
 		this.currentTemplateName = currentTemplateName;
 	}

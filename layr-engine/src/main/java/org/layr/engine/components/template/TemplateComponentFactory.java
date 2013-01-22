@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Miere Liniel Teixeira
+ * Copyright 2013 Miere Liniel Teixeira
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,6 @@ public class TemplateComponentFactory extends DefaultComponentFactory {
 		register("define", Define.class);
 		register("foreach", Foreach.class);
 		register("include", Template.class);
-		register("if", If.class);
 		register("var", Var.class);
 		register("template", Template.class);
 		register("component", HolderComponent.class);

@@ -20,8 +20,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 import org.layr.commons.StringUtil;
-
-
+import org.layr.engine.components.TextNode;
 
 public class TextArea extends XHtmlComponent {
 
@@ -37,9 +36,8 @@ public class TextArea extends XHtmlComponent {
 		if (StringUtil.isEmpty(name))
 			setAttribute("name", getId());
 
-		String textContent = getNonParsedTextContent();
-		if ( StringUtil.isEmpty(textContent) )
-			setTextContent("#{"+name+"}");
+		if (!hasChildren())
+			addChild(new TextNode("#{" + name + "}"));
 
 		super.render();
 	}

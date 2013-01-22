@@ -41,7 +41,7 @@ public class LayrLifeCycleTest {
 		setRequestURL("/hello/sayHello");
 		sendDefaultParameters();
 
-		lifeCycle.bindParameters();
+		lifeCycle.bindParametersSentFromRequestAgainstWebResourceFields();
 	}
 
 	public void sendDefaultParameters() {

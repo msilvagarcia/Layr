@@ -18,23 +18,23 @@ import org.xml.sax.SAXException;
 
 public class TemplateParserTest {
 
-	private IRequestContext layrContext;
+	private IRequestContext requestContext;
 
 	@Before
 	public void setup() throws IOException, ClassNotFoundException, ServletException{
-		layrContext = new StubRequestContext();
+		requestContext = new StubRequestContext();
 	}
 
 	@Test
 	public void parseHelloWorldTemplate() throws IOException, ParserConfigurationException, SAXException {
-		TemplateParser parser = new TemplateParser(layrContext);
+		TemplateParser parser = new TemplateParser(requestContext);
 		IComponent application = parser.parse("templates/hello.xhtml");
 		assertNotNull(application);
 	}
 
 	@Test
 	public void grantThatNestingDontLooseTexts() throws IOException, ParserConfigurationException, SAXException {
-		TemplateParser parser = new TemplateParser(layrContext);
+		TemplateParser parser = new TemplateParser(requestContext);
 		IComponent application = parser.parse("templates/nestedTest.xhtml");
 		assertNotNull(application);
 		assertEquals(3, application.getNumChildren());
@@ -44,7 +44,7 @@ public class TemplateParserTest {
 	@Test
 	public void grantThatComponentNestingWorkWithGenericComponent() throws
 			IOException, ParserConfigurationException, SAXException {
-		TemplateParser parser = new TemplateParser(layrContext);
+		TemplateParser parser = new TemplateParser(requestContext);
 		IComponent application = parser.parse("templates/genericComponentTemplate.xhtml");
 
 		assertNotNull(application);
@@ -58,31 +58,47 @@ public class TemplateParserTest {
 
 	@Test
 	public void grantThatParseTwoLevelNestedComponentsAsExpected() throws TemplateParsingException, IOException{
-		TemplateParser parser = new TemplateParser(layrContext);
+		TemplateParser parser = new TemplateParser(requestContext);
 		IComponent compiledSnippets = parser.compile("templates/twoLevelNestedSnippet.xhtml");
 		assertEquals("templates/twoLevelNestedSnippet.xhtml", compiledSnippets.getSnippetName());
 
 		compiledSnippets.render();
 		
-		String output = ((StubRequestContext)layrContext).getBuffedWroteContentToOutput();
+		String output = getRenderedOutput();
 		String expectedOutput = FileUtils.readFileAsString("templates/twoLevelNestedSnippet.output.xhtml");
 		assertEquals( expectedOutput, output );
 	}
 
 	@Test
 	public void grantThatDoentThrowsExceptionWhenTryToCompileUnknownTemplateFile() throws TemplateParsingException{
-		TemplateParser parser = new TemplateParser(layrContext);
+		TemplateParser parser = new TemplateParser(requestContext);
 		parser.compile("unknownLocation/template.xhtml");
 	}
 
 	@Test
 	public void grantThatParseTwoLevelInheritenceTemplateAsExpected() throws TemplateParsingException, IOException{
-		TemplateParser parser = new TemplateParser(layrContext);
+		TemplateParser parser = new TemplateParser(requestContext);
 		IComponent compiledSnippets = parser.compile("templates/twoLevelTemplateInheritence.xhtml");
 		compiledSnippets.render();
 		
-		String output = ((StubRequestContext)layrContext).getBuffedWroteContentToOutput();
+		String output = getRenderedOutput();
 		String expectedOutput = FileUtils.readFileAsString("templates/twoLevelTemplateInheritence.output.xhtml");
 		assertEquals( expectedOutput, output );
+	}
+	
+	@Test
+	public void grantThatHomeScreenInheritDefaultThemeAsExpected() throws IOException, TemplateParsingException {
+		requestContext.put("comments", "Its a comment.");
+		TemplateParser parser = new TemplateParser(requestContext);
+		IComponent compiledSnippet = parser.compile("templates/homeScreenThatInheritDefaultTheme.xhtml");
+		compiledSnippet.render();
+		
+		String output = getRenderedOutput();
+		String expectedOutput = FileUtils.readFileAsString("templates/homeScreenThatInheritDefaultTheme.output.xhtml");
+		assertEquals( expectedOutput, output );
+	}
+
+	public String getRenderedOutput() {
+		return ((StubRequestContext)requestContext).getBuffedWroteContentToOutput();
 	}
 }

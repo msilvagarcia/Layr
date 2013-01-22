@@ -27,7 +27,7 @@ public class PluginFilter implements Filter {
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.filterConfig = filterConfig;
-		filterConfig.getServletContext().log( "[Layr] Natural Routing Filter Initialized.");
+		filterConfig.getServletContext().log( "[Layr] JEE Natural Routing Filter Initialized.");
 	}
 
 	/* (non-Javadoc)
@@ -57,33 +57,50 @@ public class PluginFilter implements Filter {
 	 */
 	public boolean haveFoundTheWebPageXHTMLAndRenderedSuccessfully( JEERequestContext requestContext ) 
 			throws IOException, ParserConfigurationException, SAXException, CloneNotSupportedException, ServletException, TemplateParsingException {
-
-		String relativePath = requestContext.getRelativePath().replaceFirst("/$", "");
-		if ( !relativePath.endsWith(".xhtml") )
-			relativePath += ".xhtml";
-
-		IComponent webpage = null;
-		webpage = compile( relativePath, requestContext );
+		String relativePath = measureRelativePath(requestContext);
+		IComponent webpage = compile( relativePath, requestContext );
 		if ( webpage == null )
 			return false;
 
-		HttpServletRequest request = requestContext.getRequest();
-		Enumeration<String> parameterNames = request.getParameterNames();
-		String expresion = null;
-
-		while ( parameterNames.hasMoreElements() ){
-			expresion = parameterNames.nextElement();
-			requestContext.put(expresion, request.getParameter(expresion));
-		}
-
+		populateRequestContextWithSentParamsFromHttpClient(requestContext);
 		webpage.render();
 		return true;
 	}
 
+	/**
+	 * @param templateName
+	 * @param requestContext
+	 * @return
+	 * @throws TemplateParsingException
+	 */
 	public IComponent compile(String templateName, JEERequestContext requestContext) throws TemplateParsingException {
 		TemplateParser parser = new TemplateParser(requestContext);
 		IComponent compiledTemplate = parser.compile(templateName);
 		return compiledTemplate;
+	}
+
+	/**
+	 * @param requestContext
+	 * @return
+	 */
+	public String measureRelativePath(JEERequestContext requestContext) {
+		String relativePath = requestContext.getRelativePath().replaceFirst("/$", "");
+		if ( !relativePath.endsWith(".xhtml") )
+			relativePath += ".xhtml";
+		return relativePath;
+	}
+
+	/**
+	 * @param requestContext
+	 */
+	public void populateRequestContextWithSentParamsFromHttpClient(JEERequestContext requestContext) {
+		String expresion = null;
+		HttpServletRequest request = requestContext.getRequest();
+		Enumeration<String> parameterNames = request.getParameterNames();
+		while ( parameterNames.hasMoreElements() ){
+			expresion = parameterNames.nextElement();
+			requestContext.put(expresion, request.getParameter(expresion));
+		}
 	}
 
 	@Override

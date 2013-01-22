@@ -2,7 +2,6 @@ package org.layr.engine.expressions;
 
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -18,7 +17,6 @@ public class PooledExpressionTest {
 
 	private static final String CONTEXT = "#{user.context}";
 	private static final String NAME = "#{user.nome}";
-	private static final String EQUATION = "#{user.nome} == 'Miere Teixeira'";
 
 	private IRequestContext layrContext;
 	private ComplexExpressionEvaluator evaluator;
@@ -40,23 +38,6 @@ public class PooledExpressionTest {
 			for (int i=0;i<10000; i++) {
 				Object value = ComplexExpressionEvaluator.getValue(CONTEXT, layrContext);
 				assertSame(layrContext, value);
-			}
-			long time = System.currentTimeMillis() - prev_time;
-			total_time+= time;
-		}
-		System.out.println("Total Time:" + total_time);
-	}
-
-	@Test
-	public void testGetValueSpeedWithAnEquation() {
-		layrContext.put("user", new User("Miere Teixeira", layrContext));
-		
-		long prev_time, total_time=0, loop_times=1;
-		for (int j=0; j<loop_times; j++) {
-		    prev_time = System.currentTimeMillis();
-			for (int i=0;i<10000; i++) {
-				Object value = ComplexExpressionEvaluator.getValue(EQUATION, layrContext);
-				assertTrue((Boolean)value);
 			}
 			long time = System.currentTimeMillis() - prev_time;
 			total_time+= time;

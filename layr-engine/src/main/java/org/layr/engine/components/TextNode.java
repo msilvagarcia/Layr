@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Miere Liniel Teixeira
+ * Copyright 2013 Miere Liniel Teixeira
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ import org.layr.commons.StringUtil;
 
 
 public class TextNode extends GenericComponent {
-
-	public TextNode() {}
 
 	public TextNode(String content) {
 		this.setTextContent(content);

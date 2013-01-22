@@ -97,6 +97,9 @@ public abstract class JsonUploadServlet<E> extends HttpServlet {
 		part.write(uploadDir+"/"+fileName);
 	}
 
+	/**
+	 * @return
+	 */
 	public static String getUploadDir(){
 		String uploadDir = System.getProperty("layr.upload.dir");
 		if (StringUtil.isEmpty(uploadDir))

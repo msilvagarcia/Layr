@@ -76,7 +76,6 @@ public class RequestLifeCycle {
 	@SuppressWarnings("unchecked")
 	public Map<Class<?>, List<Method>> getRouteMethodCache() {
 		Cache cache = requestContext.getCache();
-
 		if ( cache == null )
 			return new HashMap<Class<?>, List<Method>>();
 
@@ -85,7 +84,44 @@ public class RequestLifeCycle {
         	routeMethodCache = new ConcurrentHashMap<Class<?>, List<Method>>();
         	cache.put(AVAILABLES_ROUTES, routeMethodCache);
 		}
+
 		return routeMethodCache;
+	}
+
+    /**
+     * Returns witch method represents the current request.
+     * 
+     * @return
+     */
+    public Method getRouteMethod() {
+    	HttpServletRequest request = getRequestContext().getRequest();
+        String route = getRequestURI(request);
+
+        if (route != null)
+	        for (Method method : routes) {
+	        	String pattern = parseMethodUrlPattern(method);
+				if ( ( pattern != null && route.matches( pattern ) )
+	            	|| method.getName().equals(
+	            			route.replaceFirst("/$", ""))) {
+					Route annotation = method.getAnnotation(Route.class);
+					getRequestContext().setRequestRoutePattern(
+							annotation.pattern()
+			        			.replaceFirst("^/", "")
+								.replaceFirst(getRequestContext().getWebResourceRootPath(), ""));
+					getRequestContext().setRequestRoute(route);
+	                return method;
+	            }
+	        }
+
+        return null;
+    }
+
+	/**
+	 * Render route not found
+	 */
+	public void renderRouteNotFound() {
+		requestContext.getResponse().setStatus(HttpServletResponse.SC_NOT_FOUND);
+		requestContext.log("[WARN] No route found to " + requestContext.getRequestedRoute());
 	}
 
     /**
@@ -111,7 +147,7 @@ public class RequestLifeCycle {
     public void run(Method routeMethod) throws ServletException {
         try {
             Route route = routeMethod.getAnnotation(Route.class);
-            bindParameters();
+            bindParametersSentFromRequestAgainstWebResourceFields();
 
             if ( !StringUtil.isEmpty(route.contentType()) )
             	requestContext.setContentType(route.contentType());
@@ -151,17 +187,9 @@ public class RequestLifeCycle {
 			SAXException, CloneNotSupportedException, TemplateParsingException {
 		Object[] parameters = retrieveRouteMethodParametersFromRequest(routeMethod);
 		Object returnedObject = routeMethod.invoke(targetInstance, parameters);
-        bindEntities();
+        bindWebResourceFieldsAgainstRequestContextForFurtherTemplateRenderingUse();
         String template = measureRouteTemplate(route);
 		renderWebPageOrRouteReturnedObject(template, returnedObject);
-	}
-
-	/**
-	 * Render route not found
-	 */
-	public void renderRouteNotFound() {
-		requestContext.getResponse().setStatus(HttpServletResponse.SC_NOT_FOUND);
-		requestContext.log("[WARN] No route found to " + requestContext.getRequestedRoute());
 	}
 
 	/**
@@ -224,6 +252,11 @@ public class RequestLifeCycle {
 		webpage.render();
 	}
 
+	/**
+	 * @param templateName
+	 * @return
+	 * @throws TemplateParsingException
+	 */
 	public IComponent compileTemplate(String templateName) throws TemplateParsingException{
 		TemplateParser parser = new TemplateParser(getRequestContext());
 		IComponent compiledComponent = parser.compile(templateName);
@@ -258,7 +291,7 @@ public class RequestLifeCycle {
         try {
             PrintWriter writer = getRequestContext().getResponse().getWriter();
             Object returnedValue = routeMethod.invoke(targetInstance, parameters);
-            bindEntities();
+            bindWebResourceFieldsAgainstRequestContextForFurtherTemplateRenderingUse();
 			String json = defaultDataParser.encode(returnedValue);
             writer.write(json);
         } catch (Exception e) {
@@ -280,19 +313,12 @@ public class RequestLifeCycle {
         Annotation[][] parameterAnnotations = routeMethod.getParameterAnnotations();
         Object[] parameters = new Object[parameterTypes.length];
         Map<String, String> requestParamsFromRoute = requestContext.getRequestParamsFromRoutePattern();
-        
+
         short counter = 0;
         for ( Annotation[] annotations : parameterAnnotations ) {
             for ( Annotation annotation : annotations ) {
                 if (Parameter.class.isAssignableFrom(annotation.getClass())) {
-                    String annotatedParam = ((Parameter)annotation).value();
-					Object parameter = requestParamsFromRoute.get(annotatedParam);
-
-					if ( parameter == null )
-						parameter = requestContext.get(annotatedParam);
-
-					if ( parameter == null )
-						parameter = requestContext.getParameter(annotatedParam);
+                    Object parameter = retrieveParameterFromAnnotation(requestParamsFromRoute, annotation);
 
                     if (parameterTypes[counter].isAssignableFrom(String.class)) {
                     	parameters[counter] = (String)parameter;
@@ -310,8 +336,6 @@ public class RequestLifeCycle {
 	                    parameters[counter] = fromJson;
                     } else if ( parameterTypes[counter].equals(parameter.getClass()) )
                     	parameters[counter] = parameter;
-                    else
-                    	requestContext.log("Can't set parameter '"+annotatedParam+"': incompatible assignment types.");
                 } else {
                 	parameters[counter] = null;
                 }
@@ -321,15 +345,31 @@ public class RequestLifeCycle {
 		return parameters;
 	}
 
+	/**
+	 * @param requestParamsFromRoute
+	 * @param annotation
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	public Object retrieveParameterFromAnnotation(Map<String, String> requestParamsFromRoute,
+			Annotation annotation) throws ServletException, IOException {
+		String annotatedParam = ((Parameter)annotation).value();
+		Object parameter = requestParamsFromRoute.get(annotatedParam);
+
+		if ( parameter == null )
+			parameter = requestContext.get(annotatedParam);
+
+		if ( parameter == null )
+			parameter = requestContext.getParameter(annotatedParam);
+		return parameter;
+	}
+
     /**
-     * Execute the Parameters Bind step from Layr Life Cycle. By default,
-     * auto-bind any sent parameter from HTTP client against field attributes
-     * at targetInstance defined object. Developers are encouraged to manually
-     * override this method to bind just what is useful.
      * @throws IllegalAccessException 
      * @throws InstantiationException 
      */
-	public void bindParameters () {
+	public void bindParametersSentFromRequestAgainstWebResourceFields () {
 		HttpServletRequest request = getRequestContext().getRequest();
 		Enumeration<String> parameterNames = request.getParameterNames();
 		String expresion = null;
@@ -351,12 +391,8 @@ public class RequestLifeCycle {
 	}
 
     /**
-     * Execute the Entity Bind step from Layr Life Cycle. By default,
-     * auto-bind any field from the current resource against the LayrContext.
-     * Developers are encouraged to manually override this method to bind just
-     * what is useful.
      */
-    public void bindEntities() {
+    public void bindWebResourceFieldsAgainstRequestContextForFurtherTemplateRenderingUse() {
         Class<? extends Object> clazz = targetInstance.getClass();
 
         while(!clazz.equals(Object.class)){
@@ -373,39 +409,11 @@ public class RequestLifeCycle {
         }
     }
 
-    /**
-     * Returns witch method represents the current request.
-     * 
-     * @return
-     */
-    public Method getRouteMethod() {
-    	HttpServletRequest request = getRequestContext().getRequest();
-        String route = getRequestURI(request);
-
-        if (route != null)
-	        for (Method method : routes) {
-	        	String pattern = parseMethodUrlPattern(method);
-				if ( ( pattern != null && route.matches( pattern ) )
-	            	|| method.getName().equals(
-	            			route.replaceFirst("/$", ""))) {
-					Route annotation = method.getAnnotation(Route.class);
-					getRequestContext().setRequestRoutePattern(
-							annotation.pattern()
-			        			.replaceFirst("^/", "")
-								.replaceFirst(getRequestContext().getWebResourceRootPath(), ""));
-					getRequestContext().setRequestRoute(route);
-	                return method;
-	            }
-	        }
-
-        return null;
-    }
-
 	/**
 	 * @param request
 	 * @return
 	 */
-	private String getRequestURI(HttpServletRequest request) {
+	public String getRequestURI(HttpServletRequest request) {
 		return request.getRequestURI()
 			.replaceFirst(getRequestContext().getApplicationRootPath(),"")
 			.replaceFirst(getRequestContext().getWebResourceRootPath(), "")
@@ -474,7 +482,16 @@ public class RequestLifeCycle {
     public void redirectToResource(Method routeMethod, String urlPattern) throws IOException, ServletException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
     	Object[] retrievedParameters = retrieveRouteMethodParametersFromRequest(routeMethod);
     	routeMethod.invoke(targetInstance, retrievedParameters);
-    	String url = (String) ComplexExpressionEvaluator.getValue(urlPattern, requestContext);
+    	String url = measureTheUrlShouldBeRedirectedTo(urlPattern);
+        redirect( url );
+    }
+
+	/**
+	 * @param urlPattern
+	 * @return
+	 */
+	public String measureTheUrlShouldBeRedirectedTo(String urlPattern) {
+		String url = (String) ComplexExpressionEvaluator.getValue(urlPattern, requestContext);
 
     	if (!isOutsideRedirectRequest(url)){
 			if ( !url.startsWith("/") )
@@ -482,43 +499,67 @@ public class RequestLifeCycle {
 			url = (requestContext.getApplicationRootPath() + url)
 					.replaceAll("//+", "/");
     	}
+		return url;
+	}
 
-        redirect( url );
-    }
-
+    /**
+     * @param url
+     * @return
+     */
     public boolean isOutsideRedirectRequest( String url ) {
     	return url.startsWith("http://")
     		|| url.startsWith("https://");
     }
 
+	/**
+	 * @return
+	 */
 	public Object getTargetInstance() {
 		return targetInstance;
 	}
 
+	/**
+	 * @param targetInstance
+	 */
 	public void setTargetInstance(Object targetInstance) {
 		this.targetInstance = targetInstance;
 	}
 
+	/**
+	 * @return
+	 */
 	public List<Method> getRoutes() {
 		return routes;
 	}
 
+	/**
+	 * @param routes
+	 */
 	public void setRoutes(List<Method> routes) {
 		this.routes = routes;
 	}
 
+	/**
+	 * @return
+	 */
 	public EnterpriseJavaBeans getEjbManager() {
 		if ( ejbManager == null )
 			ejbManager = ((JEEBusinessRoutingConfiguration)getRequestContext().getConfiguration()).getEjbManager();
 		return ejbManager;
 	}
 
+	/**
+	 * @return
+	 */
 	public ServletContext getServletContext() {
 		return requestContext
 				.getConfiguration()
 				.getServletContext();
 	}
 
+	/**
+	 * @param ejbManager
+	 */
 	public void setEjbManager(EnterpriseJavaBeans ejbManager) {
 		this.ejbManager = ejbManager;
 	}

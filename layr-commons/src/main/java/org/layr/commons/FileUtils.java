@@ -28,6 +28,9 @@ public class FileUtils {
 
 	public static String readFileAsString(InputStream stream)
 			throws UnsupportedEncodingException, IOException {
+		if ( stream == null )
+			return null;
+		
 		Reader reader = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 		StringBuilder builder = new StringBuilder();
 		char[] buffer = new char[8192];

@@ -6,9 +6,9 @@ O Layr é uma ferramenta open-source com foco em Free-Logic Markup, modularizaç
 
 ## Por que usar Layr?
 
- - Re-aproveitamento de códigos do front-end: Aplicações desenvolvidas com o Layr utilizam-se de algumas técnicas do XHTML para enriquecer o HTML/HTML5 e re-aproveitar trechos utilizados com frequência em suas aplicações;
- - Rápida manutenção: Seu design de software limpo te ajuda a manter suas lógicas de negócio completamente desvinculadas do front-end, facilitando a manutenção e evolução da aplicação;
- - Convention over configuration: Layr transformou dois conceitos de desenvolvimento web em convenção: navegação intuitiva e roteamento baseado em negócio. Desta forma não é necessário configurações em arquivos externos, diminuindo o tempo de setup da aplicação.
+ - **Re-aproveitamento de códigos do front-end**: Aplicações desenvolvidas com o Layr utilizam-se de algumas técnicas do XHTML para enriquecer o HTML/HTML5 e re-aproveitar trechos utilizados com frequência em suas aplicações;
+ - **Rápida manutenção**: Seu design de software limpo te ajuda a manter suas lógicas de negócio completamente desvinculadas do front-end, facilitando a manutenção e evolução da aplicação;
+ - **Convention over configuration**: Layr transformou dois conceitos de desenvolvimento web em convenção: navegação intuitiva e roteamento baseado em negócio. Desta forma não é necessário configurações em arquivos externos, diminuindo o tempo de setup da aplicação.
 
 ## Por que Free-Logic Markup ?
 
@@ -21,9 +21,9 @@ As vantagens deste paradigma sobre as Server Pages são enúmeras. A principal d
 
 ## Por que XHTML?
 
-Sempre que incluímos uma biblioteca nova durante a construção do software, incluímos também mais um ponto de manutenção no código fonte. O mesmo acontece com as bibliotecas de template. Além do fato de que, ao longo do tempo, pouca adoção bibliotecas podem deixar de ser manutenidas, vale lembrar que no final todas elas vão gerar HTML para o navegador interpretar.
+Sempre que incluímos uma biblioteca nova durante a construção do software, incluímos também mais um ponto de manutenção no código fonte. O mesmo acontece com as bibliotecas de template. Além do fato de que, ao longo do tempo, com a pouca adoção de algumas bibliotecas, elas podem deixar cair em desuso. Se corremos riscos trabalhando com modelos que possam ter pouca adoção, por que não utilizar o HTML, que todo navegador é capaz de interpretar?
 
-O modelo bem definido de XML, permite dar versatilidade aos editores de texto ao se editar um HTML ( auto-identação e auto-complete, por exemplo). É através desta junção ( sintaxe XML + HTML ) que conseguimos mais facil a diagramação da tela e reutilização de lógicas de telas.
+Utilizar-se do modelo XHTML sobre o modelo padrão do HTML tem vantagens também. O modelo bem definido de XML, permite dar versatilidade aos editores de texto ao se editar um HTML ( auto-identação e auto-complete, por exemplo). É através desta junção ( sintaxe XML + HTML ) que conseguimos mais facil a diagramação da tela e reutilização de lógicas de telas.
 
 ## É possível gerar HTML5 mesmo usando XHTML?
 
@@ -140,10 +140,12 @@ Note que no exemplo anterior o foco era apenas a camada de apresentação, a def
 
 Existem hoje no mercado várias ferramentas que auxiliam estas interações do usuário, e foge um pouco ao escopo deste documento detalhar o seu uso. Mas para fins de futuras pesquisas, os frameworks abaixo serão de grande valia quando for se trabalhar com **Free-Logic Markup**:
 
- - KnockoutJS
- - Backbone.js
- - Underscore.js
- - AngularJS
+ - [KnockoutJS](http://knockoutjs.com)
+ - [jQuery](http://jquery.com)
+ - [MooTools](http://mootools.net)
+ - [Backbone.js](http://backbonejs.org)
+ - [Underscore.js](http://underscorejs.org)
+ - [AngularJS](http://angularjs.org)
 
 ## Navegação Condicionada ao Negócio
 

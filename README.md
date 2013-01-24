@@ -21,7 +21,7 @@ As vantagens deste paradigma sobre as Server Pages são enúmeras. A principal d
 
 ## Por que XHTML?
 
-Sempre que incluímos uma biblioteca nova durante a construção do software, incluímos também mais um ponto de manutenção no código fonte. O mesmo acontece com as bibliotecas de template. Além do fato de que, ao longo do tempo, com a pouca adoção de algumas bibliotecas, elas podem deixar cair em desuso. Se corremos riscos trabalhando com modelos que possam ter pouca adoção, por que não utilizar o HTML, que todo navegador é capaz de interpretar?
+Sempre que incluímos uma biblioteca nova durante a construção do software, incluímos também mais um ponto de manutenção no código fonte. O mesmo acontece com as bibliotecas de template. Além do fato de que, ao longo do tempo, com a pouca adoção de algumas bibliotecas, elas podem cair em desuso. Se corremos riscos trabalhando com modelos que possam ter pouca adoção, por que não utilizar o HTML, que todo navegador é capaz de interpretar?
 
 Utilizar-se do modelo XHTML sobre o modelo padrão do HTML tem vantagens também. O modelo bem definido de XML, permite dar versatilidade aos editores de texto ao se editar um HTML ( auto-identação e auto-complete, por exemplo). É através desta junção ( sintaxe XML + HTML ) que conseguimos mais facil a diagramação da tela e reutilização de lógicas de telas.
 

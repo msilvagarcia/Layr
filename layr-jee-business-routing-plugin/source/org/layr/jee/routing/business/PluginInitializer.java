@@ -52,8 +52,11 @@ public class PluginInitializer implements ServletContainerInitializer {
 		reportLayrInitializationStatus(servletContext);
 	}
 
+	/**
+	 * @param servletContext
+	 */
 	public void reportLayrInitializationStatus(ServletContext servletContext) {
-		servletContext.log("[Layr] Plugin loaded: Business Routing");
+		servletContext.log("[Layr] JEE Business Routing Plugin loaded");
 	}
 
 	/**

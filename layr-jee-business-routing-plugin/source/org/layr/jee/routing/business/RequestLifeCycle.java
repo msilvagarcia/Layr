@@ -133,7 +133,9 @@ public class RequestLifeCycle {
     		instance.initialize(getRequestContext());
     	}
 
-    	getEjbManager().injectEJB(targetInstance);
+    	EnterpriseJavaBeans ejbManager = getEjbManager();
+		if ( ejbManager != null )
+			ejbManager.injectEJB(targetInstance);
 	}
 
     /**
@@ -146,31 +148,23 @@ public class RequestLifeCycle {
      */
     public void run(Method routeMethod) throws ServletException {
         try {
+        	Object returnedObject = executeFoundRouteMethod(routeMethod);
             Route route = routeMethod.getAnnotation(Route.class);
-            bindParametersSentFromRequestAgainstWebResourceFields();
 
-            if ( !StringUtil.isEmpty(route.contentType()) )
-            	requestContext.setContentType(route.contentType());
+    		String redirectTo = measureRedirectURL(route);
+    		if ( !StringUtil.isEmpty(redirectTo) ) {
+    			redirectToResource( redirectTo );
+    		    return;
+    		}
 
-            if ( route.json() ) {
-                renderAsJSON(routeMethod);
-                return;
-            }
-
-            String redirectTo = route.redirectTo();
-			if ( !StringUtil.isEmpty(redirectTo) ) {
-				redirectToResource( routeMethod, redirectTo );
-                return;
-            }
-
-			runMethodAndRenderResponse(routeMethod, route);
+            render(returnedObject, route);
         } catch (Exception e) {
             throw new ServletException(e.getMessage(), e);
         }
     }
 
 	/**
-	 * @param routeMethod
+	 * @param returnedObject
 	 * @param route
 	 * @throws ServletException
 	 * @throws IOException
@@ -179,17 +173,74 @@ public class RequestLifeCycle {
 	 * @throws ParserConfigurationException
 	 * @throws SAXException
 	 * @throws CloneNotSupportedException
-	 * @throws TemplateParsingException 
+	 * @throws TemplateParsingException
 	 */
-	public void runMethodAndRenderResponse(Method routeMethod, Route route)
+	public void render(Object returnedObject, Route route)
 			throws ServletException, IOException, IllegalAccessException,
 			InvocationTargetException, ParserConfigurationException,
 			SAXException, CloneNotSupportedException, TemplateParsingException {
+		if ( routeShouldRenderJSON(route) ) {
+		    renderReturnedValueAsJSON(returnedObject);
+		    return;
+		}
+
+		defineOutputContentType(route);
+		String template = measureRouteTemplate(route);
+		renderTemplateOrTheRouteReturnedObject(template, returnedObject);
+	}
+
+	/**
+	 * @param route
+	 */
+	private void defineOutputContentType(Route route) {
+		String contentType = measureRequestContentType(route);
+		if ( !StringUtil.isEmpty(contentType) )
+			requestContext.setContentType(contentType);
+	}
+
+	/**
+	 * @param route
+	 * @return
+	 */
+	public String measureRequestContentType(Route route) {
+		String contentType = (String)ExpressionEvaluator
+				.eval(targetInstance, route.contentType()).getValue();
+		return contentType;
+	}
+	
+	/**
+	 * @param route
+	 * @return
+	 */
+	public String measureRedirectURL(Route route) {
+		String contentType = (String)ExpressionEvaluator
+				.eval(targetInstance, route.redirectTo()).getValue();
+		return contentType;
+	}
+
+	/**
+	 * @param route
+	 * @return
+	 */
+	public Boolean routeShouldRenderJSON(Route route) {
+		return route.json();
+	}
+
+	/**
+	 * @param routeMethod
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	public Object executeFoundRouteMethod(Method routeMethod) throws ServletException,
+			IOException, IllegalAccessException, InvocationTargetException {
+        bindParametersSentFromRequestAgainstWebResourceFields();
 		Object[] parameters = retrieveRouteMethodParametersFromRequest(routeMethod);
 		Object returnedObject = routeMethod.invoke(targetInstance, parameters);
-        bindWebResourceFieldsAgainstRequestContextForFurtherTemplateRenderingUse();
-        String template = measureRouteTemplate(route);
-		renderWebPageOrRouteReturnedObject(template, returnedObject);
+		bindWebResourceFieldsAgainstRequestContextForFurtherTemplateRenderingUse();
+		return returnedObject;
 	}
 
 	/**
@@ -200,10 +251,10 @@ public class RequestLifeCycle {
 		String template = getGeneralTemplate();
 		if ( !StringUtil.isEmpty(route.template()) )
 		    template = route.template();
+
 		Object measuredTemplate = ExpressionEvaluator
-				.eval(targetInstance, template)
-				.getValue();
-		
+				.eval(targetInstance, template).getValue();
+
 		return measuredTemplate != null
 					? measuredTemplate.toString()
 					: template;
@@ -221,17 +272,35 @@ public class RequestLifeCycle {
 	 * @throws ParserConfigurationException 
 	 * @throws TemplateParsingException 
 	 */
-	public void renderWebPageOrRouteReturnedObject(String templateName, Object returnedObject)
+	public void renderTemplateOrTheRouteReturnedObject(String templateName, Object returnedObject)
 			throws IOException, ParserConfigurationException, SAXException, CloneNotSupportedException, ServletException, TemplateParsingException {
 		HttpServletResponse response = requestContext.getResponse();
-		if (returnedObject != null && returnedObject.getClass().getPackage().getName().equals("java.lang"))
-			response.getWriter().append(returnedObject.toString());
+		if (isReturnedObjectNativeJavaObject(returnedObject))
+			renderAsString(returnedObject, response);
 
 		else if (returnedObject != null && InputStream.class.isInstance(returnedObject))
 			renderABinaryObject(returnedObject, response);
 
 		else if (!StringUtil.isEmpty(templateName))
             renderRouteTemplate(templateName);
+	}
+
+	/**
+	 * @param returnedObject
+	 * @return
+	 */
+	public boolean isReturnedObjectNativeJavaObject(Object returnedObject) {
+		return returnedObject != null && returnedObject.getClass().getPackage().getName().equals("java.lang");
+	}
+
+	/**
+	 * @param returnedObject
+	 * @param response
+	 * @return
+	 * @throws IOException
+	 */
+	public PrintWriter renderAsString(Object returnedObject, HttpServletResponse response) throws IOException {
+		return response.getWriter().append(returnedObject.toString());
 	}
 
 	/**
@@ -284,14 +353,10 @@ public class RequestLifeCycle {
      * @throws ServletException
      * @throws IOException
      */
-    public void renderAsJSON(Method routeMethod) throws ServletException, IOException {
-        Object[] parameters = retrieveRouteMethodParametersFromRequest(routeMethod);
-        requestContext.setContentType("application/json");
-
+    public void renderReturnedValueAsJSON(Object returnedValue) throws ServletException, IOException {
         try {
+        	requestContext.setContentType("application/json");
             PrintWriter writer = getRequestContext().getResponse().getWriter();
-            Object returnedValue = routeMethod.invoke(targetInstance, parameters);
-            bindWebResourceFieldsAgainstRequestContextForFurtherTemplateRenderingUse();
 			String json = defaultDataParser.encode(returnedValue);
             writer.write(json);
         } catch (Exception e) {
@@ -479,9 +544,7 @@ public class RequestLifeCycle {
      * @throws IllegalAccessException 
      * @throws IllegalArgumentException 
      */
-    public void redirectToResource(Method routeMethod, String urlPattern) throws IOException, ServletException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-    	Object[] retrievedParameters = retrieveRouteMethodParametersFromRequest(routeMethod);
-    	routeMethod.invoke(targetInstance, retrievedParameters);
+    public void redirectToResource(String urlPattern) throws IOException, ServletException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
     	String url = measureTheUrlShouldBeRedirectedTo(urlPattern);
         redirect( url );
     }
@@ -491,12 +554,12 @@ public class RequestLifeCycle {
 	 * @return
 	 */
 	public String measureTheUrlShouldBeRedirectedTo(String urlPattern) {
-		String url = (String) ComplexExpressionEvaluator.getValue(urlPattern, requestContext);
+		String url = (String) ComplexExpressionEvaluator.getValue(urlPattern, getRequestContext());
 
     	if (!isOutsideRedirectRequest(url)){
 			if ( !url.startsWith("/") )
-				url = requestContext.getWebResourceRootPath() + url;
-			url = (requestContext.getApplicationRootPath() + url)
+				url = getRequestContext().getWebResourceRootPath() + url;
+			url = (getRequestContext().getApplicationRootPath() + url)
 					.replaceAll("//+", "/");
     	}
 		return url;

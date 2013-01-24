@@ -2,6 +2,7 @@ package org.layr.jee.stubs;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Locale;
 
@@ -10,11 +11,28 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 public class HttpServletResponseStub implements HttpServletResponse {
+	
+	PrintWriter writer;
+	StringWriter stringWriter;
+	String newLocation;
 
+	public HttpServletResponseStub() {
+		createNewWriter();
+	}
+	
 	@Override
 	public void flushBuffer() throws IOException {
-		// TODO Auto-generated method stub
+		createNewWriter();
+		newLocation = null;
+	}
 
+	public void createNewWriter() {
+		stringWriter = new StringWriter();
+		writer = new PrintWriter(stringWriter);
+	}
+
+	public String readWroteOutput() {
+		return stringWriter.getBuffer().toString();
 	}
 
 	@Override
@@ -49,8 +67,7 @@ public class HttpServletResponseStub implements HttpServletResponse {
 
 	@Override
 	public PrintWriter getWriter() throws IOException {
-		// TODO Auto-generated method stub
-		return null;
+		return writer;
 	}
 
 	@Override
@@ -193,8 +210,7 @@ public class HttpServletResponseStub implements HttpServletResponse {
 
 	@Override
 	public void sendRedirect(String location) throws IOException {
-		// TODO Auto-generated method stub
-
+		setNewLocation(location);
 	}
 
 	@Override
@@ -225,6 +241,14 @@ public class HttpServletResponseStub implements HttpServletResponse {
 	public void setStatus(int sc, String sm) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public String getNewLocation() {
+		return newLocation;
+	}
+
+	public void setNewLocation(String newLocation) {
+		this.newLocation = newLocation;
 	}
 
 }

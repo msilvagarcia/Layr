@@ -1,28 +1,31 @@
 package org.layr.jee.routing.business;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+
 import javax.servlet.ServletException;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import org.layr.jee.stubs.HttpServletRequestStub;
 
 public class LayrLifeCycleRedirectTests {
 	
-	private RequestLifeCycleStub requestLifeCycle;
-	private Method stubRequestMethod;
+	private RequestLifeCycleStub lifeCycle;
 
 	@Before
-	public void setup() throws SecurityException, NoSuchMethodException{
-		requestLifeCycle = new RequestLifeCycleStub();
-		requestLifeCycle.targetInstance = new FakeResourceClass();
-		requestLifeCycle.requestContext = mockRequestContext();
-		stubRequestMethod = extractStubTargetMethod();
+	public void setup() throws SecurityException, NoSuchMethodException, IOException, ClassNotFoundException, ServletException{
+		lifeCycle = RequestLifeCycleStub.initializeLifeCycle();
+		lifeCycle.targetInstance = new FakeResourceClass();
+		JEEBusinessRoutingRequestContext requestContext = lifeCycle.getRequestContext();
+		requestContext.setWebResourceRootPath("fake/resource/");
+		((HttpServletRequestStub)requestContext.getRequest()).setContextPath("/application/");
 	}
 
 	@Test
@@ -48,6 +51,13 @@ public class LayrLifeCycleRedirectTests {
 		String url = createRedirectUrl("http://layr.org");
 		assertEquals("http://layr.org", url);
 	}
+	
+	@Test
+	public void grantThatRunLifeCycleMethodDoRedirectionAsExpected() throws ServletException, IOException{
+		lifeCycle.setRequestURL("fake/resource/redirect/?url=http://layr.org");
+		String location = lifeCycle.runAndRetrieveNewRedirectedLocation();
+		assertEquals("http://layr.org", location);
+	}
 
 	public JEEBusinessRoutingRequestContext mockRequestContext(){
 		JEEBusinessRoutingRequestContext requestContext = mock(JEEBusinessRoutingRequestContext.class);
@@ -67,17 +77,22 @@ public class LayrLifeCycleRedirectTests {
 	public String createRedirectUrl( String url ) 
 			throws IllegalArgumentException, IOException, ServletException,
 				   IllegalAccessException, InvocationTargetException {
-		requestLifeCycle.redirectToResource(stubRequestMethod, url);
-		String lastRedirectedUri = requestLifeCycle.lastRedirectedUri;
-		return lastRedirectedUri;
+		lifeCycle.redirectToResource(url);
+		return lifeCycle.lastRedirectedUri;
 	}
-	
+
 	public Method extractStubTargetMethod() throws SecurityException, NoSuchMethodException{
 		return FakeResourceClass.class.getDeclaredMethod("method");
 	}
 
 	public class FakeResourceClass{
-		public void method(){}
+		String urlToRedirect;
+		
+		@Route(redirectTo="#{urlToRedirect}")
+		public void redirect(
+			@Parameter("url") String url){
+			urlToRedirect = url;
+		}
 	}
 
 }

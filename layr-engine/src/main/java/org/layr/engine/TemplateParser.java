@@ -156,18 +156,12 @@ public class TemplateParser extends DefaultHandler {
 	 */
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
-		extractTextContentBeforeNesting();
-
 		try {
+			extractTextContentBeforeNesting();
 			IComponent newComponent = createNewComponent(uri, localName, qName);
-			if (newComponent == null)
-				throw new SAXException("Can't parse the unknown element '" + localName + "'");
-
-			setComponentAttributes(newComponent, attributes);
+			setFoundAttributesToComponent(newComponent, attributes);
 			defineCurrentParsedComponent(newComponent);
-		} catch (InstantiationException e) {
-			throw new SAXException(e.getMessage(), e);
-		} catch (IllegalAccessException e) {
+		} catch (Exception e) {
 			throw new SAXException(e.getMessage(), e);
 		}
 	}
@@ -188,7 +182,7 @@ public class TemplateParser extends DefaultHandler {
 	 * @param newComponent
 	 * @param attributes
 	 */
-	public void setComponentAttributes(IComponent newComponent, Attributes attributes) {
+	public void setFoundAttributesToComponent(IComponent newComponent, Attributes attributes) {
 		for (int i = 0; i < attributes.getLength(); i++)
 			newComponent.setAttribute(attributes.getQName(i),
 					attributes.getValue(i));

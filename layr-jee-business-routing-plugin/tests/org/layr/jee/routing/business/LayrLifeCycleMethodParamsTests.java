@@ -1,4 +1,4 @@
-package org.layr.jee.routing.business.test;
+package org.layr.jee.routing.business;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -14,34 +14,29 @@ import javax.servlet.ServletException;
 import org.junit.Before;
 import org.junit.Test;
 import org.layr.jee.routing.business.JEEBusinessRoutingRequestContext;
-import org.layr.jee.routing.business.RequestLifeCycle;
 import org.layr.jee.routing.business.sample.HelloResource;
 import org.layr.jee.routing.business.sample.World;
 import org.layr.jee.stubs.HttpServletRequestStub;
 
-public class LayrLifeCycleTest {
+public class LayrLifeCycleMethodParamsTests {
 	
 	private HelloResource resource;
 	private JEEBusinessRoutingRequestContext requestContext;
-	private RequestLifeCycle lifeCycle;
+	private RequestLifeCycleStub lifeCycle;
 
 	@Before
 	public void setupRequest() throws IOException, ClassNotFoundException, ServletException {
 		if (requestContext != null)
 			return;
 		
-		lifeCycle = LifeCycleTestFactory.initializeLifeCycle();
-
+		lifeCycle = RequestLifeCycleStub.initializeLifeCycle();
 		resource = new HelloResource();
 		lifeCycle.setTargetInstance(resource);
-
 		requestContext = lifeCycle.getRequestContext();
 		requestContext.setWebResourceRootPath("hello");
 
-		setRequestURL("/hello/sayHello");
+		lifeCycle.setRequestURL("/hello/sayHello");
 		sendDefaultParameters();
-
-		lifeCycle.bindParametersSentFromRequestAgainstWebResourceFields();
 	}
 
 	public void sendDefaultParameters() {
@@ -58,20 +53,12 @@ public class LayrLifeCycleTest {
 		dictionary.put("worlds", "[{\"name\":\"Ramon Valdes\",\"hello\":{ \"countries\": [\"Brazil\",\"London\"]},\"id\":431},{\"name\":\"Roberto Bolaños\",\"id\":681}]");
 		dictionary.put("hello.myWorld", "{\"name\":\"Ramon Valdes\",\"id\":431}");
 		servletRequest.setParameters(dictionary);
-	}
 
-	public void setRequestURL(String url) {
-		((HttpServletRequestStub)requestContext.getRequest()).setRequestURL(url);
 	}
-
-	public Object invokeCurrentRequestMethod() throws ServletException,
-			IOException, IllegalAccessException, InvocationTargetException {
-		return LifeCycleTestFactory.invokeCurrentRequestMethod(lifeCycle, resource);
-	}
-
 	@Test
 	public void grantThatBindRequestedParameters ()
 			throws ServletException, IOException {
+		runMethodAndReturnWroteOutputData();
 
 		assertEquals("Earth", resource.getHello().getWorld());
 		assertEquals("Moon", resource.getHello().getRealworld().getName());
@@ -100,20 +87,20 @@ public class LayrLifeCycleTest {
 
 	@Test
 	public void grantThatFoundTheMethodFoundTheParametersAndCanInvokeHim() throws ServletException, IOException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-        Object result = invokeCurrentRequestMethod();
-		assertEquals("Hello World", result);
+		String outputData = runMethodAndReturnWroteOutputData();
+		assertEquals("Hello World", outputData);
 	}
 
 	@Test
 	public void grantThatFoundTheMethodWhenURLNotEndsWithSlash() throws ServletException, IOException, IllegalAccessException, InvocationTargetException {
-		setRequestURL("/hello/sayHello");
+		lifeCycle.setRequestURL("/hello/sayHello");
 		Object result = invokeCurrentRequestMethod();
 		assertEquals("Hello World", result);
 	}
 
 	@Test
 	public void grantThatFoundTheMethodWhenURLNotEndsWithSlashAndReceiveAnParameterThatIsNotMappepAsAttribute() throws ServletException, IOException, IllegalAccessException, InvocationTargetException {
-		setRequestURL("/hello/add");
+		lifeCycle.setRequestURL("/hello/add");
 		Object result = invokeCurrentRequestMethod();
 		assertEquals("Test", result);
 	}
@@ -121,20 +108,28 @@ public class LayrLifeCycleTest {
 	@Test
 	public void grantThatFoundTheMethodWhenURLNotEndsWithSlashAndReceiveAnParameterThatIsNotMappepAsAttributeAndReturnJSON()
 			throws ServletException, IOException, IllegalAccessException, InvocationTargetException {
-		setRequestURL("/hello/addAsJSON");
+		lifeCycle.setRequestURL("/hello/addAsJSON");
 		Object result = invokeCurrentRequestMethod();
 		assertEquals("Test", result);
 	}
 
 	@Test
 	public void grantThatRunTheMethodWithParametersFromPattern() throws ServletException, IOException, IllegalAccessException, InvocationTargetException {
-		setRequestURL("/say/123/something/");
+		lifeCycle.setRequestURL("/say/123/something/");
 		Object result = invokeCurrentRequestMethod();
 		assertEquals("Id '123' and '12' arrived from request.", result);
 	}
 
-	private Date getTodayDate() {
+	public Date getTodayDate() {
 		return new GregorianCalendar(2012, 4, 26).getTime();
 	}
+
+	public Object invokeCurrentRequestMethod() throws ServletException,
+			IOException, IllegalAccessException, InvocationTargetException {
+		return lifeCycle.invokeCurrentRequestMethod(resource);
+	}
 	
+	public String runMethodAndReturnWroteOutputData() throws ServletException, IOException{
+		return lifeCycle.runMethodAndReturnWroteOutputData();
+	}
 }

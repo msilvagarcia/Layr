@@ -382,9 +382,9 @@ public class HttpServletRequestStub implements HttpServletRequest {
 				String[] keyvalue = param.split("=");
 				dictionary.put(keyvalue[0], keyvalue[1]);
 			}
-			parameters.putAll(dictionary);
+			getParameters().putAll(dictionary);
 		}
-		
+
 		requestURI = url;
 	}
 

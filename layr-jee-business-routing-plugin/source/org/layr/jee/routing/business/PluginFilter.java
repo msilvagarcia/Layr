@@ -24,7 +24,7 @@ public class PluginFilter implements Filter {
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.filterConfig = filterConfig;
-		filterConfig.getServletContext().log( "[Layr] Business Routing Filter Initialized.");
+		filterConfig.getServletContext().log( "[Layr] JEE Business Routing Filter Initialized.");
 	}
 
 	/* (non-Javadoc)

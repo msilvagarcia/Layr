@@ -93,10 +93,10 @@ Você deve ter notado que a quantidade de código escrita diminuiu um pouco. Gra
 ```xhtml
 <div xmlns="http://www.w3.org/1999/xhtml"
    xmlns:tpl="urn:layr:template"
-		class="FormItem control-group">
+    class="FormItem control-group">
 
-	<label class="pull-left">#{FormItem:label}</label>
-	<tpl:children />
+  <label class="pull-left">#{FormItem:label}</label>
+  <tpl:children />
 
 </div>
 ```
@@ -105,18 +105,13 @@ O componente **children** define o local aonde os filhos do componente serão re
 
 ## Organização Natural
 
- - Organização de arquivos
+Definir pacotes (aka. Packages ou Namespaces) para isolar escopo, pastas para agrupar determinadas views em HTML e subformários, são práticas diárias dos programadores. Ao se ler um código fonte bem organizado encontramos rapidamente o que precisamos durante uma manutenção, e conseguimos definir melhores estratégias de _refactoring_ e evolução do software. E é esta organização, que é feita as vezes de maneira tão natural, um dos principais responsáveis por isso.
 
-  - Hoje as pessoas já organizam os conteúdos dos seus sistemas/apps. Porque para cada camada da aplicação, existe uma organização diferente ? Porque não usar a mesma convenção organização/nomeclatura/sintaxe ?
-
- - Organização nos arquivos
-   - Dentro do HTML, é montada a maneira como os conteúdos serão apresentados. Porque não expandir essa organização para os componentes que devem ser reusados, diminuindo assim o quanto de código é escrito ?
+Para entender como o Layr faz o roteamento de seus HTML's é importante entender que ele se vale basicamente de dois conceitos: **Navegação Natural** e **Navegação Condicionada ao Negócio**. Ambos são conceitos que seguem o seguinte princípio: se nos dedicamos tanto tempo organizando nossos códigos fontes, por que não podemos nos valer desta organização para o roteamento interno de nosso software?
 
 ## Navegação Natural
 
- - Vamos imaginar que sua aplicação roda no URL http://localhost:8080/, e que sua estrutura de projeto
-   prevê que a raíz do aplicativo está numa pasta chamada **source**. Abaixo um exemplo de como poderia
-   estar o seu projeto usando o Layr:
+Vamos imaginar que sua aplicação roda no URL http://localhost:8080/, e que sua estrutura de projeto prevê que a raíz do aplicativo está numa pasta chamada **source**. Abaixo um exemplo de como poderia estar o seu projeto usando o Layr:
 
 <pre>
   |-- source
@@ -135,17 +130,24 @@ O componente **children** define o local aonde os filhos do componente serão re
   |   |   |-- PasswordField.xhtml
 </pre>
 
- - Durante todo o desenvolvimento de um projeto, investe-se tempo organizando e definindo boas taxonomias
-   para seus arquivos. Com o tempo, isto se torna um hábito natural do desenvolvedor. Se pudessemos aproveitar
-   este esforço para definir, por exmplo, a maneira com que os _resources_ serão acessados pelo navegador,
-   ou seja, como será definida a URL em que o usuário irá navegar pelo sistema, então ganhariamos tempo de
-   desenvolvimento. A isso, é dado o nome de Navegação Natural.
+Durante todo o desenvolvimento de um projeto, investe-se tempo organizando e definindo boas taxonomias para seus arquivos. Com o tempo, isto se torna um hábito natural do desenvolvedor. Se pudessemos aproveitar este esforço para definir, por exmplo, a maneira com que os _resources_ serão acessados pelo navegador, ou seja, como será definida a URL em que o usuário irá navegar pelo sistema, então ganhariamos tempo de desenvolvimento. A isso, é dado o nome de _Navegação Natural_.
 
- - Sendo assim, imagine que tu precisas exibir a tela de listagem de usuários. Você poderia acessá-lo através da URL
-   http://localhost:8080/user/list/. Note que aqui estamos falando apenas de apresentação, em momento algum estamos
-   nos preocupando em como vamos obter os dados para serem exibidos, ou como os salvaremos no banco.
+Sendo assim, imagine que seja necessário exibir a tela de listagem de usuários. No modelo proposto acima, você poderia acessá-lo através da URL http://localhost:8080/user/list/.
+
+### Obtendo dados para a interface
+
+Note que no exemplo anterior o foco era apenas a camada de apresentação, a definição de como ela será exibida. Aqui entra o conceito de **Free-Logic Markup**, apresentado anteriormente, cabendo às rotinas JavaScript associadas a esta view tratar operações de busca de dados do servidor (JSON, XML, etc), definir os eventos a serem disparados de acordo com a interação com o usuário, ou qualquer outra operação dinâmica da tela.
+
+Existem hoje no mercado várias ferramentas que auxiliam estas interações do usuário, e foge um pouco ao escopo deste documento detalhar o seu uso. Mas para fins de futuras pesquisas, os frameworks abaixo serão de grande valia quando for se trabalhar com **Free-Logic Markup**:
+
+ - KnockoutJS
+ - Backbone.js
+ - Underscore.js
+ - AngularJS
 
 ## Navegação Condicionada ao Negócio
+
+É verdade, também, que as vezes a gente precisa tomar uma decisão 
 
  - Por vezes, direcionamos os nossos usuários de nossos softwares à páginas baseado em tomadas de decisão de negócio.
    Imagine que um cliente de seu software foi selecionado para testar uma tela nova do sistema. Quando ele selecionar
@@ -162,15 +164,15 @@ public class HomeResource {
 
   String productListTemplateName;
 
-	@Route(
-		pattern="/list/",
-		template="/products/#{productListTemplateName}.xhtml")
-	public void listProducts(){
-		if ( userSession.isBetaUser() )
-			productListTemplateName = "listBeta";
-		else
-			productListTemplateName = "list";
-	}
+  @Route(
+    pattern="/list/",
+    template="/products/#{productListTemplateName}.xhtml")
+  public void listProducts(){
+    if ( userSession.isBetaUser() )
+      productListTemplateName = "listBeta";
+    else
+      productListTemplateName = "list";
+  }
 
 }
 ```
@@ -180,24 +182,24 @@ public class HomeResource {
 public class UserResource {
 
   String redirectTo = "";
-	
-	@Route(
-		pattern="/#{id}/edit",
-		template="user/editForm.xhtml",
-		redirectTo="#{redirectTo}" )
-	public void editUser(
-		@Parameter("id") Long userId ){
-		if ( haveUserBillingPendencies() ){
-			redirectTo = "/user/warning/";
-			return;
-		}
-		
-		// load user information with userId.
-	}
+  
+  @Route(
+    pattern="/#{id}/edit",
+    template="user/editForm.xhtml",
+    redirectTo="#{redirectTo}" )
+  public void editUser(
+    @Parameter("id") Long userId ){
+    if ( haveUserBillingPendencies() ){
+      redirectTo = "/user/warning/";
+      return;
+    }
+    
+    // load user information with userId.
+  }
 
-	public boolean haveUserBillingPendencies(){
-		return new Date().getTime() % 2 == 0;
-	}
+  public boolean haveUserBillingPendencies(){
+    return new Date().getTime() % 2 == 0;
+  }
 
 }
 ```

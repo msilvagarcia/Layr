@@ -18,7 +18,8 @@ import org.layr.jee.routing.business.sample.HelloResource;
 import org.layr.jee.routing.business.sample.World;
 import org.layr.jee.stubs.HttpServletRequestStub;
 
-public class LayrLifeCycleMethodParamsTests {
+
+public class TestsLayrLifeCycleMethodParams {
 	
 	private HelloResource resource;
 	private JEEBusinessRoutingRequestContext requestContext;

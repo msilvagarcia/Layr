@@ -15,14 +15,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.layr.jee.stubs.HttpServletRequestStub;
 
-public class LayrLifeCycleRedirectTests {
-	
+public class TestsLayrLifeCycleRedirect {
+
 	private RequestLifeCycleStub lifeCycle;
 
 	@Before
 	public void setup() throws SecurityException, NoSuchMethodException, IOException, ClassNotFoundException, ServletException{
 		lifeCycle = RequestLifeCycleStub.initializeLifeCycle();
-		lifeCycle.targetInstance = new FakeResourceClass();
+		lifeCycle.setTargetInstance(new FakeResourceClass());
 		JEEBusinessRoutingRequestContext requestContext = lifeCycle.getRequestContext();
 		requestContext.setWebResourceRootPath("fake/resource/");
 		((HttpServletRequestStub)requestContext.getRequest()).setContextPath("/application/");

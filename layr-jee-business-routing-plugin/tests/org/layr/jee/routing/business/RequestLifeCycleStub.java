@@ -10,6 +10,10 @@ import javax.servlet.ServletException;
 import org.layr.commons.Reflection;
 import org.layr.jee.commons.JEEConfiguration;
 import org.layr.jee.commons.JEERequestContext;
+import org.layr.jee.routing.business.JEEBusinessRoutingConfiguration;
+import org.layr.jee.routing.business.JEEBusinessRoutingRequestContext;
+import org.layr.jee.routing.business.RequestLifeCycle;
+import org.layr.jee.routing.business.Route;
 import org.layr.jee.stubs.HttpServletRequestStub;
 import org.layr.jee.stubs.HttpServletResponseStub;
 import org.layr.jee.stubs.StubsFactory;
@@ -50,7 +54,7 @@ public class RequestLifeCycleStub extends RequestLifeCycle {
 	}
 
 	public HttpServletRequestStub getRequestAsStub() {
-		return (HttpServletRequestStub)requestContext.getRequest();
+		return (HttpServletRequestStub)getRequestContext().getRequest();
 	}
 
 	public static RequestLifeCycleStub initializeLifeCycle () throws IOException, ClassNotFoundException, ServletException {

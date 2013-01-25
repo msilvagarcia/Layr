@@ -109,7 +109,7 @@ Definir pacotes (aka. Packages ou Namespaces) para isolar escopo, pastas para ag
 
 Para entender como o Layr faz o roteamento de seus HTML's é importante entender que ele se vale basicamente de dois conceitos: **Navegação Natural** e **Navegação Condicionada ao Negócio**. Ambos são conceitos que seguem o seguinte princípio: se nos dedicamos tanto tempo organizando nossos códigos fontes, por que não podemos nos valer desta organização para o roteamento interno de nosso software?
 
-## Navegação Natural
+## Navegação Natural ( Natural Routing )
 
 Vamos imaginar que sua aplicação roda no URL http://localhost:8080/, e que sua estrutura de projeto prevê que a raíz do aplicativo está numa pasta chamada **source**. Abaixo um exemplo de como poderia estar o seu projeto usando o Layr:
 
@@ -147,15 +147,13 @@ Existem hoje no mercado várias ferramentas que auxiliam estas interações do u
  - [Underscore.js](http://underscorejs.org)
  - [AngularJS](http://angularjs.org)
 
-## Navegação Condicionada ao Negócio
+## Navegação Condicionada ao Negócio ( Business Routing )
 
-É verdade, também, que as vezes a gente precisa tomar uma decisão 
+Nem sempre é possível utilizar apenas Navegação Natural. As vezes, faz-se necessário consultar algum dado do banco de dados para só então devolver a informação para o navegador. A estas requisições damos o nome de **Navegação Condicionada ao Negócio**.
 
- - Por vezes, direcionamos os nossos usuários de nossos softwares à páginas baseado em tomadas de decisão de negócio.
-   Imagine que um cliente de seu software foi selecionado para testar uma tela nova do sistema. Quando ele selecionar
-   o URL http://localhost:8080/product/list/, ele deveria ver a versão nova da tela de listagem de produtos, enquanto
-   os usuários antigos deveriam continuar vendo a página antiga. Abaixo um exemplo de como isso pode ser feito usando
-   o plugin de Business Routing do Layr:
+Para diferenciar este tipo de requisição de uma requisição de _obtenção de dados para a interface_, vamos imaginar que um cliente de seu software foi selecionado para testar uma tela nova do sistema. Quando ele entrar no URL ```http://localhost:8080/product/list/```, ele deveria ver a versão nova da tela de listagem de produtos, enquanto os usuários antigos deveriam continuar vendo a página antiga.
+
+Para tratar este tipo de situação com o Layr, criamos a classe abaixo:
 
 ```java
 @WebResource("/product/")
@@ -163,7 +161,6 @@ public class HomeResource {
 
   Products products;
   UserSession userSession; // A sample code that represents the current logged in user
-
   String productListTemplateName;
 
   @Route(
@@ -179,18 +176,101 @@ public class HomeResource {
 }
 ```
 
+No exemplo acima, desenhamos uma rota de negócio para ```/product/list/```. No método _listProducts_ verificamos se o usuário é beta, se for verdadeiro definimos que o template a ser renderizado é ```/products/listBeta.xhtml```, do contrário, renderizamos ```/products/list.xhtml```. Note que em momento algum foi incluída lógicas de interface no template, apenas tomamos uma _decisão de negócio_ para definir qual template deve ser enviado ao navegador.
+
+## API de Navegação Condicionada ao Negócio ( Business Routing API )
+
+### Mapeamento
+
+Para mapear uma rota no Layr, deve-se criar uma classe qualquer e anotá-la com ```@WebResource```, a esta classe chamamos de **resource**. O valor padrão da anotação espera o caminho raiz ( dentro do contexto ) para uma rota. Em nosso exemplo, ```/product/```.
+
+Para finalizar, deve-se apontar qual método será executado quando uma requisição chegar. Basta incluir a anotação ```@Route``` no método. Por padrão, se nada for informado ao atributo ```pattern```, a rota fica com o nome do método (em nosso exemplo, ficaria /product/listProducts). Do contrário o valor do pattern é utilizado.
+
+### Enviando dados para o WebResource
+
+É possível receber os dados enviados via parâmetro na URL ( ou num POST de Content-Type '' ) em seu _resource_. Basta que, para cada parâmetro que deseja ser mapeado, crie-se um parâmetro no método a ser executado. Para ficar mais claro vamos ao exemplo abaixo:
+
+```java
+
+@WebResource("/customer/")
+public class CustomerResource {
+
+  @Route
+  public void save(
+    @Parameter("companyId") String companyId,
+    @Parameter("user") User user
+  ){
+    log( "Company Id:" + companyId );
+    saveUser( user );
+  }
+
+  /* other usefull methods here */
+
+  // Class User
+
+  public class User {
+
+    Long id;
+    String firstName;
+    String lastName;
+
+  }
+
+}
+
+```
+
+No exemplo acima criamos uma rota que irá criar um novo cliente no banco. Neste exemplo, quando este método for executado, não vai ser retornado valor algum.
+
+Para que o companyId chegue no método bastaria incluir no URL ( ou enviar via POST ) um parâmetro _companyId=123_, por exemplo. É possível enviar qualquer objeto como parâmetro deste jeito, exceto objetos com Generics (trataremos sobre isso mais adiante).
+
+No caso do parâmetro _user_, que é representa pelo tipo User, há duas formas de enviar o valor:
+ - Enviar no formato JSON ( é normalmente o mais modo mais conveniente ): ```user={ firstName: "Helden", lastName="Teixeira" }```
+ - Outro modelo seria enviar cada campo como parâmetro, ```user.firstName=Helden&user.lastName=Teixeira```. Neste modelo a limitação é a impossibilidade de se enviar itens de listas ( primitivas ou não ).
+
+Para finalizar, o código JavaScript abaixo exemplifica como seria possível enviar estes dados via JSON para o servidor utilizando a biblioteca [jQuery](http://jquery.com).
+
+```javascript
+
+  var currentCompanyId = 123;
+  var user = {
+    firstName: "Helden",
+    lastName: "Teixeira"
+  };
+
+  function notifyThatUserHasBeenSaved(){
+    alert( "User '" + user.lastName + ", " + user.firstName + "' has been created!" );
+  }
+
+  $.post({
+    url: "/customer/save",
+    data: {
+      companyId: currentCompanyId,
+      user: JSON.stringify( user )
+    },
+    success: notifyThatUserHasBeenSaved
+  })
+
+```
+
+### Placeholders
+
+O Layr se vale de _placeholders_ para serem substituídas pelos valores de variáveis no corpo da classe com as rotas. No exemplo que demos sobre a navegação condicionada ao negócio, utilizamos um placeholder no atributo _template_ da definição da rota. Neste exemplo, sempre que o URL ```http://localhost:8080/product/list/``` for chamado, o método listProdutcs
+
+ Redirecionando o usuário de acordo com uma regra de negócio
+
+No exemplo abaixo, precisávamos impedir que um usuário com pendencias de pagamento acessasse a uma determinada parte do sistema que era de acesso exclusivo para usuários pagantes.
+
 ```java
 @WebResource("/user/")
 public class UserResource {
 
-  String redirectTo = "";
+  String redirectTo;
   
   @Route(
-    pattern="/#{id}/edit",
-    template="user/editForm.xhtml",
+    pattern="/#{id}/edit", template="user/editForm.xhtml",
     redirectTo="#{redirectTo}" )
-  public void editUser(
-    @Parameter("id") Long userId ){
+  public void editUser( @Parameter("id") Long userId ) {
     if ( haveUserBillingPendencies() ){
       redirectTo = "/user/warning/";
       return;
@@ -205,3 +285,5 @@ public class UserResource {
 
 }
 ```
+
+Ao definirmos uma rota com o atributo ```redirectTo```, o Layr tentará redirecionar o usuário para a tela nova. Em nosso exemplo, colocamos a referência de uma variável no atributo. Após executar a 

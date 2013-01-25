@@ -72,7 +72,6 @@ public class PluginInitializer implements ServletContainerInitializer {
 		configuration.setWebResources(registeredWebResources);
 		configuration.setRegisteredTagLibs(registeredTagLibs);
 		configuration.setEjbManager(ejbManager);
-		configuration.initializeApplicationContexts();
 
 		servletContext.setAttribute(JEEBusinessRoutingConfiguration.class.getCanonicalName(), configuration);
 	}

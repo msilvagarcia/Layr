@@ -26,8 +26,6 @@ public @interface Route {
 
 	String template() default "";
 
-	boolean json() default false;
-
 	String redirectTo() default "";
 	
 	String pattern() default "";

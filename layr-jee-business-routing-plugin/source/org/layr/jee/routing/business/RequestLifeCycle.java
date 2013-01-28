@@ -179,11 +179,6 @@ public class RequestLifeCycle {
 			throws ServletException, IOException, IllegalAccessException,
 			InvocationTargetException, ParserConfigurationException,
 			SAXException, CloneNotSupportedException, TemplateParsingException {
-		if ( routeShouldRenderJSON(route) ) {
-		    renderReturnedValueAsJSON(returnedObject);
-		    return;
-		}
-
 		defineOutputContentType(route);
 		String template = measureRouteTemplate(route);
 		renderTemplateOrTheRouteReturnedObject(template, returnedObject);
@@ -216,14 +211,6 @@ public class RequestLifeCycle {
 		String redirectURL = (String)ComplexExpressionEvaluator
 				.getValue(route.redirectTo(), requestContext);
 		return redirectURL;
-	}
-
-	/**
-	 * @param route
-	 * @return
-	 */
-	public Boolean routeShouldRenderJSON(Route route) {
-		return route.json();
 	}
 
 	/**
@@ -264,7 +251,7 @@ public class RequestLifeCycle {
 	 * Render the found web page (usually a template) or an route returned object
 	 * 
 	 * @param webpage
-	 * @param returnedObject
+	 * @param returnedValue
 	 * @throws IOException
 	 * @throws ServletException 
 	 * @throws CloneNotSupportedException 
@@ -272,17 +259,18 @@ public class RequestLifeCycle {
 	 * @throws ParserConfigurationException 
 	 * @throws TemplateParsingException 
 	 */
-	public void renderTemplateOrTheRouteReturnedObject(String templateName, Object returnedObject)
+	public void renderTemplateOrTheRouteReturnedObject(String templateName, Object returnedValue)
 			throws IOException, ParserConfigurationException, SAXException, CloneNotSupportedException, ServletException, TemplateParsingException {
 		HttpServletResponse response = requestContext.getResponse();
-		if (isReturnedObjectNativeJavaObject(returnedObject))
-			renderAsString(returnedObject, response);
 
-		else if (returnedObject != null && InputStream.class.isInstance(returnedObject))
-			renderABinaryObject(returnedObject, response);
+		if (returnedValue != null && InputStream.class.isInstance(returnedValue))
+			renderABinaryObject(returnedValue, response);
 
 		else if (!StringUtil.isEmpty(templateName))
             renderRouteTemplate(templateName);
+		
+		else
+			renderReturnedValueAsJSON(returnedValue);
 	}
 
 	/**

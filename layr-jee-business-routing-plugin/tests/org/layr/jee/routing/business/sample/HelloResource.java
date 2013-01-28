@@ -8,38 +8,39 @@ import org.layr.jee.routing.business.WebResource;
 
 
 
-@WebResource(rootURL="/hello/", template="/hello.xhtml")
+@WebResource(rootURL="/hello/")
 public class HelloResource{
 
-	public static final String EXECUTED_METHOD = "EXECUTED_METHOD";
+	Hello hello;
+	List<World> worlds;
+	double sum;
+	String output;
 
-	private Hello hello;
-	private List<World> worlds;
-	private double sum;
-
-	@Route(json=true)
+	@Route
 	public String sayHello() {
 		return "Hello World";
 	}
 
-	@Route(pattern="/say/#{id}/something/")
-	public String say(
+	@Route(pattern="/say/#{id}/something/", template="/hello.xhtml")
+	public void say(
 				@Parameter("id") Integer id1,
 				@Parameter("hello.realworld.id") Long id2)
 	{
-		return "Id '"+id1+"' and '"+id2+"' arrived from request.";
+		output = "Id '"+id1+"' and '"+id2+"' arrived from request.";
 	}
 	
-	@Route(pattern="/add")
-	public String create(
+	@Route(pattern="/add", template="/hello.xhtml")
+	public void create(
 			@Parameter("name") String name) {
-		return name;
+		output = name;
 	}
 	
-	@Route(pattern="/addAsJSON", json=true)
-	public String createAsJSON(
+	@Route(pattern="/addAsJSON")
+	public Hello createAsJSON(
 			@Parameter("name") String name) {
-		return name;
+		Hello hello = new Hello();
+		hello.setWorld(name);
+		return hello;
 	}
 
 	public Hello getHello() {

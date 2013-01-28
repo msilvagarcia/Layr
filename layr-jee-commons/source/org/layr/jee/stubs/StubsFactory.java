@@ -14,15 +14,11 @@ public class StubsFactory {
 		return servletContext;
 	}
 
-	public static JEERequestContext createFullRequestContext( ) {
-		ServletContext servletContext = createServletContext();
-		return createRequestContext(servletContext);
-	}
-
 	public static JEERequestContext createRequestContext(ServletContext servletContext) {
 		ServletRequest servletRequest = new HttpServletRequestStub();
 		ServletResponse servletResponse = new HttpServletResponseStub();
-		return JEERequestContext.createRequestContext(servletRequest, servletResponse, servletContext);
+		JEERequestContext requestContext = JEERequestContext.createRequestContext(servletRequest, servletResponse, servletContext);
+		return requestContext;
 	}
 
 }

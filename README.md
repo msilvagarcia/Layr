@@ -2,7 +2,7 @@
 
 ## O que é?
 
-O Layr é uma ferramenta open-source com foco em Free-Logic Markup, modularização e componentização, cujo o intuito é encurtar o tempo de desenvolvimento e manutenção de aplicações Web.
+O Layr é uma ferramenta open-source com foco em Logic-free Markup, modularização e componentização, cujo o intuito é encurtar o tempo de desenvolvimento e manutenção de aplicações Web.
 
 ## Por que usar Layr?
 
@@ -10,7 +10,7 @@ O Layr é uma ferramenta open-source com foco em Free-Logic Markup, modularizaç
  - **Rápida manutenção**: Seu design de software limpo te ajuda a manter suas lógicas de negócio completamente desvinculadas do front-end, facilitando a manutenção e evolução da aplicação;
  - **Convention over configuration**: Layr transformou dois conceitos de desenvolvimento web em convenção: navegação intuitiva e roteamento baseado em negócio. Desta forma não é necessário configurações em arquivos externos, diminuindo o tempo de setup da aplicação.
 
-## Por que Free-Logic Markup ?
+## Por que Logic-free Markup ?
 
 O paradigma mais comum de desenvolvimento de software (web) são as tão difundidas Server Pages. Quando este paradigma foi projetado os navegadores eram menos poderosos, e a maior parte do conteúdo dinâmico precisava ser processado pelo servidor, que trazia a página renderizada. Interações JavaScript eram raras, e normalmente tratavam apenas operações de mouse e teclado.
 
@@ -103,6 +103,12 @@ Você deve ter notado que a quantidade de código escrita diminuiu um pouco. Gra
 
 O componente **children** define o local aonde os filhos do componente serão renderizados. Esta tag foi desenvolvida através do conjunto de tags ( TagLibs ) de template ( definido pelo namespace **tpl** ). Esta TagLib acompanha o Layr e foi desenhada para auxliar no desenvolvimento de suas telas. Você pode usar esta mesma abordagem para traduzir qualquer conjunto de tags em componentes, não há limitação de tamanho ou quantidade de componente.
 
+## Criando estruturas pré-definidas ( Templates )
+
+```
+TODO
+```
+
 ## Organização Natural
 
 Definir pacotes (aka. Packages ou Namespaces) para isolar escopo, pastas para agrupar determinadas views em HTML e subformários, são práticas diárias dos programadores. Ao se ler um código fonte bem organizado encontramos rapidamente o que precisamos durante uma manutenção, e conseguimos definir melhores estratégias de _refactoring_ e evolução do software. E é esta organização, que é feita as vezes de maneira tão natural, um dos principais responsáveis por isso.
@@ -134,11 +140,11 @@ Durante todo o desenvolvimento de um projeto, investe-se tempo organizando e def
 
 Sendo assim, imagine que seja necessário exibir a tela de listagem de usuários. No modelo proposto acima, você poderia acessá-lo através da URL http://localhost:8080/user/list/.
 
-### Obtendo dados para a interface
+### Atribuindo lógica na interface
 
-Note que no exemplo anterior o foco era apenas a camada de apresentação, a definição de como ela será exibida. Aqui entra o conceito de **Free-Logic Markup**, apresentado anteriormente, cabendo às rotinas JavaScript associadas a esta view tratar operações de busca de dados do servidor (JSON, XML, etc), definir os eventos a serem disparados de acordo com a interação com o usuário, ou qualquer outra operação dinâmica da tela.
+Note que no exemplo anterior o foco era apenas a camada de apresentação, a definição de como ela será exibida. Aqui entra o conceito de **Logic-free Markup**, apresentado anteriormente, cabendo às rotinas JavaScript associadas a esta view tratar operações de busca de dados do servidor (JSON, XML, etc), definir os eventos a serem disparados de acordo com a interação com o usuário, ou qualquer outra operação dinâmica da tela.
 
-Existem hoje no mercado várias ferramentas que auxiliam estas interações do usuário, e foge um pouco ao escopo deste documento detalhar o seu uso. Mas para fins de futuras pesquisas, os frameworks abaixo serão de grande valia quando for se trabalhar com **Free-Logic Markup**:
+Existem hoje no mercado várias ferramentas que auxiliam estas interações do usuário, e foge um pouco ao escopo deste documento detalhar o seu uso. Mas para fins de futuras pesquisas, os frameworks abaixo serão de grande valia quando for se trabalhar com **Logic-free Markup**:
 
  - [KnockoutJS](http://knockoutjs.com)
  - [jQuery](http://jquery.com)
@@ -178,6 +184,26 @@ public class HomeResource {
 
 No exemplo acima, desenhamos uma rota de negócio para ```/product/list/```. No método _listProducts_ verificamos se o usuário é beta, se for verdadeiro definimos que o template a ser renderizado é ```/products/listBeta.xhtml```, do contrário, renderizamos ```/products/list.xhtml```. Note que em momento algum foi incluída lógicas de interface no template, apenas tomamos uma _decisão de negócio_ para definir qual template deve ser enviado ao navegador.
 
+## Definindo a raíz do aplicativo
+
+Sempre que for chamada a raíz de uma aplicação ( ```http://localhost:8080/```, por exemplo ),  e nenhuma outra biblioteca foi configurada para tratar a raíz, o Layr tenta encontrar algo mapeado para /home/ ( ```http://localhost:8080/home/```, em nosso exemplo ), se comportando de maneira similar a um _alias_ ou um _link simbólico_.
+
+Sendo assim, não se faz necessário fazer nenhum tipo de configuração para tratar a raíz do aplicativo, basta **criar um arquivo _home.xhtml_**, **ou um Web Resource mapeando o ( "/home/" )**. Segue um exemplo de WebResource mapeando o ```/home/```.
+
+```java
+@WebResource("/home/")
+public class HomeResource {
+  
+  @Route(pattern="/", template="sometemplate.xhtml")
+  public void renderHome(){
+    // ...
+  }
+
+  // ...
+
+}
+```
+
 ## API de Navegação Condicionada ao Negócio ( Business Routing API )
 
 ### Mapeamento
@@ -185,6 +211,23 @@ No exemplo acima, desenhamos uma rota de negócio para ```/product/list/```. No 
 Para mapear uma rota no Layr, deve-se criar uma classe qualquer e anotá-la com ```@WebResource```, a esta classe chamamos de **resource**. O valor padrão da anotação espera o caminho raiz ( dentro do contexto ) para uma rota. Em nosso exemplo, ```/product/```.
 
 Para finalizar, deve-se apontar qual método será executado quando uma requisição chegar. Basta incluir a anotação ```@Route``` no método. Por padrão, se nada for informado ao atributo ```pattern```, a rota fica com o nome do método (em nosso exemplo, ficaria /product/listProducts). Do contrário o valor do pattern é utilizado.
+
+Uma ponto de atenção importante sobre mapeamentos é o caminho definido no ```@WebResource``` como raiz do _resource_. A partir do momento que uma raiz for definida para o resource, o Layr vai sempre tentar usar esta classe para tratar requisições que se iniciem com o contexto raíz definido.
+
+Um ponto de atenção sobre o mapeamento é a raíz do WebResource. A menos que este seja realmente o comportamento esperado, não mapeie a raíz da aplicação como raíz do _resource_. Prefira utilizar o procedimento definido acima em _Definindo a raíz do aplicativo_.
+
+```java
+
+//FIXME: not map the root path
+@WebResource("/")
+public class HomeResource {
+  
+  // ...
+
+}
+```
+
+Conforme foi definido no exemplo acima todas as requisições irão geridas pela classe _HomeResource_. Quando o navegador for abrir uma imagem amarrada no html, por exemplo, as esta requisição irá cair no _HomeResource_ erroneamente.
 
 ### Enviando dados para o WebResource
 
@@ -253,11 +296,34 @@ Para finalizar, o código JavaScript abaixo exemplifica como seria possível env
 
 ```
 
+### Obtendo dados
+
+Apesar de não ter foco em substituir uma API REST na íntegra, o Layr vem com suporte para a expor dados via JSON. No exemplo abaixo vamos mostrar como é possível obter a lista de clientes, incluíndo, inclusive, parâmetros que podem ser passados para tratar paginação. Para isso vamos utilizar-se da Business Routing API.
+
+```java
+@WebResource("/customers/")
+public voic CustomerResource {
+
+  // Sample implementation that handle Customer entity
+  CustomerService customerService;
+
+  @Route(pattern="/list")
+  public List<Customer> retriveCustomers(
+    @Parameter("startPage") Integer startPage )
+  {
+    return customerService.retrieve( startPage );
+  }
+
+}
+```
+
+No exmeplo acima devolvemos uma lista de clientes (Customer) para o browser/cliente http. Para que a API entenda que deve ser retornado um JSON basta **retornar um objeto no método** que deve ser executado e **não definir um template a ser renderizado**.
+
 ### Placeholders
 
 O Layr se vale de _placeholders_ para serem substituídas pelos valores de variáveis no corpo da classe com as rotas. No exemplo que demos sobre a navegação condicionada ao negócio, utilizamos um placeholder no atributo _template_ da definição da rota. Neste exemplo, sempre que o URL ```http://localhost:8080/product/list/``` for chamado, o método listProdutcs
 
- Redirecionando o usuário de acordo com uma regra de negócio
+### Redirecionando o usuário de acordo com uma regra de negócio
 
 No exemplo abaixo, precisávamos impedir que um usuário com pendencias de pagamento acessasse a uma determinada parte do sistema que era de acesso exclusivo para usuários pagantes.
 

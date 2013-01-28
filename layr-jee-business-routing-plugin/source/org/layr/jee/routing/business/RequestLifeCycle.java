@@ -203,8 +203,8 @@ public class RequestLifeCycle {
 	 * @return
 	 */
 	public String measureRequestContentType(Route route) {
-		String contentType = (String)ExpressionEvaluator
-				.eval(targetInstance, route.contentType()).getValue();
+		String contentType = (String)ComplexExpressionEvaluator
+				.getValue(route.contentType(), requestContext);
 		return contentType;
 	}
 	
@@ -213,9 +213,9 @@ public class RequestLifeCycle {
 	 * @return
 	 */
 	public String measureRedirectURL(Route route) {
-		String contentType = (String)ExpressionEvaluator
-				.eval(targetInstance, route.redirectTo()).getValue();
-		return contentType;
+		String redirectURL = (String)ComplexExpressionEvaluator
+				.getValue(route.redirectTo(), requestContext);
+		return redirectURL;
 	}
 
 	/**
@@ -441,18 +441,25 @@ public class RequestLifeCycle {
 		
 		while ( parameterNames.hasMoreElements() ){
 			expresion = parameterNames.nextElement();
-
 			try {
-				Object parsedValue = request.getParameter(expresion);
-				ExpressionEvaluator evaluator = ExpressionEvaluator.eval(targetInstance, "#{"+expresion+"}");
-				if (evaluator.setValue(parsedValue))
-					requestContext.put(expresion, parsedValue);
+				bindParameterAgainstWebResourceField(request, expresion);
 			} catch ( Throwable e ) {
 				getServletContext().log("[Layr] ERROR: " + e.getMessage());
 				e.printStackTrace();
 				continue;
 			}
 		}
+	}
+
+	/**
+	 * @param request
+	 * @param expresion
+	 */
+	public void bindParameterAgainstWebResourceField(HttpServletRequest request, String expresion) {
+		Object parsedValue = request.getParameter(expresion);
+		ExpressionEvaluator evaluator = ExpressionEvaluator.eval(targetInstance, "#{"+expresion+"}");
+		if (evaluator.setValue(parsedValue))
+			requestContext.put(expresion, parsedValue);
 	}
 
     /**
@@ -463,8 +470,7 @@ public class RequestLifeCycle {
         while(!clazz.equals(Object.class)){
 			for (Field field : clazz.getDeclaredFields()) {
 	            try {
-	            	Object returnedValue = Reflection.getAttribute(targetInstance, field.getName());
-	                requestContext.put(field.getName(), returnedValue);
+	            	bindFieldAgainstRequestContextForFurtherTemplateRenderingUse(field);
 	            } catch (Throwable e) {
 	                continue;
 	            }
@@ -473,6 +479,17 @@ public class RequestLifeCycle {
 			clazz = clazz.getSuperclass();
         }
     }
+
+	/**
+	 * @param field
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	public void bindFieldAgainstRequestContextForFurtherTemplateRenderingUse(Field field) throws IllegalAccessException,
+			InvocationTargetException {
+		Object returnedValue = Reflection.getAttribute(targetInstance, field.getName());
+		requestContext.put(field.getName(), returnedValue);
+	}
 
 	/**
 	 * @param request

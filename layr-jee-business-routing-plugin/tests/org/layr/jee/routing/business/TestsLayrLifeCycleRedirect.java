@@ -58,6 +58,13 @@ public class TestsLayrLifeCycleRedirect {
 		String location = lifeCycle.runAndRetrieveNewRedirectedLocation();
 		assertEquals("http://layr.org", location);
 	}
+	
+	@Test
+	public void grantThatRunLifeCycleMethodDoRedirectionToGoogle() throws ServletException, IOException{
+		lifeCycle.setRequestURL("fake/resource/redirectToGoogle/");
+		String location = lifeCycle.runAndRetrieveNewRedirectedLocation();
+		assertEquals("http://google.com/123456", location);
+	}
 
 	public JEEBusinessRoutingRequestContext mockRequestContext(){
 		JEEBusinessRoutingRequestContext requestContext = mock(JEEBusinessRoutingRequestContext.class);
@@ -93,6 +100,9 @@ public class TestsLayrLifeCycleRedirect {
 			@Parameter("url") String url){
 			urlToRedirect = url;
 		}
+		
+		@Route(redirectTo="http://google.com/123456")
+		public void redirectToGoogle(){}
 	}
 
 }

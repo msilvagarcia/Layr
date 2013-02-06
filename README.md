@@ -4,6 +4,15 @@
 
 O Layr é uma ferramenta open-source com foco em Logic-free Markup, modularização e componentização, cujo o intuito é encurtar o tempo de desenvolvimento e manutenção de aplicações Web.
 
+## Instalando em seu repositório Maven local
+
+Basta seguir os passos abaixo e seu ambiente estará configurado.
+```bash
+git clone git://github.com/miere/Layr.git
+cd Layr/layr-parent
+mvn clean install
+```
+
 ## Por que usar Layr?
 
  - **Re-aproveitamento de códigos do front-end**: Aplicações desenvolvidas com o Layr utilizam-se de algumas técnicas do XHTML para enriquecer o HTML/HTML5 e re-aproveitar trechos utilizados com frequência em suas aplicações;

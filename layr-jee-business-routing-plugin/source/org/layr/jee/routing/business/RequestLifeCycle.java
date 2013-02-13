@@ -41,6 +41,7 @@ public class RequestLifeCycle {
     Object targetInstance;
     EnterpriseJavaBeans ejbManager;
 	DefaultDataParser defaultDataParser;
+	String currentContentType;
 
     public RequestLifeCycle() {
         defaultDataParser = new DefaultDataParser();
@@ -187,10 +188,18 @@ public class RequestLifeCycle {
 	/**
 	 * @param route
 	 */
-	private void defineOutputContentType(Route route) {
+	public void defineOutputContentType(Route route) {
 		String contentType = measureRequestContentType(route);
 		if ( !StringUtil.isEmpty(contentType) )
 			requestContext.setContentType(contentType);
+		currentContentType = contentType;
+	}
+	
+	/**
+	 * @return
+	 */
+	public boolean wasAlreadySetAContentType(){
+		return !StringUtil.isEmpty(currentContentType);
 	}
 
 	/**
@@ -343,7 +352,8 @@ public class RequestLifeCycle {
      */
     public void renderReturnedValueAsJSON(Object returnedValue) throws ServletException, IOException {
         try {
-        	requestContext.setContentType("application/json");
+        	if (!wasAlreadySetAContentType())
+        		requestContext.setContentType("application/json");
             PrintWriter writer = getRequestContext().getResponse().getWriter();
 			String json = defaultDataParser.encode(returnedValue);
             writer.write(json);

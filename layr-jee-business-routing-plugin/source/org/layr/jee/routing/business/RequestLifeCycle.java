@@ -278,7 +278,7 @@ public class RequestLifeCycle {
 		else if (!StringUtil.isEmpty(templateName))
             renderRouteTemplate(templateName);
 		
-		else
+		else if ( returnedValue != null )
 			renderReturnedValueAsJSON(returnedValue);
 	}
 
@@ -356,7 +356,8 @@ public class RequestLifeCycle {
         		requestContext.setContentType("application/json");
             PrintWriter writer = getRequestContext().getResponse().getWriter();
 			String json = defaultDataParser.encode(returnedValue);
-            writer.write(json);
+			if ( json != null )
+				writer.write(json);
         } catch (Exception e) {
             throw new ServletException(e.getMessage(), e);
         }

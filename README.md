@@ -1,4 +1,5 @@
 # Layr - Faça aplicações web mais legíveis e fáceis de se manutenir
+[![Build Status](https://travis-ci.org/miere/Layr.png?branch=master)](https://travis-ci.org/miere/Layr)
 
 ## O que é?
 

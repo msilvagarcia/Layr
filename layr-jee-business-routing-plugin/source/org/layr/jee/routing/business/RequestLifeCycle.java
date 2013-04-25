@@ -248,9 +248,7 @@ public class RequestLifeCycle {
 		if ( !StringUtil.isEmpty(route.template()) )
 		    template = route.template();
 
-		Object measuredTemplate = ExpressionEvaluator
-				.eval(targetInstance, template).getValue();
-
+		Object measuredTemplate = ComplexExpressionEvaluator.getValue( template, requestContext );
 		return measuredTemplate != null
 					? measuredTemplate.toString()
 					: template;
@@ -280,24 +278,6 @@ public class RequestLifeCycle {
 		
 		else if ( returnedValue != null )
 			renderReturnedValueAsJSON(returnedValue);
-	}
-
-	/**
-	 * @param returnedObject
-	 * @return
-	 */
-	public boolean isReturnedObjectNativeJavaObject(Object returnedObject) {
-		return returnedObject != null && returnedObject.getClass().getPackage().getName().equals("java.lang");
-	}
-
-	/**
-	 * @param returnedObject
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	public PrintWriter renderAsString(Object returnedObject, HttpServletResponse response) throws IOException {
-		return response.getWriter().append(returnedObject.toString());
 	}
 
 	/**

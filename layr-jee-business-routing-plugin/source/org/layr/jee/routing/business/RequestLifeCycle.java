@@ -27,8 +27,8 @@ import org.layr.commons.gson.DefaultDataParser;
 import org.layr.engine.TemplateParser;
 import org.layr.engine.components.IComponent;
 import org.layr.engine.components.TemplateParsingException;
-import org.layr.engine.expressions.ComplexExpressionEvaluator;
-import org.layr.engine.expressions.ExpressionEvaluator;
+import org.layr.engine.expressions.Evaluator;
+import org.layr.engine.expressions.URLPattern;
 import org.layr.jee.commons.EnterpriseJavaBeans;
 import org.xml.sax.SAXException;
 
@@ -64,25 +64,29 @@ public class RequestLifeCycle {
 	 * Measure which route methods are available from target instance
 	 */
 	public void measureTargetInstanceAvailableRoutes() {
-		Map<Class<?>, List<Method>> routeMethodCache = getRouteMethodCache();
-        if ( routeMethodCache.containsKey(targetInstance.getClass()) )
-        	routes = routeMethodCache.get(targetInstance.getClass());
-    	else
-    		routes = Reflection.extractAnnotatedMethodsFor(Route.class, targetInstance);
+		Map<String, List<Method>> routeMethodCache = getRouteMethodCache();
+        Class<? extends Object> targetInstanceClass = targetInstance.getClass();
+        String targetInstanceClassCanonicalName = targetInstanceClass.getCanonicalName();
+		if ( routeMethodCache.containsKey(targetInstanceClass) )
+        	routes = routeMethodCache.get(targetInstanceClassCanonicalName);
+    	else {
+    		routes = Reflection.extractAnnotatedMethodsFor(Route.class, targetInstanceClass);
+    		routeMethodCache.put( targetInstanceClassCanonicalName, routes );
+    	}
 	}
 
 	/**
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<Class<?>, List<Method>> getRouteMethodCache() {
+	public Map<String, List<Method>> getRouteMethodCache() {
 		Cache cache = requestContext.getCache();
 		if ( cache == null )
-			return new HashMap<Class<?>, List<Method>>();
+			return new HashMap<String, List<Method>>();
 
-		Map<Class<?>, List<Method>> routeMethodCache = (Map<Class<?>, List<Method>>)cache.get(AVAILABLES_ROUTES);
+		Map<String, List<Method>> routeMethodCache = (Map<String, List<Method>>)cache.get(AVAILABLES_ROUTES);
 		if ( routeMethodCache == null ){
-        	routeMethodCache = new ConcurrentHashMap<Class<?>, List<Method>>();
+        	routeMethodCache = new ConcurrentHashMap<String, List<Method>>();
         	cache.put(AVAILABLES_ROUTES, routeMethodCache);
 		}
 
@@ -207,9 +211,7 @@ public class RequestLifeCycle {
 	 * @return
 	 */
 	public String measureRequestContentType(Route route) {
-		String contentType = (String)ComplexExpressionEvaluator
-				.getValue(route.contentType(), requestContext);
-		return contentType;
+		return evalExpression(route.contentType());
 	}
 	
 	/**
@@ -217,9 +219,7 @@ public class RequestLifeCycle {
 	 * @return
 	 */
 	public String measureRedirectURL(Route route) {
-		String redirectURL = (String)ComplexExpressionEvaluator
-				.getValue(route.redirectTo(), requestContext);
-		return redirectURL;
+		return evalExpression( route.redirectTo() );
 	}
 
 	/**
@@ -247,11 +247,7 @@ public class RequestLifeCycle {
 		String template = getGeneralTemplate();
 		if ( !StringUtil.isEmpty(route.template()) )
 		    template = route.template();
-
-		Object measuredTemplate = ComplexExpressionEvaluator.getValue( template, requestContext );
-		return measuredTemplate != null
-					? measuredTemplate.toString()
-					: template;
+		return evalExpression( template );
 	}
 
 	/**
@@ -423,7 +419,7 @@ public class RequestLifeCycle {
 			try {
 				bindParameterAgainstWebResourceField(request, expresion);
 			} catch ( Throwable e ) {
-				getServletContext().log("[Layr] ERROR: " + e.getMessage());
+				errorlog( e.getMessage() );
 				e.printStackTrace();
 				continue;
 			}
@@ -431,14 +427,30 @@ public class RequestLifeCycle {
 	}
 
 	/**
+	 * @param message
+	 */
+	public void errorlog(String message) {
+		getServletContext().log("["
+			+ targetInstance.getClass().getCanonicalName()
+			+ "] ERROR: " + message);
+	}
+
+	/**
 	 * @param request
 	 * @param expresion
+	 * @throws InstantiationException 
+	 * @throws NoSuchFieldException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 * @throws SecurityException 
 	 */
-	public void bindParameterAgainstWebResourceField(HttpServletRequest request, String expresion) {
+	public void bindParameterAgainstWebResourceField(HttpServletRequest request, String expresion)
+			throws SecurityException, IllegalArgumentException, IllegalAccessException,
+				   InvocationTargetException, NoSuchFieldException, InstantiationException {
 		Object parsedValue = request.getParameter(expresion);
-		ExpressionEvaluator evaluator = ExpressionEvaluator.eval(targetInstance, "#{"+expresion+"}");
-		if (evaluator.setValue(parsedValue))
-			requestContext.put(expresion, parsedValue);
+		Reflection.setAttribute( targetInstance, expresion, parsedValue );
+		requestContext.put(expresion, parsedValue);
 	}
 
     /**
@@ -489,7 +501,7 @@ public class RequestLifeCycle {
     public String parseMethodUrlPattern(Method method) {
     	Route annotation = method.getAnnotation(Route.class);
     	if ( !annotation.pattern().isEmpty() ) {
-			String urlpattern = ComplexExpressionEvaluator.newInstance().parseMethodUrlPatternToRegExp(
+			String urlpattern = new URLPattern().parseMethodUrlPatternToRegExp(
 					annotation.pattern()
 						.replaceFirst(getRequestContext().getWebResourceRootPath(), "")
 						.replaceFirst("^/","")
@@ -550,7 +562,7 @@ public class RequestLifeCycle {
 	 * @return
 	 */
 	public String measureTheUrlShouldBeRedirectedTo(String urlPattern) {
-		String url = (String) ComplexExpressionEvaluator.getValue(urlPattern, getRequestContext());
+		String url = evalExpression(urlPattern);
 
     	if (!isOutsideRedirectRequest(url)){
 			if ( !url.startsWith("/") )
@@ -559,6 +571,10 @@ public class RequestLifeCycle {
 					.replaceAll("//+", "/");
     	}
 		return url;
+	}
+	
+	public String evalExpression( String expression ) {
+		return new Evaluator( getRequestContext(), expression ).eval();
 	}
 
     /**

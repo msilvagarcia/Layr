@@ -20,7 +20,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 import org.layr.commons.StringUtil;
-import org.layr.engine.expressions.ComplexExpressionEvaluator;
+import org.layr.engine.expressions.Evaluator;
 
 
 
@@ -104,14 +104,13 @@ public class Input extends XHtmlComponent {
 	public Object parseExpression( Object expression ){
 		if ( expression == null )
 			return null;
-		return ComplexExpressionEvaluator.getValue(expression.toString(), requestContext, true);
+		return new Evaluator(requestContext, expression.toString()).eval();
 	}
 
 	public boolean isTextInput () {
 		for ( String validType : autoBindableInputTypes )
 			if ( validType.equals(type) )
 				return true;
-
 		return false;
 	}
 

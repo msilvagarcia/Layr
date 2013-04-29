@@ -19,9 +19,7 @@ import java.io.IOException;
 
 import org.layr.engine.components.GenericComponent;
 import org.layr.engine.components.HolderComponent;
-import org.layr.engine.expressions.ComplexExpressionEvaluator;
-
-
+import org.layr.engine.expressions.Evaluator;
 
 public class Define extends GenericComponent {
 
@@ -35,8 +33,10 @@ public class Define extends GenericComponent {
 	public void render() throws IOException {}
 	
 	public Object getDefinedValue() {
-		if (getNumChildren() == 0)
-			return ComplexExpressionEvaluator.getValue(getAttributeAsString("value"), requestContext);
+		if (getNumChildren() == 0) {
+			String value = getAttributeAsString("value");
+			return new Evaluator(requestContext, value).eval();
+		}
 
 		HolderComponent component = new HolderComponent();
 		component.setRequestContext(getRequestContext());

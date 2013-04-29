@@ -20,35 +20,38 @@ import java.io.Writer;
 
 import org.layr.engine.components.GenericComponent;
 import org.layr.engine.components.IComponent;
-import org.layr.engine.expressions.ComplexExpressionEvaluator;
-
-
+import org.layr.engine.expressions.Evaluator;
 
 public class Var extends GenericComponent {
-	
+
 	public static final String LAYR_COMPONENTS_TEMPLATE_VALUE = "LAYR_COMPONENTS_TEMPLATE_VALUE.";
 
 	@Override
-	public void configure() {}
+	public void configure() {
+	}
 
 	@Override
 	public void render() throws IOException {
-		String name = getAttributeAsString("name");
-		Object definedValue = getRequestContext().get(LAYR_COMPONENTS_TEMPLATE_VALUE + name);
-		
+		String name = getAttributeAsString( "name" );
+		Object definedValue = getRequestContext().get( LAYR_COMPONENTS_TEMPLATE_VALUE + name );
+
 		if (definedValue == null)
 			return;
 
-		if (IComponent.class.isInstance(definedValue)) {
-			((IComponent)definedValue).render();
+		if (IComponent.class.isInstance( definedValue )) {
+			((IComponent) definedValue).render();
 			return;
 		}
 
+		renderValue( definedValue );
+	}
+
+	public void renderValue(Object definedValue) throws IOException {
 		Writer writer = requestContext.getWriter();
-		Object value = ComplexExpressionEvaluator.getValue(definedValue.toString(), getRequestContext());
+		Object value = new Evaluator( getRequestContext(), definedValue.toString() ).eval();
 
 		if (value != null)
-			writer.append(value.toString());
+			writer.append( value.toString() );
 	}
 
 }

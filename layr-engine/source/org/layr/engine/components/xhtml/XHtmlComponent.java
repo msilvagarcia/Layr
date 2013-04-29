@@ -31,7 +31,7 @@ public class XHtmlComponent extends GenericComponent {
 	@Override
 	public void render() throws IOException {
 		GenericXHtmlRenderer xHtmlRenderer = getXhtmlRenderer()
-					.shouldNotUseQualifiedNameAsTagNameButComponentName();
+			.shouldNotUseQualifiedNameAsTagNameButComponentName();
 		xHtmlRenderer.render();
 	}
 }

@@ -28,7 +28,7 @@ import javax.servlet.ServletException;
 import org.layr.commons.StringUtil;
 import org.layr.engine.IRequestContext;
 import org.layr.engine.TemplateParser;
-import org.layr.engine.expressions.ComplexExpressionEvaluator;
+import org.layr.engine.expressions.Evaluator;
 
 /**
  * Default implementation for components. Software developers can override the
@@ -255,11 +255,9 @@ public class GenericComponent implements IComponent {
 	public String getTextContent() {
 		if (textContent == null)
 			return null;
-
-		return (String) ComplexExpressionEvaluator.getValue(
-				textContent, getRequestContext(), true);
+		return new Evaluator( requestContext, textContent ).eval();
 	}
-    
+
     /**
      * @return
      */
@@ -279,24 +277,20 @@ public class GenericComponent implements IComponent {
 	 * @see org.layr.engine.components.IComponent#getParsedAttribute(java.lang.String)
 	 */
 	public Object getParsedAttribute(String attribute) {
-		return getParsedAttribute(attribute, false);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.layr.engine.components.IComponent#getParsedAttribute(java.lang.String, boolean)
-	 */
-	public Object getParsedAttribute(String attribute, boolean shouldBeEncoded) {
-		Object object = attributes.get(attribute);
-		if (object == null)
+		Object object = getAttribute(attribute);
+		if ( object == null )
 			return null;
-		return ComplexExpressionEvaluator.getValue(object.toString(), getRequestContext(), shouldBeEncoded);
+		if ( !String.class.isInstance( object ) )
+			return object;
+		Evaluator evaluator = new Evaluator( requestContext, (String)object );
+		return evaluator.parse();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.layr.engine.components.IComponent#getAttributeAsString(java.lang.String)
 	 */
 	public String getAttributeAsString(String attr) {
-		Object value = getParsedAttribute(attr, true);
+		Object value = getParsedAttribute(attr);
 		if (value == null)
 			return "";
 

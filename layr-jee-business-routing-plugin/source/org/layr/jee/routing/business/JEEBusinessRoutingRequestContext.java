@@ -8,7 +8,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.layr.engine.expressions.ComplexExpressionEvaluator;
+import org.layr.engine.expressions.URLPattern;
 import org.layr.jee.commons.JEEConfiguration;
 import org.layr.jee.commons.JEERequestContext;
 
@@ -52,8 +52,7 @@ public class JEEBusinessRoutingRequestContext extends JEERequestContext {
 		||   getRequestedRoute() == null )
 			return null;
 
-		return ComplexExpressionEvaluator
-					.newInstance()
+		return new URLPattern()
 					.extractMethodPlaceHoldersValueFromURL(
 						getRequestedRoutePattern(),
 						getRequestedRoute());

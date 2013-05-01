@@ -11,6 +11,9 @@ import java.util.HashMap;
 
 import javax.servlet.ServletException;
 
+import layr.routing.annotations.PathParameter;
+import layr.routing.annotations.Route;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.layr.jee.stubs.HttpServletRequestStub;
@@ -97,7 +100,7 @@ public class TestsLayrLifeCycleRedirect {
 		
 		@Route(redirectTo="#{urlToRedirect}")
 		public void redirect(
-			@Parameter("url") String url){
+			@PathParameter("url") String url){
 			urlToRedirect = url;
 		}
 		

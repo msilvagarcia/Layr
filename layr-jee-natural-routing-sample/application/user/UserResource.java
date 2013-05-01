@@ -2,9 +2,10 @@ package user;
 
 import java.util.Date;
 
-import org.layr.jee.routing.business.Parameter;
-import org.layr.jee.routing.business.Route;
-import org.layr.jee.routing.business.WebResource;
+import layr.routing.annotations.PathParameter;
+import layr.routing.annotations.Route;
+import layr.routing.annotations.WebResource;
+
 
 @WebResource("/user/")
 public class UserResource {
@@ -19,7 +20,7 @@ public class UserResource {
 			template="user/edit.xhtml",
 			redirectTo="#{redirectTo}" )
 	public void editUser(
-		@Parameter("id") Long userId ){
+		@PathParameter("id") Long userId ){
 		if ( haveUserBillingPendencies() ){
 			redirectTo = "/user/warning/";
 			return;

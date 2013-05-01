@@ -11,18 +11,19 @@ import java.util.HashMap;
 
 import javax.servlet.ServletException;
 
+import layr.routing.HelloResource;
+import layr.routing.World;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.layr.jee.routing.business.JEEBusinessRoutingRequestContext;
-import org.layr.jee.routing.business.sample.HelloResource;
-import org.layr.jee.routing.business.sample.World;
 import org.layr.jee.stubs.HttpServletRequestStub;
 
 
 public class TestsLayrLifeCycleMethodParams {
 	
 	private HelloResource resource;
-	private JEEBusinessRoutingRequestContext requestContext;
+	private RequestContext requestContext;
 	private RequestLifeCycleStub lifeCycle;
 
 	@Before

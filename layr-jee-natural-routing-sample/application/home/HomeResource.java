@@ -2,8 +2,9 @@ package home;
 
 import javax.ejb.EJB;
 
-import org.layr.jee.routing.business.Route;
-import org.layr.jee.routing.business.WebResource;
+import layr.routing.annotations.Route;
+import layr.routing.annotations.WebResource;
+
 
 @WebResource("/home/")
 public class HomeResource {

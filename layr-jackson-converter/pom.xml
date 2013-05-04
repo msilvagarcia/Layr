@@ -10,9 +10,8 @@
 		<relativePath>../layr-parent/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>layr-commons</artifactId>
-	<name>Layr: Commons Routines</name>
-	<description>Layr Web Framework Development</description>
+	<artifactId>layr-jackson-converter</artifactId>
+	<name>Layr: Jackson Converter</name>
 	<packaging>jar</packaging>
 
 	<licenses>
@@ -29,6 +28,12 @@
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.2</version>
+            <scope>compile</scope>
 		</dependency>
 	</dependencies>
 

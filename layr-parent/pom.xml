@@ -52,7 +52,7 @@
 	<modules>
 		<module>../layr-commons</module>
 		<module>../layr-engine</module>
-		<module>../layr-jee-commons</module>
+		<module>../layr-routing</module>
 		<module>../layr-jee-natural-routing-plugin</module>
 		<module>../layr-jee-business-routing-plugin</module>
 		<module>../layr-jee-natural-routing-sample</module>

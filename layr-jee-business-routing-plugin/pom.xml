@@ -41,7 +41,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>layr-jee-commons</artifactId>
+			<artifactId>layr-routing</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

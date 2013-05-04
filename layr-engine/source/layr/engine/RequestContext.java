@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.Map;
 
-import layr.commons.Cache;
 import layr.engine.components.Component;
 import layr.engine.components.ComponentFactory;
 
@@ -43,7 +42,7 @@ public interface RequestContext {
 
 	public abstract Map<String, String> getRequestParameters();
 
-	public abstract Object convert(String value, Class<?> targetClass);
+	public abstract Object convert(String value, Class<?> targetClass) throws IOException;
 
 	public abstract void log(String text);
 

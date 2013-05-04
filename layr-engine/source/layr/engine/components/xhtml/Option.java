@@ -2,15 +2,13 @@ package layr.engine.components.xhtml;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-
 import layr.engine.expressions.Evaluator;
 
 
 public class Option extends XHtmlComponent {
 
 	@Override
-	public void configure() throws ServletException, IOException {
+	public void configure() throws IOException {
 		setComponentName("option");
 		super.configure();
 	}

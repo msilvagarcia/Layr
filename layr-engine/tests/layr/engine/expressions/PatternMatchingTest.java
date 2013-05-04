@@ -21,7 +21,7 @@ public class PatternMatchingTest {
 
 	@Test
 	public void assertThatReplacesTheUrl() {
-		String pattern = "users/#{id}/edit";
+		String pattern = "users/{id}/edit";
 		String actual = urlPattern.parseMethodUrlPatternToRegExp( pattern );
 		Assert.assertEquals( "users/(.*)/edit", actual );
 	}
@@ -36,7 +36,7 @@ public class PatternMatchingTest {
 	@Test
 	public void assertExtractCorrectPlaceHoldersFromUrlAgainsAPattern() {
 		String url = "users/123/edit/Miere";
-		String pattern = "users/#{id}/edit/#{name}";
+		String pattern = "users/{id}/edit/{name}";
 		Map<String, String> values = urlPattern.extractMethodPlaceHoldersValueFromURL( pattern, url );
 		Assert.assertEquals( 2, values.size() );
 		Assert.assertEquals( "123", values.get( "id" ) );

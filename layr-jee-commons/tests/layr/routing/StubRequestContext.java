@@ -1,13 +1,16 @@
-package layr.engine;
+package layr.routing;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import layr.commons.Cache;
+import layr.engine.AbstractRequestContext;
+import layr.engine.Cache;
 import layr.engine.components.ComponentFactory;
-
+import layr.org.codehaus.jackson.ConversionException;
+import layr.org.codehaus.jackson.ConverterFactory;
 
 public class StubRequestContext extends AbstractRequestContext {
 	
@@ -17,9 +20,11 @@ public class StubRequestContext extends AbstractRequestContext {
 	String requestHttpMethod;
 	String redirectedURL;
 	int statusCode;
+	ConverterFactory converter;
 
 	public StubRequestContext() {
 		writer = new StringWriter();
+		converter = new ConverterFactory();
 		populateWithDefaultTagLibs();
 		createCache();
 	}
@@ -34,7 +39,7 @@ public class StubRequestContext extends AbstractRequestContext {
 		setRegisteredTagLibs( registeredTagLibs );
 	}
 
-	public String getBuffedWroteContentToOutput(){
+	public String getBufferedWroteContentToOutput(){
 		return writer.getBuffer().toString();
 	}
 
@@ -70,8 +75,12 @@ public class StubRequestContext extends AbstractRequestContext {
 	}
 
 	@Override
-	public Object convert(String value, Class<?> targetClass) {
-		return value;
+	public Object convert(String value, Class<?> targetClass) throws IOException {
+		try {
+			return converter.convert( value, targetClass );
+		} catch (ConversionException e) {
+			throw new IOException( e );
+		}
 	}
 
 	@Override

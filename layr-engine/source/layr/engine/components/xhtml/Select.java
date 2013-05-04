@@ -17,12 +17,10 @@ package layr.engine.components.xhtml;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-
 public class Select extends XHtmlComponent {
 	
 	@Override
-	public void configure() throws ServletException, IOException {
+	public void configure() throws IOException {
 		setComponentName("select");
 		super.configure();
 	}

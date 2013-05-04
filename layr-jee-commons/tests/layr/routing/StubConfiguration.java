@@ -1,6 +1,5 @@
 package layr.routing;
 
-import layr.engine.StubRequestContext;
 import layr.engine.RequestContext;
 
 public class StubConfiguration extends AbstractConfiguration {

@@ -83,4 +83,11 @@ public class StringUtil {
 		}
 		return sb.toString();
 	}
+
+	public static String oneOf( String...strings ){
+		for ( String string : strings )
+			if ( !isEmpty( string ) )
+				return string;
+		return null;
+	}
 }

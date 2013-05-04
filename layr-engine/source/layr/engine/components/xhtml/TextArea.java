@@ -17,16 +17,13 @@ package layr.engine.components.xhtml;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
-
 import layr.commons.StringUtil;
 import layr.engine.components.TextNode;
-
 
 public class TextArea extends XHtmlComponent {
 
 	@Override
-	public void configure() throws ServletException, IOException {
+	public void configure() throws IOException {
 		setComponentName("textarea");
 		super.configure();
 	}

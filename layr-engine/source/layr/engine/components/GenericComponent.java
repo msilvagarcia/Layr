@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
-
 import layr.commons.StringUtil;
 import layr.engine.RequestContext;
 import layr.engine.TemplateParser;
@@ -78,7 +76,7 @@ public class GenericComponent implements Component {
 	/* (non-Javadoc)
 	 * @see org.layr.engine.components.IComponent#configure()
 	 */
-	public void configure() throws ServletException, IOException {}
+	public void configure() throws IOException {}
 
 	/* (non-Javadoc)
 	 * @see layr.components.IComponent#render()
@@ -185,7 +183,7 @@ public class GenericComponent implements Component {
 	 */
 	@Override
 	public Object clone(RequestContext context)
-			throws CloneNotSupportedException, ServletException, IOException {
+			throws CloneNotSupportedException, IOException {
 		flush();
 
 		GenericComponent clone = (GenericComponent) super.clone();
@@ -210,7 +208,7 @@ public class GenericComponent implements Component {
 	 */
 	public List<Component> cloneChildren(
 				RequestContext requestContext, GenericComponent parentComponent)
-			throws CloneNotSupportedException, ServletException, IOException {
+			throws CloneNotSupportedException, IOException {
 		List<Component> children = new ArrayList<Component>();
 
 		for (Component child : getChildren()) {

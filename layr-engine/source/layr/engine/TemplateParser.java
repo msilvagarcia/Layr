@@ -18,7 +18,6 @@ package layr.engine;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.servlet.ServletException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -239,8 +238,6 @@ public class TemplateParser extends DefaultHandler {
 			extractTextContentBeforeNesting();
 			currentComponent.configure();
 			currentComponent = currentComponent.getParent();
-		} catch (ServletException e) {
-			throw new SAXException(e.getMessage(), e);
 		} catch (IOException e) {
 			throw new SAXException(e.getMessage(), e);
 		}

@@ -8,7 +8,7 @@ import layr.engine.expressions.Evaluator;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NewEvaluatorTest {
+public class EvaluatorTest {
 	
 	static final int STRESS_LOOPS = 10000;
 

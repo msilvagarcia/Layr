@@ -7,10 +7,8 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import layr.commons.Cache;
 import layr.engine.components.Component;
 import layr.engine.components.ComponentFactory;
-
 
 public abstract class AbstractRequestContext implements RequestContext {
 

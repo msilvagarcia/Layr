@@ -13,10 +13,10 @@ import layr.engine.components.template.TemplateComponentFactory;
 import layr.engine.components.xhtml.XHtmlComponentFactory;
 import layr.routing.annotations.WebResource;
 
-public class RoutingBootstrap {
+public abstract class RoutingBootstrap {
 
-	Map<String, ComponentFactory> registeredTagLibs;
-	List<RouteClass> registeredWebResources;
+	protected Map<String, ComponentFactory> registeredTagLibs;
+	protected List<RouteClass> registeredWebResources;
 
 	public RoutingBootstrap() {
 		registeredWebResources = new ArrayList<RouteClass>();
@@ -34,12 +34,14 @@ public class RoutingBootstrap {
 		registeredTagLibs.put("urn:layr:template", new TemplateComponentFactory());
 	}
 
-	public Configuration configure( Set<Class<?>> classes ) throws RoutingInitializationException{
+	public Configuration configure(Set<Class<?>> classes) throws RoutingInitializationException {
 		analyse( classes );
 		return createConfiguration();
 	}
-	
-	public void analyse( Set<Class<?>> classes ) throws RoutingInitializationException{
+
+	public abstract Configuration createConfiguration();
+
+	public void analyse(Set<Class<?>> classes) throws RoutingInitializationException {
 		for (Class<?> clazz : classes)
 			try {
 				analyse( clazz );
@@ -57,38 +59,31 @@ public class RoutingBootstrap {
 		WebResource annotation = clazz.getAnnotation( WebResource.class );
 		if (annotation == null)
 			return;
-
+	
 		registeredWebResources.add( new RouteClass( clazz ) );
 	}
 
-	public void tryToRegisterATag(Class<?> clazz)
-			throws InstantiationException, IllegalAccessException {
+	public void tryToRegisterATag(Class<?> clazz) throws InstantiationException, IllegalAccessException {
 		TagLib annotation = clazz.getAnnotation(TagLib.class);
 		if (annotation == null)
 			return;
-
+	
 		String namespace = annotation.value();
 		ComponentFactory factory = (ComponentFactory)clazz.newInstance();
-
+	
 		if (DefaultComponentFactory.class.isInstance(factory))
 			((DefaultComponentFactory)factory).setRootDir(
 				clazz.getPackage().getName().replace(".", "/"));
-
-		registeredTagLibs.put(namespace, factory);
-	}
 	
-	public Configuration createConfiguration(){
-		StubConfiguration configuration = new StubConfiguration();
-		configuration.setRegisteredTagLibs( registeredTagLibs );
-		configuration.setRegisteredWebResources( registeredWebResources );
-		return configuration;
+		registeredTagLibs.put(namespace, factory);
 	}
 
 	public Map<String, ComponentFactory> getRegisteredTagLibs() {
 		return registeredTagLibs;
 	}
-	
+
 	public List<RouteClass> getRegisteredWebResources() {
 		return registeredWebResources;
 	}
+
 }

@@ -23,5 +23,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 public @interface PathParameter {
-	String value() default "args";
+	String value() default "";
 }

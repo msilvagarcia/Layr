@@ -5,16 +5,12 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import layr.commons.FileUtils;
-import layr.engine.StubRequestContext;
 import layr.engine.RequestContext;
+import layr.engine.StubRequestContext;
 import layr.engine.TemplateParser;
-import layr.engine.components.Component;
-import layr.engine.components.GenericComponent;
-import layr.engine.components.TemplateParsingException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +21,7 @@ public class TemplateParserTest {
 	private RequestContext requestContext;
 
 	@Before
-	public void setup() throws IOException, ClassNotFoundException, ServletException{
+	public void setup() throws IOException, ClassNotFoundException {
 		requestContext = new StubRequestContext();
 	}
 

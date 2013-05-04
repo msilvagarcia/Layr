@@ -1,5 +1,6 @@
 package layr.routing;
 
+import java.io.IOException;
 import java.util.Map;
 
 import layr.engine.RequestContext;
@@ -30,7 +31,7 @@ public class Request {
 				requestContext.getRequestURI() );
 	}
 
-	public Object getValue(RouteParameter parameter) {
+	public Object getValue(RouteParameter parameter) throws IOException {
 		String value = getParameterValue( parameter );
 		Object convertedValue = requestContext.convert( value, parameter.targetClazz );
 		return convertedValue;

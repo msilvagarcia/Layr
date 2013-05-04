@@ -18,8 +18,6 @@ package layr.engine.components;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletException;
-
 import layr.engine.RequestContext;
 
 
@@ -59,7 +57,7 @@ public interface Component extends Cloneable {
 	 * @throws ServletException
 	 */
 	public Object clone(RequestContext context)
-			throws CloneNotSupportedException, ServletException, IOException;
+			throws CloneNotSupportedException, IOException;
 
 	/**
 	 * Appends a child at end of children's list.
@@ -187,7 +185,7 @@ public interface Component extends Cloneable {
 	 * @throws IOException 
 	 * @throws ServletException 
 	 */
-	void configure() throws ServletException, IOException;
+	void configure() throws IOException;
 
 	Object getParsedAttribute(String attribute);
 

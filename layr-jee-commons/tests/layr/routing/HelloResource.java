@@ -5,8 +5,13 @@ import layr.routing.annotations.*;
 @WebResource("hello")
 public class HelloResource{
 
-	@PathParameter Long pathParamOnBody;
-	@QueryParameter Long requestParamOnBody;
+	@TemplateParameter
+	@PathParameter
+	Long pathParamOnBody;
+
+	@TemplateParameter
+	@QueryParameter
+	Double requestParamOnBody;
 
 	@GET
 	@Route("world/{pathParamOnBody}")

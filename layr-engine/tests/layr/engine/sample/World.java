@@ -1,13 +1,10 @@
 package layr.engine.sample;
 
-import layr.commons.gson.JsonTransient;
-
 public class World {
 	private String name;
 	private Hello hello;
 	private Long id;
 	
-	@JsonTransient
 	private String somethingBad;
 
 	public void setName(String name) {

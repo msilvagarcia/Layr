@@ -52,16 +52,18 @@ public class RoutingLifeCycle {
 	}
 
 	public void populateWithParameters(Object instance, RouteClass routeClass, Request routingRequest) throws RoutingException {
-		Object value;
+		Object value = null;
 		for ( RouteParameter parameter : routeClass.getParameters()){
-			value = routingRequest.getValue( parameter );
 			try {
+				value = routingRequest.getValue( parameter );
 				Reflection.setAttribute( instance, parameter.name, value );
 			} catch (Exception e) {
-				requestContext.log( String.format(
+				String message = String.format(
 					"[WARN] Can't set the value '%s' to %s.%s: %s",
 					value, routeClass.targetClass.getCanonicalName(),
-					parameter.name, e.getMessage()));
+					parameter.name, e.getMessage());
+				requestContext.log( message );
+				throw new RoutingException( message, e );
 			}
 		}
 	}

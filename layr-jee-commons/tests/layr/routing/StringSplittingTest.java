@@ -43,22 +43,16 @@ public class StringSplittingTest {
 		assertEquals( "blah=123", splitted[1]);
 	}
 	
-	@Test
+	@Test( timeout = 85 )
 	public void grantThatSplitManyTimes(){
-		long start = System.currentTimeMillis();
 		for ( int i=0; i<MANY_TIMES; i++ )
 			grantThatSplitterWorksAsExpected();
-		long end = System.currentTimeMillis() - start;
-		System.out.println("grantThatSplitManyTimes: "+ end);
 	}
-	
-	@Test
+
+	@Test( timeout= 485 )
 	public void grantThatSplitWithRegExpManyTimes(){
-		long start = System.currentTimeMillis();
 		for ( int i=0; i<MANY_TIMES; i++ )
 			grantThatSplitWithRegExpAsExpected();
-		long end = System.currentTimeMillis() - start;
-		System.out.println("grantThatSplitWithRegExpManyTimes: " + end);
 	}
 	
 	String[] split( String uri, char divider ) {

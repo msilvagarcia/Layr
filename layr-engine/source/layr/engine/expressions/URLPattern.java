@@ -18,9 +18,9 @@ public class URLPattern {
      */
     public String parseMethodUrlPatternToRegExp ( String pattern ) {
     	Matcher matcher = getMatcher(RE_IS_VALID_EXPRESSION, pattern);
-    	return matcher.replaceAll("(.*)");
+    	return matcher.replaceAll("([^\\/]*)");
     }
-    
+
     /**
      * Extract the place holders value from URL based on URL pattern
      * @param pattern

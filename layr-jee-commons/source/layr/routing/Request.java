@@ -3,6 +3,7 @@ package layr.routing;
 import java.io.IOException;
 import java.util.Map;
 
+import static layr.commons.StringUtil.*;
 import layr.engine.RequestContext;
 import layr.engine.expressions.URLPattern;
 
@@ -33,6 +34,8 @@ public class Request {
 
 	public Object getValue(RouteParameter parameter) throws IOException {
 		String value = getParameterValue( parameter );
+		if ( isEmpty(value) )
+			return null;
 		Object convertedValue = requestContext.convert( value, parameter.targetClazz );
 		return convertedValue;
 	}

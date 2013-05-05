@@ -10,12 +10,12 @@ import layr.engine.components.Component;
 import layr.engine.components.TemplateParsingException;
 import layr.routing.annotations.Route;
 
-public class RoutingLifeCycle {
+public class BusinessRoutingLifeCycle implements LifeCycle {
 
     Configuration configuration;
 	RequestContext requestContext;
 
-	public RoutingLifeCycle(Configuration configuration) {
+	public BusinessRoutingLifeCycle(Configuration configuration) {
     	this.configuration = configuration;
     	this.requestContext = configuration.createContext();
 	}
@@ -32,15 +32,15 @@ public class RoutingLifeCycle {
     	throw new NotFoundException( "No route found." );
     }
 
-    public Request createRoutingRequest(RouteMethod routeMethod) {
-    	return new Request( requestContext, routeMethod.getRouteMethodPattern() );
-    }
-
 	public void runMethodAndRenderOutput(RouteMethod routeMethod) throws RoutingException {
 		Request routingRequest = createRoutingRequest( routeMethod );
 		Response routingResponse = runMethod( routingRequest, routeMethod );
 		renderOutput(routingResponse);
 	}
+
+    public Request createRoutingRequest(RouteMethod routeMethod) {
+    	return new Request( requestContext, routeMethod.getRouteMethodPattern() );
+    }
 
 	public Response runMethod(Request routingRequest, RouteMethod routeMethod) throws RoutingException {
 		RouteClass routeClass = routeMethod.routeClass;
@@ -52,19 +52,25 @@ public class RoutingLifeCycle {
 	}
 
 	public void populateWithParameters(Object instance, RouteClass routeClass, Request routingRequest) throws RoutingException {
+		for ( RouteParameter parameter : routeClass.getParameters())
+			if ( !( parameter instanceof TemplateRouteParameter ) )
+				populateWithParameter( instance, routeClass, routingRequest, parameter );
+	}
+
+	public void populateWithParameter(
+			Object instance, RouteClass routeClass,
+			Request routingRequest, RouteParameter parameter) throws RoutingException {
 		Object value = null;
-		for ( RouteParameter parameter : routeClass.getParameters()){
-			try {
-				value = routingRequest.getValue( parameter );
-				Reflection.setAttribute( instance, parameter.name, value );
-			} catch (Exception e) {
-				String message = String.format(
-					"[WARN] Can't set the value '%s' to %s.%s: %s",
-					value, routeClass.targetClass.getCanonicalName(),
-					parameter.name, e.getMessage());
-				requestContext.log( message );
-				throw new RoutingException( message, e );
-			}
+		try {
+			value = routingRequest.getValue( parameter );
+			Reflection.setAttribute( instance, parameter.name, value );
+		} catch (Exception e) {
+			String message = String.format(
+				"[WARN] Can't set the value '%s' to %s.%s: %s",
+				value, routeClass.targetClass.getCanonicalName(),
+				parameter.name, e.getMessage());
+			requestContext.log( message );
+			throw new RoutingException( message, e );
 		}
 	}
 
@@ -84,7 +90,7 @@ public class RoutingLifeCycle {
 
 		Route annotation = routeMethod.getRouteAnnotation();
 		Response response = new Response();
-		response.template = isEmpty(annotation.value()) ? annotation.template() : annotation.value();
+		response.template = annotation.template();
 		response.redirectTo = annotation.redirectTo();
 		return response;
 	}
@@ -118,5 +124,9 @@ public class RoutingLifeCycle {
 
 	public void responseNoContent() {
 		requestContext.setStatusCode( 204 );
+	}
+	
+	public RequestContext getRequestContext() {
+		return requestContext;
 	}
 }

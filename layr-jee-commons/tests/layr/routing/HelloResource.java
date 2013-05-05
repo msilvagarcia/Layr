@@ -15,10 +15,14 @@ public class HelloResource{
 
 	@GET
 	@Route("world/{pathParamOnBody}")
-	public Response renderWithResponseBuilder(){
+	public Response renderThroughResponseBuilder(){
 		return ResponseBuilder
 				.renderTemplate( "hello.xhtml" );
 	}
+
+	@PUT
+	@Route(pattern="world/{pathParamOnBody}", template="hello.xhtml")
+	public void renderThroughAnnotation(){}
 
 	@POST
 	@Route("world/{param1}/{param2}")
@@ -30,4 +34,8 @@ public class HelloResource{
 				.redirectTo( String.format(
 					"/response/%s/%s/%s/", param1, param2, isSomething) );
 	}
+	
+	@DELETE
+	@Route("world")
+	public void doSomethingButDoNotRenderTemplate(){}
 }

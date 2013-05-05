@@ -1,5 +1,6 @@
 package layr.routing.impl;
 
+import layr.engine.Cache;
 import layr.routing.Configuration;
 import layr.routing.RoutingBootstrap;
 
@@ -10,6 +11,7 @@ public class StubRoutingBootstrap extends RoutingBootstrap {
 		StubConfiguration configuration = new StubConfiguration();
 		configuration.setRegisteredTagLibs( registeredTagLibs );
 		configuration.setRegisteredWebResources( registeredWebResources );
+		configuration.setCache( new Cache() );
 		return configuration;
 	}
 }

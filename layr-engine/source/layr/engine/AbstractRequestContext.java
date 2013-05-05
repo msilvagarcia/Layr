@@ -12,8 +12,6 @@ import layr.engine.components.ComponentFactory;
 
 public abstract class AbstractRequestContext implements RequestContext {
 
-	final static String SNIPPETS = AbstractRequestContext.class.getCanonicalName() + ".SNIPPETS";
-
 	Map<String, Object> properties;
 	Map<String, ComponentFactory> registeredTagLibs;
 	Cache cache;
@@ -145,17 +143,10 @@ public abstract class AbstractRequestContext implements RequestContext {
 	/**
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public Map<String, Component> getCachedSnippets() {
 		if ( cache == null )
 			return null;
-
-		Map<String, Component> compiledSnippets = (Map<String,Component>)cache.get( SNIPPETS );
-		if ( compiledSnippets == null ){
-			compiledSnippets = new HashMap<String, Component>();
-			cache.put(SNIPPETS, compiledSnippets);
-		}
-		return compiledSnippets;
+		return cache.getCompiledSnippets();
 	}
 
 	/* (non-Javadoc)

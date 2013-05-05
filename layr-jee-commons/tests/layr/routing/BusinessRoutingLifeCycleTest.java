@@ -5,8 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import layr.engine.Cache;
-import layr.routing.impl.StubConfiguration;
 import layr.routing.impl.StubRoutingBootstrap;
 
 import org.junit.Before;
@@ -20,7 +18,6 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public BusinessRoutingLifeCycleTest() throws RoutingInitializationException {
 		RoutingBootstrap routingBootstrap = new StubRoutingBootstrap();
 		configuration = routingBootstrap.configure( exposedRoute() );
-		((StubConfiguration)configuration).setCache( new Cache() );
 	}
 
 	@Before
@@ -59,13 +56,10 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	}
 
 	public void stressTest() throws Exception{
-		long start = System.currentTimeMillis();
 		for ( int i=0; i<MANY_TIMES; i++ ){
 			setup();
 			get( "/hello/world/1234?requestParamOnBody=12.5" );
 		}
-		long time = System.currentTimeMillis() - start;
-		System.out.println("time: " + time);
 	}
 
 	Set<Class<?>> exposedRoute(){

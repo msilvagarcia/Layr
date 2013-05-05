@@ -30,7 +30,7 @@ public class NaturalRoutingLifeCycleTest extends RoutingTestSupport {
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
-	@Test( timeout=3300 )
+	@Test( timeout=700 )
 	public void stressTestFiveTimes() throws Exception{
 		for ( int i=0; i<5; i++ )
 			stressTest();
@@ -42,5 +42,5 @@ public class NaturalRoutingLifeCycleTest extends RoutingTestSupport {
 			get( "/hello/?requestParamOnBody=12.5&pathParamOnBody=1234" );
 		}
 	}
-	
+
 }

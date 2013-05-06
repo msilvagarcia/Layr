@@ -9,6 +9,9 @@ import layr.engine.TemplateParser;
 import layr.engine.components.Component;
 import layr.engine.components.TemplateParsingException;
 import layr.routing.annotations.Route;
+import layr.routing.exceptions.NotFoundException;
+import layr.routing.exceptions.RoutingException;
+import layr.routing.exceptions.UnhandledException;
 
 public class BusinessRoutingLifeCycle implements LifeCycle {
 
@@ -20,7 +23,7 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
     	this.requestContext = configuration.createContext();
 	}
 
-    public void run() throws NotFoundException, RoutingException {
+    public void run() throws NotFoundException, RoutingException, UnhandledException {
     	for ( RouteClass resource : configuration.getRegisteredWebResources() )
     		if ( resource.matchesTheRequestURI( requestContext ) )
 		    	for ( RouteMethod routeMethod : resource.getRouteMethods() )
@@ -32,17 +35,37 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
     	throw new NotFoundException( "No route found." );
     }
 
-	public void runMethodAndRenderOutput(RouteMethod routeMethod) throws RoutingException {
+	public void runMethodAndRenderOutput(RouteMethod routeMethod) throws RoutingException, UnhandledException {
 		Request routingRequest = createRoutingRequest( routeMethod );
-		Response routingResponse = runMethod( routingRequest, routeMethod );
+		Response routingResponse = null;
+		try {
+			routingResponse = runMethod( routingRequest, routeMethod );
+		} catch ( Throwable e ) {
+			routingResponse = handleException( e );
+		}
 		renderOutput(routingResponse);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends Throwable> Response handleException(T e) throws UnhandledException {
+		String canonicalName = e.getClass().getCanonicalName();
+		Class<ExceptionHandler<?>> exceptionHandlerClass = configuration.getRegisteredExceptionHandlers().get( canonicalName );
+		if ( exceptionHandlerClass == null )
+			throw new UnhandledException( e );
+		
+		try {
+			ExceptionHandler<?> exceptionHandlerInstance = exceptionHandlerClass.newInstance();
+			return ((ExceptionHandler<T>)exceptionHandlerInstance).render( e );
+		} catch (Throwable e1) {
+			throw new UnhandledException( e1 );
+		}
 	}
 
     public Request createRoutingRequest(RouteMethod routeMethod) {
     	return new Request( requestContext, routeMethod.getRouteMethodPattern() );
     }
 
-	public Response runMethod(Request routingRequest, RouteMethod routeMethod) throws RoutingException {
+	public Response runMethod(Request routingRequest, RouteMethod routeMethod) throws Throwable {
 		RouteClass routeClass = routeMethod.routeClass;
 		Object instance = configuration.newInstanceOf( routeClass );
 		populateWithParameters( instance, routeClass, routingRequest );

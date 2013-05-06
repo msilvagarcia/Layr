@@ -7,6 +7,7 @@ import layr.engine.RequestContext;
 import layr.engine.TemplateParser;
 import layr.engine.components.Component;
 import layr.engine.components.TemplateParsingException;
+import layr.routing.exceptions.NotFoundException;
 
 public class NaturalRoutingLifeCycle implements LifeCycle {
 

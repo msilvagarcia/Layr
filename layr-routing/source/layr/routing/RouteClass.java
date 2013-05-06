@@ -18,8 +18,6 @@ import static layr.commons.StringUtil.*;
 
 public class RouteClass {
 
-    static final String AVAILABLES_ROUTES = RouteClass.class.getCanonicalName() + ".AVAILABLES_ROUTES";
-
     Class<?> targetClass;
     List<RouteMethod> routes;
     List<RouteParameter> parameters;
@@ -110,5 +108,9 @@ public class RouteClass {
 	public boolean matchesTheRequestURI(RequestContext requestContext) {
 		String methodUrlPattern = new URLPattern().parseMethodUrlPatternToRegExp( rootPath ) + ".*";
 		return requestContext.getRequestURI().matches( methodUrlPattern );
+	}
+	
+	public Class<?> getTargetClass() {
+		return targetClass;
 	}
 }

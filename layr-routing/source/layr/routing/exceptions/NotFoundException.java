@@ -1,4 +1,4 @@
-package layr.routing;
+package layr.routing.exceptions;
 
 public class NotFoundException extends Exception {
 	

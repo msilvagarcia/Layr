@@ -1,12 +1,14 @@
 package layr.routing;
 
+import static layr.commons.StringUtil.isEmpty;
+
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static layr.commons.StringUtil.isEmpty;
 import layr.engine.RequestContext;
 import layr.engine.expressions.URLPattern;
 import layr.routing.annotations.Route;
@@ -49,7 +51,7 @@ public class RouteMethod {
 			RouteParameterFactory.newInstance( annotation, targetClazz ) );
 	}
 
-	public Object invoke(Request request, Object instance) throws RoutingException {
+	public Object invoke(Request request, Object instance) throws Throwable {
 		try {
 			Object[] methodParameters = new Object[ parameters.size() ];
 			short cursor = 0;
@@ -57,8 +59,8 @@ public class RouteMethod {
 				methodParameters[cursor++] = request.getValue( parameter );
 			lastReturnedValue = targetMethod.invoke( instance, methodParameters );
 			return lastReturnedValue;
-		} catch (Exception e) {
-			throw new RoutingException( "Can't to invoke the method " + targetMethod, e );
+		} catch ( InvocationTargetException e ) {
+			throw e.getTargetException();
 		}
 	}
 

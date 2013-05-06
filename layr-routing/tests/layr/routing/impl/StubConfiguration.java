@@ -3,7 +3,7 @@ package layr.routing.impl;
 import layr.engine.RequestContext;
 import layr.routing.AbstractConfiguration;
 import layr.routing.RouteClass;
-import layr.routing.RoutingException;
+import layr.routing.exceptions.RoutingException;
 
 public class StubConfiguration extends AbstractConfiguration {
 
@@ -23,7 +23,7 @@ public class StubConfiguration extends AbstractConfiguration {
 	 */
 	@Override
 	public Object newInstanceOf( RouteClass routeClass ) throws RoutingException {
-		Class<?> targetClass = retrieveTargetClass( routeClass );
+		Class<?> targetClass = routeClass.getTargetClass();
 		try {
 			return targetClass.newInstance();
 		} catch (Exception e) {

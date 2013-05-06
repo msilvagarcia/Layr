@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;
 
+import layr.routing.exceptions.RoutingInitializationException;
 import layr.routing.impl.StubRoutingBootstrap;
 
 import org.junit.Before;

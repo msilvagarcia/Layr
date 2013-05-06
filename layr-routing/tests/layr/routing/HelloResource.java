@@ -1,5 +1,7 @@
 package layr.routing;
 
+import java.io.IOException;
+
 import layr.routing.annotations.*;
 
 @WebResource("hello")
@@ -38,4 +40,16 @@ public class HelloResource{
 	@DELETE
 	@Route("world")
 	public void doSomethingButDoNotRenderTemplate(){}
+	
+	@GET
+	@Route("handled/error")
+	public void handledError(){
+		throw new NullPointerException();
+	}
+
+	@GET
+	@Route("unhandled/error")
+	public void unhandledError() throws IOException{
+		throw new IOException();
+	}
 }

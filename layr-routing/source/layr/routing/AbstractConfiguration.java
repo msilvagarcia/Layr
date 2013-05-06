@@ -15,6 +15,7 @@ public abstract class AbstractConfiguration implements Configuration {
 	String defaultResource;
 	Cache cache;
 	Map<String, ComponentFactory> registeredTagLibs;
+	Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers;
 	List<RouteClass> exposedResources;
 
 	public AbstractConfiguration() {
@@ -57,8 +58,11 @@ public abstract class AbstractConfiguration implements Configuration {
 		this.exposedResources = exposedMethods;
 	}
 
-	protected Class<?> retrieveTargetClass(RouteClass routeClass) {
-		return routeClass.targetClass;
+	public Map<String, Class<ExceptionHandler<?>>> getRegisteredExceptionHandlers() {
+		return registeredExceptionHandlers;
 	}
 
+	public void setRegisteredExceptionHandlers(Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers) {
+		this.registeredExceptionHandlers = registeredExceptionHandlers;
+	}
 }

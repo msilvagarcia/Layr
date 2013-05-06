@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
+import layr.routing.exceptions.RoutingInitializationException;
+import layr.routing.exceptions.UnhandledException;
 import layr.routing.impl.StubRoutingBootstrap;
 
 import org.junit.Before;
@@ -17,7 +19,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 
 	public BusinessRoutingLifeCycleTest() throws RoutingInitializationException {
 		RoutingBootstrap routingBootstrap = new StubRoutingBootstrap();
-		configuration = routingBootstrap.configure( exposedRoute() );
+		configuration = routingBootstrap.configure( classes() );
 	}
 
 	@Before
@@ -29,6 +31,17 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public void grantThatSendGetAndRenderTemplateAsExpected() throws Exception {
 		get( "/hello/world/1234?requestParamOnBody=12.5" );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
+	}
+
+	@Test
+	public void grantThatHandleNullPointerExceptionAsExpected() throws Exception {
+		get( "/hello/handled/error" );
+		assertEquals( "/fail/", getRequestContext().getRedirectedURL() );
+	}
+
+	@Test( expected=UnhandledException.class )
+	public void grantThatCantHandleIOExceptinException() throws Exception {
+		get( "/hello/unhandled/error" );
 	}
 
 	@Test
@@ -62,9 +75,10 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 		}
 	}
 
-	Set<Class<?>> exposedRoute(){
+	Set<Class<?>> classes(){
 		Set<Class<?>> classes = new HashSet<Class<?>>();
 		classes.add( HelloResource.class );
+		classes.add( NullPointerExceptionHandler.class );
 		return classes;
 	}
 

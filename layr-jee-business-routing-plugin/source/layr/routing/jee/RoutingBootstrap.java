@@ -30,6 +30,7 @@ public class RoutingBootstrap extends layr.routing.RoutingBootstrap {
 		configuration.setServletContext( servletContext );
 		configuration.setRegisteredTagLibs( getRegisteredTagLibs() );
 		configuration.setRegisteredWebResources( getRegisteredWebResources() );
-		return super.createConfiguration();
+		configuration.setRegisteredExceptionHandlers( getExceptionHandlers() );
+		return configuration;
 	}
 }

@@ -19,136 +19,93 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import layr.commons.Cache;
 import layr.engine.AbstractRequestContext;
-import layr.engine.components.ComponentFactory;
-import layr.routing.Configuration;
+import layr.org.codehaus.jackson.ConversionException;
+import layr.org.codehaus.jackson.ConverterFactory;
 
 
 public class JEERequestContext extends AbstractRequestContext {
 
-	private Configuration configuration;
 	private HttpServletRequest request;
 	private HttpServletResponse response;
+	private Map<String,String> requestParameter;
+	ConverterFactory converter;
 	
 	public JEERequestContext(
-			HttpServletRequest request, HttpServletResponse response,
-			Configuration configuration ) {
+			HttpServletRequest request, HttpServletResponse response  ) {
 		super();
-		setConfiguration(configuration);
-		setRequest(request);
-		setResponse(response);
-	}
-
-	/* (non-Javadoc)
-	 * @see layr.core.IRequestContext#getParameter(java.lang.String)
-	 */
-	@Override
-	public Object getParameter(String paramName) throws ServletException,
-			IOException {
-		return getRequest().getParameter(paramName);
-	}
-
-	public HttpServletRequest getRequest() {
-		return request;
-	}
-	
-	public void setRequest(HttpServletRequest request) {
 		this.request = request;
-	}
-
-	public HttpServletResponse getResponse() {
-		return response;
-	}
-	
-	public void setResponse(HttpServletResponse response) {
 		this.response = response;
+		this.converter = new ConverterFactory();
 	}
 
-	public ServletContext getServletContext() {
-		return configuration.getServletContext();
-	}
-
-	/* (non-Javadoc)
-	 * @see layr.core.IRequestContext#getRelativePath()
-	 */
 	@Override
-	public String getRelativePath() {
-		String relativePath = super.getRelativePath();
-		if ( relativePath == null ) {
-			String uri = request
-							.getRequestURI()
-							.replaceFirst(getApplicationRootPath(), "");
-			if ( uri.equals("/") )
-				 uri = getDefaultResourcePath();
-			relativePath = uri;
-		}
-
-		return relativePath;
+	public Writer getWriter() throws IOException {
+		return response.getWriter();
 	}
 
-	public String getDefaultResourcePath() {
-		return configuration.getDefaultResource();
+	@Override
+	public void redirectTo(String redirectTo) throws IOException {
+		response.sendRedirect( redirectTo );
 	}
 
-	/**
-	 * Retrieves the current layrContext path. For more info see
-	 * {@link HttpServletRequest#getContextPath()}
-	 * 
-	 * @return contextPath
-	 */
+	@Override
+	public void setStatusCode(int statusCode) {
+		response.setStatus( statusCode );
+	}
+
+	@Override
+	public void setCharacterEncoding(String encoding) throws UnsupportedEncodingException {
+		request.setCharacterEncoding( encoding );
+		response.setCharacterEncoding( encoding );
+	}
+
+	@Override
+	public void setContentType(String contentType) {
+		response.setContentType( contentType );
+	}
+
+	@Override
+	public String getRequestHttpMethod() {
+		return request.getMethod();
+	}
+
+	@Override
+	public String getRequestURI() {
+		return request.getRequestURI();
+	}
+
+	@Override
 	public String getApplicationRootPath() {
 		return request.getContextPath();
 	}
 
-	/* (non-Javadoc)
-	 * @see layr.core.IRequestContext#setCharacterEncoding(java.lang.String)
-	 */
-    @Override
-	public void setCharacterEncoding(String encoding) {
-        try {
-			getRequest().setCharacterEncoding(encoding);
-			getResponse().setCharacterEncoding(encoding);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-    }
-
-    /* (non-Javadoc)
-	 * @see layr.core.IRequestContext#setContentType(java.lang.String)
-	 */
-    @Override
-	public void setContentType(String contentType) {
-        getResponse().setContentType(contentType);
-    }
-
-	/* (non-Javadoc)
-	 * @see layr.core.IRequestContext#log(java.lang.String)
-	 */
 	@Override
-	public void log(String text) {
-		getServletContext().log(text);
+	public Map<String, String> getRequestParameters() {
+		if ( requestParameter == null ) {
+			requestParameter = new HashMap<String, String>();
+			for ( String param : request.getParameterMap().keySet() )
+				requestParameter.put( param, request.getParameter( param ) );
+		}
+		return requestParameter;
 	}
 
 	@Override
-	public Writer getWriter() {
+	public Object convert(String value, Class<?> targetClass) throws IOException {
 		try {
-			return getResponse().getWriter();
-		} catch (IOException e) {
-			throw new RuntimeException("Can't retrieve the response writer.", e);
+			return converter.convert( value, targetClass );
+		} catch (ConversionException e) {
+			throw new IOException( e );
 		}
 	}
 
-	@Override
 	public InputStream openStream(String url) {
 		InputStream stream = getClassLoader().getResourceAsStream(url);
 		if (stream == null && getServletContext() != null)
@@ -156,47 +113,7 @@ public class JEERequestContext extends AbstractRequestContext {
 		return stream;
 	}
 
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
-
-	public static JEERequestContext createRequestContext(ServletRequest request,
-			ServletResponse response, ServletContext context) {
-		Configuration configuration = (Configuration)context.getAttribute( Configuration.class.getCanonicalName() );
-		JEERequestContext requestContext = new JEERequestContext(
-				(HttpServletRequest)request, (HttpServletResponse)response, configuration);
-		return configureRequestContext( requestContext );
-	}
-
-	public static JEERequestContext configureRequestContext( JEERequestContext context ) {
-		Configuration configuration = context.getConfiguration();
-
-		context.setCharacterEncoding("UTF-8");
-        context.setContentType("text/html");
-		context.setCache( createCache( configuration ) );
-        context.setRegisteredTagLibs( configuration.getRegisteredTagLibs() );
-
-		HttpServletRequest httpRequest = context.getRequest();
-		if (httpRequest  != null) {
-			context.put("contextPath", httpRequest.getContextPath());
-			context.put("path", httpRequest.getRequestURI());
-		}
-
-		return context;
-	}
-
-	public static Cache createCache(Configuration configuration) {
-		if ( !configuration.isCacheEnabled() )
-			return null;
-		return configuration.getCache();
-	}
-	
-	@Override
-	public Map<String, ComponentFactory> getRegisteredTagLibs() {
-		return configuration.getRegisteredTagLibs();
+	public ServletContext getServletContext() {
+		return request.getServletContext();
 	}
 }

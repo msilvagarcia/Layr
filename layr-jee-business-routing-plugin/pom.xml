@@ -43,6 +43,13 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>layr-routing</artifactId>
 			<version>${project.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>layr-jackson-converter</artifactId>
+			<version>${project.version}</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 

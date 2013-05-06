@@ -2,6 +2,7 @@ package layr.engine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Map;
 
@@ -24,13 +25,13 @@ public interface RequestContext {
 
 	public abstract InputStream getResourceAsStream(String resourceName) throws IOException;
 
-	public abstract Writer getWriter();
+	public abstract Writer getWriter() throws IOException;
 
-	public abstract void redirectTo(String redirectTo);
+	public abstract void redirectTo(String redirectTo) throws IOException;
 
 	public abstract void setStatusCode(int statusCode);
 
-	public abstract void setCharacterEncoding(String encoding);
+	public abstract void setCharacterEncoding(String encoding) throws UnsupportedEncodingException;
 
 	public abstract void setContentType(String contentType);
 

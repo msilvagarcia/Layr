@@ -9,6 +9,10 @@ import java.util.Map;
 import layr.engine.components.Component;
 import layr.engine.components.ComponentFactory;
 
+/**
+ * Feeds the template engine and the request life cycle with both container's
+ * request and response data.
+ */
 public interface RequestContext {
 	
 	public abstract void put(String name, Object property);

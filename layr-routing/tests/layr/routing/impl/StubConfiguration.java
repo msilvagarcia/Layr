@@ -2,6 +2,7 @@ package layr.routing.impl;
 
 import layr.engine.RequestContext;
 import layr.routing.AbstractConfiguration;
+import layr.routing.ContainerRequestData;
 import layr.routing.RouteClass;
 import layr.routing.exceptions.RoutingException;
 
@@ -11,7 +12,7 @@ public class StubConfiguration extends AbstractConfiguration {
 	 * @see layr.routing.Configuration#createContext()
 	 */
 	@Override
-	public RequestContext createContext() {
+	public RequestContext createContext( ContainerRequestData<?, ?> containerRequestData ) {
 		StubRequestContext requestContext = new StubRequestContext();
 		requestContext.setCache( getCache() );
 		requestContext.getRegisteredTagLibs().putAll( getRegisteredTagLibs() );

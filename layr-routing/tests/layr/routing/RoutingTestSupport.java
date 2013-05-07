@@ -29,24 +29,28 @@ public class RoutingTestSupport {
 	}
 	
 	public void get( String uri ) throws Exception {
+		lifeCycle.createContext( null );
 		setRequestURI( uri );
 		setRequestMethod( "GET" );
 		lifeCycle.run();
 	}
-	
+
 	public void post( String uri ) throws Exception {
+		lifeCycle.createContext( null );
 		setRequestURI( uri );
 		setRequestMethod( "POST" );
 		lifeCycle.run();
 	}
 	
 	public void put( String uri ) throws Exception {
+		lifeCycle.createContext( null );
 		setRequestURI( uri );
 		setRequestMethod( "PUT" );
 		lifeCycle.run();
 	}
 	
 	public void delete( String uri ) throws Exception {
+		lifeCycle.createContext( null );
 		setRequestURI( uri );
 		setRequestMethod( "DELETE" );
 		lifeCycle.run();

@@ -1,8 +1,10 @@
 package layr.routing;
 
-import java.io.IOException;
+import static layr.commons.StringUtil.isEmpty;
 
-import static layr.commons.StringUtil.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 import layr.commons.Reflection;
 import layr.engine.RequestContext;
 import layr.engine.TemplateParser;
@@ -20,7 +22,10 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 
 	public BusinessRoutingLifeCycle(Configuration configuration) {
     	this.configuration = configuration;
-    	this.requestContext = configuration.createContext();
+	}
+
+	public void createContext( ContainerRequestData<?, ?> containerRequestData ) {
+		this.requestContext = configuration.createContext( containerRequestData );
 	}
 
     public void run() throws NotFoundException, RoutingException, UnhandledException {
@@ -119,12 +124,16 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 	}
 
 	public void renderOutput( Response response ) throws RoutingException {
-		if ( !isEmpty( response.redirectTo ) )
-			requestContext.redirectTo( response.redirectTo );
-		else if ( !isEmpty( response.template ) )
-			render( response );
-		else
-			responseNoContent();
+		try {
+			if ( !isEmpty( response.redirectTo ) )
+				requestContext.redirectTo( response.redirectTo );
+			else if ( !isEmpty( response.template ) )
+				render( response );
+			else
+				responseNoContent();
+		} catch ( IOException e ) {
+			throw new RoutingException( e );
+		}
 	}
 
 	public void render( Response response ) throws RoutingException {
@@ -140,7 +149,7 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 		}
 	}
 
-	public void setContentTypeAndEncoding( Response response ) {
+	public void setContentTypeAndEncoding( Response response ) throws UnsupportedEncodingException {
 		requestContext.setContentType( "text/html" );
 		requestContext.setCharacterEncoding( response.encoding );
 	}

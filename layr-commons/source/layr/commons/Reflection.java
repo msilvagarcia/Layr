@@ -67,6 +67,9 @@ public class Reflection {
 			}
 	
 			Field field = extractFieldFor(target.getClass(), attribute);
+			if ( field == null )
+				return null;
+
 			field.setAccessible(true);
 			return field.get(target);
 		} catch ( Throwable e ) {

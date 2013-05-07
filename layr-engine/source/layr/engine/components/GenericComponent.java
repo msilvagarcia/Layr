@@ -529,8 +529,9 @@ public class GenericComponent implements Component {
 	
 	/**
 	 * @return
+	 * @throws IOException 
 	 */
-	public GenericXHtmlRenderer getXhtmlRenderer(){
+	public GenericXHtmlRenderer getXhtmlRenderer() throws IOException{
 		return new GenericXHtmlRenderer( getWriter(), this );
 	}
 
@@ -543,8 +544,9 @@ public class GenericComponent implements Component {
 
 	/**
 	 * @return
+	 * @throws IOException 
 	 */
-	public Writer getWriter() {
+	public Writer getWriter() throws IOException {
 		return requestContext.getWriter();
 	}
 

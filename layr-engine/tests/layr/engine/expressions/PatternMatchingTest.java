@@ -23,7 +23,7 @@ public class PatternMatchingTest {
 	public void assertThatReplacesTheUrl() {
 		String pattern = "users/{id}/edit";
 		String actual = urlPattern.parseMethodUrlPatternToRegExp( pattern );
-		Assert.assertEquals( "users/(.*)/edit", actual );
+		Assert.assertEquals( "users/([^/]*)/edit", actual );
 	}
 
 	@Test

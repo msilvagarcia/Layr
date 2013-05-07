@@ -51,10 +51,9 @@
 
 	<modules>
 		<module>../layr-commons</module>
+		<module>../layr-jackson-converter</module>
 		<module>../layr-engine</module>
 		<module>../layr-routing</module>
-		<module>../layr-jee-natural-routing-plugin</module>
-		<module>../layr-jee-business-routing-plugin</module>
-		<module>../layr-jee-natural-routing-sample</module>
+		<module>../layr-jee</module>
 	</modules>
 </project>

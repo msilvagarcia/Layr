@@ -43,13 +43,13 @@ public class StringSplittingTest {
 		assertEquals( "blah=123", splitted[1]);
 	}
 	
-	@Test( timeout = 85 )
+	@Test( timeout = 100 )
 	public void grantThatSplitManyTimes(){
 		for ( int i=0; i<MANY_TIMES; i++ )
 			grantThatSplitterWorksAsExpected();
 	}
 
-	@Test( timeout= 485 )
+	@Test( timeout= 500 )
 	public void grantThatSplitWithRegExpManyTimes(){
 		for ( int i=0; i<MANY_TIMES; i++ )
 			grantThatSplitWithRegExpAsExpected();

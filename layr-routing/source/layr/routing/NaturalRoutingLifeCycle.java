@@ -16,7 +16,11 @@ public class NaturalRoutingLifeCycle implements LifeCycle {
 
 	public NaturalRoutingLifeCycle(Configuration configuration) {
     	this.configuration = configuration;
-    	this.requestContext = configuration.createContext();
+	}
+	
+	@Override
+	public void createContext(ContainerRequestData<?, ?> containerRequestData) {
+		this.requestContext = configuration.createContext( containerRequestData );
 	}
 
 	public void run() throws TemplateParsingException, NotFoundException, IOException {

@@ -1,4 +1,4 @@
-package layr.commons.commons;
+package layr.commons;
 
 import java.io.IOException;
 

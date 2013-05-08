@@ -2,24 +2,26 @@ package layr.routing.jee;
 
 import java.io.IOException;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebServlet;
+import javax.servlet.annotation.WebFilter;
 
 import layr.routing.exceptions.NotFoundException;
 
-@WebServlet
-public class Application implements Servlet {
+@WebFilter(filterName="layr.routing.jee.Application")
+public class Application implements Filter {
 
 	@Override
-	public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
 		try {
 			runLifeCycle( request, response );
 		} catch ( NotFoundException e ) {
-			throw new ServletException( "No found", e );
+			chain.doFilter( request, response );
 		} catch (Exception e) {
 			throw new IOException( e );
 		}
@@ -31,19 +33,9 @@ public class Application implements Servlet {
 	}
 
 	@Override
-	public void init(ServletConfig config) throws ServletException {}
+	public void init(FilterConfig filterConfig) throws ServletException {}
 
 	@Override
 	public void destroy() {}
-
-	@Override
-	public ServletConfig getServletConfig() {
-		return null;
-	}
-
-	@Override
-	public String getServletInfo() {
-		return null;
-	}
 
 }

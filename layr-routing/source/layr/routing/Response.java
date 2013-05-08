@@ -29,7 +29,7 @@ public class Response {
 		this.headers.put( name, value );
 		return this;
 	}
-	
+
 	public Response encoding( String encoding ) {
 		this.encoding = encoding;
 		return this;

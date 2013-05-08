@@ -1,35 +1,73 @@
 package layr.routing.jee;
 
+import java.util.Set;
+
+import javax.ejb.Singleton;
+import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.HandlesTypes;
 
+import layr.engine.Cache;
+import layr.engine.components.TagLib;
 import layr.routing.Configuration;
 import layr.routing.RoutingBootstrap;
+import layr.routing.annotations.WebResource;
+import layr.routing.exceptions.RoutingInitializationException;
 
-public class JEERoutingBootstrap extends RoutingBootstrap {
+@HandlesTypes({
+	TagLib.class,
+	WebResource.class,
+	Stateless.class,
+	Stateful.class,
+	Singleton.class})
+public class JEERoutingBootstrap extends RoutingBootstrap implements javax.servlet.ServletContainerInitializer {
 
 	EnterpriseJavaBeansContext ejbContext;
-	ServletContext servletContext;
 
-	public JEERoutingBootstrap( ServletContext servletContext ) throws NamingException {
+	public JEERoutingBootstrap() throws NamingException {
 		super();
 		this.ejbContext = new EnterpriseJavaBeansContext();
-		this.servletContext = servletContext;
 	}
 
 	@Override
 	public void analyse(Class<?> clazz) throws Exception {
 		super.analyse( clazz );
-		ejbContext.registerAnnotatedEJBViewsInterfaces( clazz );
+		ejbContext.seekForJNDIEJBViewsfor( clazz );
 	}
 
 	@Override
 	public Configuration createConfiguration() {
 		JEEConfiguration configuration = new JEEConfiguration();
 		configuration.setEjbContext( ejbContext );
+		configuration.setCache( getCache() );
+		configuration.setDefaultEncoding( getDefaultEncoding() );
 		configuration.setRegisteredTagLibs( getRegisteredTagLibs() );
 		configuration.setRegisteredWebResources( getRegisteredWebResources() );
 		configuration.setRegisteredExceptionHandlers( getExceptionHandlers() );
 		return configuration;
+	}
+	
+	public Cache getCache(){
+		if ( System.getProperty( "layr.routing.cacheable", "false" ).equals( "true" ) )
+			return new Cache();
+		return null;
+	}
+	
+	public String getDefaultEncoding(){
+		return System.getProperty( "layr.routing.encoding", "UTF-8" );
+	}
+
+	@Override
+	public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
+		try {
+			analyse( classes );
+			Configuration configuration = createConfiguration();
+			ctx.setAttribute( JEEConfiguration.class.getCanonicalName(), configuration );
+		} catch (RoutingInitializationException e) {
+			throw new ServletException( e );
+		}
 	}
 }

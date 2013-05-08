@@ -11,7 +11,7 @@ import layr.routing.LifeCycle;
 import layr.routing.NaturalRoutingLifeCycle;
 import layr.routing.exceptions.NotFoundException;
 
-public class JEELifeCycle {
+class JEELifeCycle {
 
 	HttpServletRequest request;
 	HttpServletResponse response;

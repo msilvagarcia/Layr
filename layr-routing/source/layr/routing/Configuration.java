@@ -40,6 +40,11 @@ public interface Configuration {
 	 * @return the default web resource path
 	 */
 	public abstract String getDefaultResource();
+	
+	/**
+	 * @return the default encoding for template and request
+	 */
+	public abstract String getDefaultEncoding();
 
 	/**
 	 * @param containerRequestData

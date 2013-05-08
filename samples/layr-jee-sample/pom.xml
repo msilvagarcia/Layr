@@ -9,9 +9,8 @@
 		<relativePath>../layr-parent/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>layr-jee-natural-routing-sample</artifactId>
-	<name>Layr: JEE Natural Routing Sample Implementation</name>
-	<description>A Sample Project using Layr Web Framework Development</description>
+	<artifactId>layr-jee-sample</artifactId>
+	<name>Layr: Sample Implementation For Servlet Environment</name>
 	<packaging>war</packaging>
 
 	<licenses>
@@ -30,19 +29,8 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>layr-jee-natural-routing-plugin</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>layr-jee-business-routing-plugin</artifactId>
+			<artifactId>layr-jee</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

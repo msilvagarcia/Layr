@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import layr.routing.ContainerRequestData;
 
-public class JEEContainerRequestData 
+class JEEContainerRequestData 
 	implements ContainerRequestData<HttpServletRequest, HttpServletResponse> {
 
 	HttpServletResponse response;

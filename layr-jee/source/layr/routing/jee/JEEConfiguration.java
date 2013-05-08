@@ -10,7 +10,7 @@ import layr.routing.ContainerRequestData;
 import layr.routing.RouteClass;
 import layr.routing.exceptions.RoutingException;
 
-public class JEEConfiguration extends AbstractConfiguration {
+class JEEConfiguration extends AbstractConfiguration {
 
 	EnterpriseJavaBeansContext ejbContext;
 
@@ -21,7 +21,7 @@ public class JEEConfiguration extends AbstractConfiguration {
 				(ContainerRequestData<HttpServletRequest, HttpServletResponse>) containerRequestData;
 		JEERequestContext jeeRequestContext = new JEERequestContext( jeeRequestData.getRequest(), jeeRequestData.getResponse() );
 		jeeRequestContext.setCache( getCache() );
-		jeeRequestContext.getRegisteredTagLibs().putAll( getRegisteredTagLibs() );
+		jeeRequestContext.setRegisteredTagLibs( getRegisteredTagLibs() );
 		return jeeRequestContext;
 	}
 

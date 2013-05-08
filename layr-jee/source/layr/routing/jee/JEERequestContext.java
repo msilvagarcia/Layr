@@ -31,7 +31,7 @@ import layr.engine.AbstractRequestContext;
 import layr.org.codehaus.jackson.ConversionException;
 import layr.org.codehaus.jackson.ConverterFactory;
 
-public class JEERequestContext extends AbstractRequestContext {
+class JEERequestContext extends AbstractRequestContext {
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -90,8 +90,7 @@ public class JEERequestContext extends AbstractRequestContext {
 	@Override
 	public String getApplicationRootPath() {
 		if ( isEmpty( applicationRootPath ) )
-			applicationRootPath = (
-				request.getContextPath() + "/" + request.getServletPath()).replace("//", "/");
+			applicationRootPath = request.getContextPath();
 		return applicationRootPath;
 	}
 

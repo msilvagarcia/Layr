@@ -17,6 +17,7 @@ public abstract class AbstractConfiguration implements Configuration {
 	Map<String, ComponentFactory> registeredTagLibs;
 	Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers;
 	List<RouteClass> exposedResources;
+	String defaultEncoding;
 
 	public AbstractConfiguration() {
 		defaultResource = "home";
@@ -64,5 +65,13 @@ public abstract class AbstractConfiguration implements Configuration {
 
 	public void setRegisteredExceptionHandlers(Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers) {
 		this.registeredExceptionHandlers = registeredExceptionHandlers;
+	}
+	
+	public String getDefaultEncoding() {
+		return defaultEncoding;
+	}
+	
+	public void setDefaultEncoding(String defaultEncoding) {
+		this.defaultEncoding = defaultEncoding;
 	}
 }

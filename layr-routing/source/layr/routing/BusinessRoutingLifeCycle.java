@@ -1,6 +1,6 @@
 package layr.routing;
 
-import static layr.commons.StringUtil.isEmpty;
+import static layr.commons.StringUtil.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -113,7 +113,8 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 	}
 
 	public Response createRoutingResponse(Object instance, RouteMethod routeMethod) {
-		if ( routeMethod.lastReturnedValue instanceof Response )
+		if ( routeMethod.lastReturnedValue != null
+		&&   routeMethod.lastReturnedValue instanceof Response )
 			return (Response)routeMethod.lastReturnedValue;
 
 		Route annotation = routeMethod.getRouteAnnotation();
@@ -151,7 +152,8 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 
 	public void setContentTypeAndEncoding( Response response ) throws UnsupportedEncodingException {
 		requestContext.setContentType( "text/html" );
-		requestContext.setCharacterEncoding( response.encoding );
+		requestContext.setCharacterEncoding(
+			oneOf( response.encoding, configuration.getDefaultEncoding() ) );
 	}
 
 	public void responseNoContent() {

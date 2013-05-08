@@ -43,6 +43,7 @@ public class JEERoutingBootstrap extends RoutingBootstrap implements javax.servl
 		JEEConfiguration configuration = new JEEConfiguration();
 		configuration.setEjbContext( ejbContext );
 		configuration.setCache( getCache() );
+		configuration.setDefaultResource( getDefaultResource() );
 		configuration.setDefaultEncoding( getDefaultEncoding() );
 		configuration.setRegisteredTagLibs( getRegisteredTagLibs() );
 		configuration.setRegisteredWebResources( getRegisteredWebResources() );
@@ -58,6 +59,10 @@ public class JEERoutingBootstrap extends RoutingBootstrap implements javax.servl
 	
 	public String getDefaultEncoding(){
 		return System.getProperty( "layr.routing.encoding", "UTF-8" );
+	}
+	
+	public String getDefaultResource(){
+		return System.getProperty( "layr.routing.home", "home" );
 	}
 
 	@Override

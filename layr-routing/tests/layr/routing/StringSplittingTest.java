@@ -49,7 +49,7 @@ public class StringSplittingTest {
 			grantThatSplitterWorksAsExpected();
 	}
 
-	@Test( timeout= 500 )
+	@Test( timeout= 600 )
 	public void grantThatSplitWithRegExpManyTimes(){
 		for ( int i=0; i<MANY_TIMES; i++ )
 			grantThatSplitWithRegExpAsExpected();

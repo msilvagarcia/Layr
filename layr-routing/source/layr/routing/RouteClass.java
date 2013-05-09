@@ -26,8 +26,12 @@ public class RouteClass {
     public RouteClass(Class<?> targetClass) {
     	this.targetClass = targetClass;
     	this.rootPath = extractRootPath();
+    	this.routes = extractMethodRoutes();
 	}
 
+	/**
+	 * @return
+	 */
 	public String extractRootPath() {
 		WebResource webResource = targetClass.getAnnotation( WebResource.class );
 		String rootPath = webResource.value();
@@ -37,15 +41,17 @@ public class RouteClass {
 	/**
 	 * @return
 	 */
-	public List<RouteMethod> getRouteMethods() {
-		if ( routes == null ) {
-			routes = new ArrayList<RouteMethod>();
-			for ( Method method : measureAvailableRoutes() )
-				routes.add( createRouteMethod( method ) );
-		}
+	public List<RouteMethod> extractMethodRoutes() {
+		List<RouteMethod> routes = new ArrayList<RouteMethod>();
+		for ( Method method : measureAvailableRoutes() )
+			routes.add( createRouteMethod( method ) );
 		return routes;
-    }
+	}
 
+	/**
+	 * @param method
+	 * @return
+	 */
 	public RouteMethod createRouteMethod(Method method) {
 		return new RouteMethod( this, method );
 	}
@@ -110,7 +116,17 @@ public class RouteClass {
 		return requestContext.getRequestURI().matches( methodUrlPattern );
 	}
 	
+	/**
+	 * @return
+	 */
 	public Class<?> getTargetClass() {
 		return targetClass;
 	}
+
+	/**
+	 * @return
+	 */
+	public List<RouteMethod> getRouteMethods() {
+		return routes;
+    }
 }

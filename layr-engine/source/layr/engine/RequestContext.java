@@ -55,4 +55,6 @@ public interface RequestContext {
 
 	public abstract Component getResourceFromCache(String templateName);
 
+	public abstract String getDefaultResource();
+
 }

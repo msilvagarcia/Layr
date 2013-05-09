@@ -15,6 +15,7 @@ public abstract class AbstractRequestContext implements RequestContext {
 	Map<String, Object> properties;
 	Map<String, ComponentFactory> registeredTagLibs;
 	Cache cache;
+	String defaultResource;
 
 	public AbstractRequestContext() {
 		properties = new HashMap<String, Object>();
@@ -161,5 +162,20 @@ public abstract class AbstractRequestContext implements RequestContext {
 	 */
 	public void setCache(Cache cache) {
 		this.cache = cache;
+	}
+	
+	public String returnRequestURIOrDefaultRequest( String requestURI ) {
+		if ( requestURI.equals( "/" ) )
+			return getDefaultResource();
+		return requestURI;
+	}
+	
+	public String getDefaultResource() {
+		return defaultResource;
+	}
+	
+	public void setDefaultResource(String defaultResource) {
+		defaultResource = ("/" + defaultResource + "/").replace( "//", "/" );
+		this.defaultResource = defaultResource;
 	}
 }

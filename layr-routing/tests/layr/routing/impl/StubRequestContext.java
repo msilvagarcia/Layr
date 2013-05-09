@@ -58,7 +58,7 @@ public class StubRequestContext extends AbstractRequestContext {
 
 	@Override
 	public String getRequestURI() {
-		return requestURI;
+		return returnRequestURIOrDefaultRequest( requestURI );
 	}
 
 	public void setRequestURI(String requestURI) {

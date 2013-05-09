@@ -3,6 +3,7 @@ package layr.routing;
 import java.util.List;
 import java.util.Map;
 
+import layr.engine.AbstractRequestContext;
 import layr.engine.Cache;
 import layr.engine.components.ComponentFactory;
 
@@ -18,10 +19,6 @@ public abstract class AbstractConfiguration implements Configuration {
 	Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers;
 	List<RouteClass> exposedResources;
 	String defaultEncoding;
-
-	public AbstractConfiguration() {
-		defaultResource = "home";
-	}
 
 	@Override
 	public String getDefaultResource() {
@@ -73,5 +70,11 @@ public abstract class AbstractConfiguration implements Configuration {
 	
 	public void setDefaultEncoding(String defaultEncoding) {
 		this.defaultEncoding = defaultEncoding;
+	}
+	
+	public void prePopulateContext( AbstractRequestContext requestContext ) {
+		requestContext.setCache( getCache() );
+		requestContext.setRegisteredTagLibs( getRegisteredTagLibs() );
+		requestContext.setDefaultResource( getDefaultResource() );
 	}
 }

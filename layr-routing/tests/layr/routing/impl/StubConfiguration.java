@@ -7,6 +7,10 @@ import layr.routing.RouteClass;
 import layr.routing.exceptions.RoutingException;
 
 public class StubConfiguration extends AbstractConfiguration {
+	
+	public StubConfiguration() {
+		setDefaultResource( "home" );
+	}
 
 	/* (non-Javadoc)
 	 * @see layr.routing.Configuration#createContext()
@@ -14,8 +18,7 @@ public class StubConfiguration extends AbstractConfiguration {
 	@Override
 	public RequestContext createContext( ContainerRequestData<?, ?> containerRequestData ) {
 		StubRequestContext requestContext = new StubRequestContext();
-		requestContext.setCache( getCache() );
-		requestContext.getRegisteredTagLibs().putAll( getRegisteredTagLibs() );
+		prePopulateContext( requestContext );
 		return requestContext;
 	}
 

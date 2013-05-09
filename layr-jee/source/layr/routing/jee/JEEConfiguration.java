@@ -20,8 +20,7 @@ class JEEConfiguration extends AbstractConfiguration {
 		ContainerRequestData<HttpServletRequest, HttpServletResponse> jeeRequestData =
 				(ContainerRequestData<HttpServletRequest, HttpServletResponse>) containerRequestData;
 		JEERequestContext jeeRequestContext = new JEERequestContext( jeeRequestData.getRequest(), jeeRequestData.getResponse() );
-		jeeRequestContext.setCache( getCache() );
-		jeeRequestContext.setRegisteredTagLibs( getRegisteredTagLibs() );
+		prePopulateContext( jeeRequestContext );
 		return jeeRequestContext;
 	}
 

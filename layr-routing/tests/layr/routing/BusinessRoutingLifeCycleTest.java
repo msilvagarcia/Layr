@@ -28,6 +28,12 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	}
 
 	@Test
+	public void grantThatRenderHome() throws Exception {
+		get( "/" );
+		assertEquals( "<p><button class=\"btn\">Premium Panel</button><p>:</p></p>", getRequestContext().getBufferedWroteContentToOutput() );
+	}
+
+	@Test
 	public void grantThatSendGetAndRenderTemplateAsExpected() throws Exception {
 		get( "/hello/world/1234?requestParamOnBody=12.5" );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
@@ -78,6 +84,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	Set<Class<?>> classes(){
 		Set<Class<?>> classes = new HashSet<Class<?>>();
 		classes.add( HelloResource.class );
+		classes.add( HomeResource.class );
 		classes.add( NullPointerExceptionHandler.class );
 		return classes;
 	}

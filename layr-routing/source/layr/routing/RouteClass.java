@@ -113,9 +113,10 @@ public class RouteClass {
 
 	public boolean matchesTheRequestURI(RequestContext requestContext) {
 		String methodUrlPattern = new URLPattern().parseMethodUrlPatternToRegExp( rootPath ) + ".*";
-		return requestContext.getRequestURI().matches( methodUrlPattern );
+		String requestURI = requestContext.getRequestURI();
+		return requestURI.matches( methodUrlPattern );
 	}
-	
+
 	/**
 	 * @return
 	 */

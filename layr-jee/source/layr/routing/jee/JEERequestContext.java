@@ -82,8 +82,8 @@ class JEERequestContext extends AbstractRequestContext {
 	@Override
 	public String getRequestURI() {
 		if ( isEmpty( requestURI ) )
-			requestURI = request.getRequestURI()
-				.replace( getApplicationRootPath(), "" );
+			requestURI = returnRequestURIOrDefaultRequest(
+				request.getRequestURI().replace( getApplicationRootPath(), "" ) );
 		return requestURI;
 	}
 

@@ -11,6 +11,9 @@ import java.util.Map;
 
 import layr.engine.RequestContext;
 import layr.engine.expressions.URLPattern;
+import layr.routing.annotations.DELETE;
+import layr.routing.annotations.POST;
+import layr.routing.annotations.PUT;
 import layr.routing.annotations.Route;
 
 public class RouteMethod {
@@ -21,16 +24,27 @@ public class RouteMethod {
 	String pattern;
 	Route routeAnnotation;
 
-	HttpMethodAnnotationFactory httpMethodAnnotationFactory;
 	Object lastReturnedValue;
+	String httpMethod;
 
 	public RouteMethod( RouteClass routeClass, Method targetMethod ){
 		this.routeClass = routeClass;
 		this.targetMethod = targetMethod;
-		this.httpMethodAnnotationFactory = new HttpMethodAnnotationFactory();
 		this.parameters = new ArrayList<RouteParameter>();
 
+		extractRouteHttpMethod();
 		extractRouteMethodParameters();
+	}
+	
+	public void extractRouteHttpMethod() {
+		if ( targetMethod.isAnnotationPresent( POST.class ) )
+			this.httpMethod = "POST";
+		else if ( targetMethod.isAnnotationPresent( PUT.class ) )
+			this.httpMethod = "PUT";
+		else if ( targetMethod.isAnnotationPresent( DELETE.class ) )
+			this.httpMethod = "DELETE";
+		else
+			this.httpMethod = "GET";
 	}
 
 	public void extractRouteMethodParameters() {
@@ -82,10 +96,7 @@ public class RouteMethod {
 	}
 
 	public boolean matchesTheHTTPMethod(RequestContext requestContext) {
-		Class<? extends Annotation> annotationClass = httpMethodAnnotationFactory
-				.getHttpMethodAnnotationClass( requestContext.getRequestHttpMethod() );
-		Annotation annotation = targetMethod.getAnnotation( annotationClass );
-		return annotation != null;
+		return requestContext.getRequestHttpMethod().equals( httpMethod );
 	}
 
 	String getRouteMethodPattern() {

@@ -17,6 +17,7 @@ package layr.engine.components.template;
 
 import java.io.IOException;
 
+import static layr.commons.StringUtil.*;
 import layr.engine.components.Component;
 import layr.engine.components.GenericComponent;
 import layr.engine.components.TemplateParsingException;
@@ -30,6 +31,14 @@ public class Template extends GenericComponent {
 	@Override
 	public void render() throws IOException {
 		String src = getAttributeAsString("src");
+		if (!isEmpty( src ) )
+			renderIncludedSource( src );
+		Object when = getParsedAttribute("when");
+		if ( when != null )
+			tryRenderChildren( when );
+	}
+
+	public void renderIncludedSource(String src) throws IOException {
 		try {
 			Component template = compile(src);
             if ( template == null )
@@ -38,5 +47,23 @@ public class Template extends GenericComponent {
 		} catch (TemplateParsingException e) {
 			throw new IOException(e);
 		}
+	}
+
+	public void tryRenderChildren(Object when) throws IOException {
+		Object equalsAttribute = getEqualsAttribute();
+		if ( when.equals( equalsAttribute ) )
+			renderChildren();
+	}
+
+	public Object getEqualsAttribute() {
+		Object equals = getParsedAttribute("equals");
+		if ( equals == null )
+			equals = true;
+		return equals;
+	}
+
+	public void renderChildren() throws IOException {
+		for ( Component component : getChildren() )
+			component.render();
 	}
 }

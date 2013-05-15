@@ -1,4 +1,4 @@
-package layr.routing;
+package layr.routing.service;
 
 import java.io.IOException;
 import java.util.Map;
@@ -7,6 +7,7 @@ import layr.engine.RequestContext;
 import layr.engine.TemplateParser;
 import layr.engine.components.Component;
 import layr.engine.components.TemplateParsingException;
+import layr.routing.api.Configuration;
 import layr.routing.exceptions.NotFoundException;
 
 public class NaturalRoutingLifeCycle implements LifeCycle {

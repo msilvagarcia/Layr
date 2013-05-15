@@ -1,4 +1,4 @@
-package layr.routing;
+package layr.routing.api;
 
 public interface ExceptionHandler<T extends Throwable> {
 

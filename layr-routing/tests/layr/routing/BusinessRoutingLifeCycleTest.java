@@ -5,9 +5,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
+import layr.routing.api.Configuration;
 import layr.routing.exceptions.RoutingInitializationException;
 import layr.routing.exceptions.UnhandledException;
 import layr.routing.impl.StubRoutingBootstrap;
+import layr.routing.service.BusinessRoutingLifeCycle;
+import layr.routing.service.RoutingBootstrap;
 
 import org.junit.Before;
 import org.junit.Test;

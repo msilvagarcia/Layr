@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import layr.routing.impl.StubRequestContext;
+import layr.routing.service.LifeCycle;
 
 public class RoutingTestSupport {
 

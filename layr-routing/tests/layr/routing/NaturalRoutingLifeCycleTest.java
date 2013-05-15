@@ -4,8 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;
 
+import layr.routing.api.Configuration;
 import layr.routing.exceptions.RoutingInitializationException;
 import layr.routing.impl.StubRoutingBootstrap;
+import layr.routing.service.NaturalRoutingLifeCycle;
+import layr.routing.service.RoutingBootstrap;
 
 import org.junit.Before;
 import org.junit.Test;

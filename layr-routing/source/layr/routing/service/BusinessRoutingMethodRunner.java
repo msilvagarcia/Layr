@@ -1,8 +1,16 @@
-package layr.routing;
+package layr.routing.service;
 
 import layr.commons.Reflection;
 import layr.engine.RequestContext;
 import layr.routing.annotations.Route;
+import layr.routing.api.Configuration;
+import layr.routing.api.ExceptionHandler;
+import layr.routing.api.Request;
+import layr.routing.api.Response;
+import layr.routing.api.RouteClass;
+import layr.routing.api.RouteMethod;
+import layr.routing.api.RouteParameter;
+import layr.routing.api.TemplateRouteParameter;
 import layr.routing.exceptions.RoutingException;
 import layr.routing.exceptions.UnhandledException;
 
@@ -50,7 +58,7 @@ public class BusinessRoutingMethodRunner {
     }
 
 	public Response runMethod(Request routingRequest, RouteMethod routeMethod) throws Throwable {
-		RouteClass routeClass = routeMethod.routeClass;
+		RouteClass routeClass = routeMethod.getRouteClass();
 		Object instance = configuration.newInstanceOf( routeClass );
 		populateWithParameters( instance, routeClass, routingRequest );
 		routeMethod.invoke( routingRequest, instance );
@@ -70,12 +78,12 @@ public class BusinessRoutingMethodRunner {
 		Object value = null;
 		try {
 			value = routingRequest.getValue( parameter );
-			Reflection.setAttribute( instance, parameter.name, value );
+			Reflection.setAttribute( instance, parameter.getName(), value );
 		} catch (Exception e) {
 			String message = String.format(
 				"[WARN] Can't set the value '%s' to %s.%s: %s",
-				value, routeClass.targetClass.getCanonicalName(),
-				parameter.name, e.getMessage());
+				value, routeClass.getTargetClass().getCanonicalName(),
+				parameter.getName(), e.getMessage());
 			requestContext.log( message );
 			throw new RoutingException( message, e );
 		}
@@ -86,20 +94,20 @@ public class BusinessRoutingMethodRunner {
 		for ( RouteParameter parameter : routeClass.getParameters()){
 			if ( !(parameter instanceof TemplateRouteParameter) )
 				continue;
-			value = Reflection.getAttribute( instance, parameter.name );
-			requestContext.put( parameter.name, value );
+			value = Reflection.getAttribute( instance, parameter.getName() );
+			requestContext.put( parameter.getName(), value );
 		}
 	}
 
 	public Response createRoutingResponse(Object instance, RouteMethod routeMethod) {
-		if ( routeMethod.lastReturnedValue != null
-		&&   routeMethod.lastReturnedValue instanceof Response )
-			return (Response)routeMethod.lastReturnedValue;
+		if ( routeMethod.getLastReturnedValue() != null
+		&&   routeMethod.getLastReturnedValue() instanceof Response )
+			return (Response)routeMethod.getLastReturnedValue();
 
 		Route annotation = routeMethod.getRouteAnnotation();
 		Response response = new Response();
-		response.template = annotation.template();
-		response.redirectTo = annotation.redirectTo();
+		response.renderTemplate( annotation.template() );
+		response.redirectTo( annotation.redirectTo() );
 		return response;
 	}
 

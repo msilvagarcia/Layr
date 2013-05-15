@@ -1,4 +1,4 @@
-package layr.routing;
+package layr.routing.api;
 
 import static layr.commons.StringUtil.isEmpty;
 
@@ -99,7 +99,7 @@ public class RouteMethod {
 		return requestContext.getRequestHttpMethod().equals( httpMethod );
 	}
 
-	String getRouteMethodPattern() {
+	public String getRouteMethodPattern() {
 		if ( pattern == null ) {
 			Route route = getRouteAnnotation();
 			String annotationPattern = isEmpty(route.value()) ? route.pattern() : route.value();
@@ -108,9 +108,17 @@ public class RouteMethod {
 		return pattern;
 	}
 
-	Route getRouteAnnotation() {
+	public Route getRouteAnnotation() {
 		if ( routeAnnotation == null )
 			routeAnnotation = targetMethod.getAnnotation( Route.class );
 		return routeAnnotation;
+	}
+	
+	public RouteClass getRouteClass() {
+		return routeClass;
+	}
+	
+	public Object getLastReturnedValue() {
+		return lastReturnedValue;
 	}
 }

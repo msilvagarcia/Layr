@@ -5,11 +5,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import layr.routing.BusinessRoutingLifeCycle;
-import layr.routing.ContainerRequestData;
-import layr.routing.LifeCycle;
-import layr.routing.NaturalRoutingLifeCycle;
 import layr.routing.exceptions.NotFoundException;
+import layr.routing.service.BusinessRoutingLifeCycle;
+import layr.routing.service.ContainerRequestData;
+import layr.routing.service.LifeCycle;
+import layr.routing.service.NaturalRoutingLifeCycle;
 
 class JEELifeCycle {
 

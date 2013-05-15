@@ -1,4 +1,4 @@
-package layr.routing;
+package layr.routing.service;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -15,6 +15,9 @@ import layr.engine.components.template.TemplateComponentFactory;
 import layr.engine.components.xhtml.XHtmlComponentFactory;
 import layr.routing.annotations.Handler;
 import layr.routing.annotations.WebResource;
+import layr.routing.api.Configuration;
+import layr.routing.api.ExceptionHandler;
+import layr.routing.api.RouteClass;
 import layr.routing.exceptions.RoutingInitializationException;
 
 public abstract class RoutingBootstrap {

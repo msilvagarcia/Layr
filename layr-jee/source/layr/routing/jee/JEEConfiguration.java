@@ -1,14 +1,16 @@
 package layr.routing.jee;
 
+import java.util.concurrent.ExecutorService;
+
 import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import layr.engine.RequestContext;
-import layr.routing.AbstractConfiguration;
-import layr.routing.ContainerRequestData;
-import layr.routing.RouteClass;
+import layr.routing.api.RouteClass;
 import layr.routing.exceptions.RoutingException;
+import layr.routing.service.AbstractConfiguration;
+import layr.routing.service.ContainerRequestData;
 
 class JEEConfiguration extends AbstractConfiguration {
 
@@ -51,6 +53,12 @@ class JEEConfiguration extends AbstractConfiguration {
 
 	public void setEjbContext(EnterpriseJavaBeansContext ejbContext) {
 		this.ejbContext = ejbContext;
+	}
+
+	@Override
+	public ExecutorService getExecutorService() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

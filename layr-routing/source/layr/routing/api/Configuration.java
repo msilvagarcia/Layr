@@ -1,12 +1,14 @@
-package layr.routing;
+package layr.routing.api;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import layr.engine.Cache;
 import layr.engine.RequestContext;
 import layr.engine.components.ComponentFactory;
 import layr.routing.exceptions.RoutingException;
+import layr.routing.service.ContainerRequestData;
 
 /**
  * Represents the information from container needed to retrieve 
@@ -59,5 +61,7 @@ public interface Configuration {
 	 * @throws RoutingException
 	 */
 	public abstract Object newInstanceOf(RouteClass routeClass) throws RoutingException;
+	
+	public abstract ExecutorService getExecutorService();
 
 }

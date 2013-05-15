@@ -7,10 +7,10 @@ import layr.routing.api.ApplicationContext;
 import layr.routing.api.ExceptionHandler;
 import layr.routing.api.Request;
 import layr.routing.api.Response;
-import layr.routing.api.RouteClass;
-import layr.routing.api.RouteMethod;
-import layr.routing.api.RouteParameter;
-import layr.routing.api.TemplateRouteParameter;
+import layr.routing.api.HandledClass;
+import layr.routing.api.HandledMethod;
+import layr.routing.api.HandledParameter;
+import layr.routing.api.TemplateHandledParameter;
 import layr.routing.exceptions.RoutingException;
 import layr.routing.exceptions.UnhandledException;
 
@@ -18,12 +18,12 @@ public class BusinessRoutingMethodRunner {
 
     ApplicationContext configuration;
 	RequestContext requestContext;
-	RouteMethod routeMethod;
+	HandledMethod routeMethod;
 	
 	public BusinessRoutingMethodRunner(
 		    ApplicationContext configuration,
 			RequestContext requestContext,
-			RouteMethod routeMethod ) {
+			HandledMethod routeMethod ) {
 		this.configuration = configuration;
 		this.requestContext = requestContext;
 		this.routeMethod = routeMethod;
@@ -53,12 +53,12 @@ public class BusinessRoutingMethodRunner {
 		}
 	}
 
-    public Request createRoutingRequest(RouteMethod routeMethod) {
+    public Request createRoutingRequest(HandledMethod routeMethod) {
     	return new Request( requestContext, routeMethod.getRouteMethodPattern() );
     }
 
-	public Response runMethod(Request routingRequest, RouteMethod routeMethod) throws Throwable {
-		RouteClass routeClass = routeMethod.getRouteClass();
+	public Response runMethod(Request routingRequest, HandledMethod routeMethod) throws Throwable {
+		HandledClass routeClass = routeMethod.getRouteClass();
 		Object instance = configuration.newInstanceOf( routeClass );
 		populateWithParameters( instance, routeClass, routingRequest );
 		routeMethod.invoke( routingRequest, instance );
@@ -66,15 +66,15 @@ public class BusinessRoutingMethodRunner {
 		return createRoutingResponse(instance, routeMethod);
 	}
 
-	public void populateWithParameters(Object instance, RouteClass routeClass, Request routingRequest) throws RoutingException {
-		for ( RouteParameter parameter : routeClass.getParameters())
-			if ( !( parameter instanceof TemplateRouteParameter ) )
+	public void populateWithParameters(Object instance, HandledClass routeClass, Request routingRequest) throws RoutingException {
+		for ( HandledParameter parameter : routeClass.getParameters())
+			if ( !( parameter instanceof TemplateHandledParameter ) )
 				populateWithParameter( instance, routeClass, routingRequest, parameter );
 	}
 
 	public void populateWithParameter(
-			Object instance, RouteClass routeClass,
-			Request routingRequest, RouteParameter parameter) throws RoutingException {
+			Object instance, HandledClass routeClass,
+			Request routingRequest, HandledParameter parameter) throws RoutingException {
 		Object value = null;
 		try {
 			value = routingRequest.getValue( parameter );
@@ -89,17 +89,17 @@ public class BusinessRoutingMethodRunner {
 		}
 	}
 
-	public void populateRequestContextWithInstanceTemplateParameters(Object instance, RouteClass routeClass) {
+	public void populateRequestContextWithInstanceTemplateParameters(Object instance, HandledClass routeClass) {
 		Object value;
-		for ( RouteParameter parameter : routeClass.getParameters()){
-			if ( !(parameter instanceof TemplateRouteParameter) )
+		for ( HandledParameter parameter : routeClass.getParameters()){
+			if ( !(parameter instanceof TemplateHandledParameter) )
 				continue;
 			value = Reflection.getAttribute( instance, parameter.getName() );
 			requestContext.put( parameter.getName(), value );
 		}
 	}
 
-	public Response createRoutingResponse(Object instance, RouteMethod routeMethod) {
+	public Response createRoutingResponse(Object instance, HandledMethod routeMethod) {
 		if ( routeMethod.getLastReturnedValue() != null
 		&&   routeMethod.getLastReturnedValue() instanceof Response )
 			return (Response)routeMethod.getLastReturnedValue();

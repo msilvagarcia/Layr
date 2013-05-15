@@ -16,14 +16,14 @@ import layr.routing.annotations.TemplateParameter;
 import layr.routing.annotations.WebResource;
 import static layr.commons.StringUtil.*;
 
-public class RouteClass {
+public class HandledClass {
 
     Class<?> targetClass;
-    List<RouteMethod> routes;
-    List<RouteParameter> parameters;
+    List<HandledMethod> routes;
+    List<HandledParameter> parameters;
     String rootPath;
 
-    public RouteClass(Class<?> targetClass) {
+    public HandledClass(Class<?> targetClass) {
     	this.targetClass = targetClass;
     	this.rootPath = extractRootPath();
     	this.routes = extractMethodRoutes();
@@ -41,8 +41,8 @@ public class RouteClass {
 	/**
 	 * @return
 	 */
-	public List<RouteMethod> extractMethodRoutes() {
-		List<RouteMethod> routes = new ArrayList<RouteMethod>();
+	public List<HandledMethod> extractMethodRoutes() {
+		List<HandledMethod> routes = new ArrayList<HandledMethod>();
 		for ( Method method : measureAvailableRoutes() )
 			routes.add( createRouteMethod( method ) );
 		return routes;
@@ -52,8 +52,8 @@ public class RouteClass {
 	 * @param method
 	 * @return
 	 */
-	public RouteMethod createRouteMethod(Method method) {
-		return new RouteMethod( this, method );
+	public HandledMethod createRouteMethod(Method method) {
+		return new HandledMethod( this, method );
 	}
 
 	/**
@@ -67,9 +67,9 @@ public class RouteClass {
 	/**
 	 * @return
 	 */
-	public List<RouteParameter> getParameters(){
+	public List<HandledParameter> getParameters(){
 		if ( parameters == null ) {
-			parameters = new ArrayList<RouteParameter>();
+			parameters = new ArrayList<HandledParameter>();
 			for ( Field field : measureAvailableParameters() )
 				createRouteParameter( field );
 		}
@@ -96,19 +96,19 @@ public class RouteClass {
 		}
 	}
 
-	public PathRouteParameter createPathParameter(Field field, Annotation annotation) {
+	public PathHandledParameter createPathParameter(Field field, Annotation annotation) {
 		String parameterName = oneOf( ((PathParameter)annotation).value(), field.getName() );
-		return new PathRouteParameter( parameterName, field.getType() );
+		return new PathHandledParameter( parameterName, field.getType() );
 	}
 
-	public QueryRouteParameter createQueryParameter(Field field, Annotation annotation) {
+	public QueryHandledParameter createQueryParameter(Field field, Annotation annotation) {
 		String parameterName = oneOf( ((QueryParameter)annotation).value(), field.getName() );
-		return new QueryRouteParameter( parameterName, field.getType() );
+		return new QueryHandledParameter( parameterName, field.getType() );
 	}
 
-	public TemplateRouteParameter createTemplateParameter(Field field, Annotation annotation) {
+	public TemplateHandledParameter createTemplateParameter(Field field, Annotation annotation) {
 		String parameterName = oneOf( ((TemplateParameter)annotation).value(), field.getName() );
-		return new TemplateRouteParameter( parameterName, field.getType() );
+		return new TemplateHandledParameter( parameterName, field.getType() );
 	}
 
 	public boolean matchesTheRequestURI(RequestContext requestContext) {
@@ -127,7 +127,7 @@ public class RouteClass {
 	/**
 	 * @return
 	 */
-	public List<RouteMethod> getRouteMethods() {
+	public List<HandledMethod> getRouteMethods() {
 		return routes;
     }
 }

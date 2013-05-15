@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 
 import layr.engine.RequestContext;
 import layr.routing.api.AbstractApplicationContext;
-import layr.routing.api.RouteClass;
+import layr.routing.api.HandledClass;
 import layr.routing.service.ContainerRequestData;
 
 public class StubConfiguration extends AbstractApplicationContext {
@@ -25,7 +25,7 @@ public class StubConfiguration extends AbstractApplicationContext {
 	}
 
 	@Override
-	public Object newInstanceOf(RouteClass routeClass) throws Exception {
+	public Object newInstanceOf(HandledClass routeClass) throws Exception {
 		return routeClass.getTargetClass().newInstance();
 	}
 

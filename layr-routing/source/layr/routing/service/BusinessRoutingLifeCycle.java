@@ -3,7 +3,7 @@ package layr.routing.service;
 import layr.engine.RequestContext;
 import layr.routing.api.ApplicationContext;
 import layr.routing.api.Response;
-import layr.routing.api.RouteMethod;
+import layr.routing.api.HandledMethod;
 import layr.routing.exceptions.NotFoundException;
 import layr.routing.exceptions.RoutingException;
 import layr.routing.exceptions.UnhandledException;
@@ -21,19 +21,19 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 	}
 
     public void run() throws NotFoundException, RoutingException, UnhandledException {
-    	RouteMethod routeMethod = getMatchedRouteMethod();
+    	HandledMethod routeMethod = getMatchedRouteMethod();
     	if ( routeMethod == null )
     		throw new NotFoundException( "No route found." );
 		runMethodAndRenderOutput( routeMethod );
     }
 
-	public RouteMethod getMatchedRouteMethod() {
+	public HandledMethod getMatchedRouteMethod() {
 		BusinessRoutingMethodMatching businessRoutingMethodMatching = new BusinessRoutingMethodMatching( configuration, requestContext );
-		RouteMethod routeMethod = businessRoutingMethodMatching.getMatchedRouteMethod();
+		HandledMethod routeMethod = businessRoutingMethodMatching.getMatchedRouteMethod();
 		return routeMethod;
 	}
 
-	public void runMethodAndRenderOutput(RouteMethod routeMethod) throws RoutingException, UnhandledException {
+	public void runMethodAndRenderOutput(HandledMethod routeMethod) throws RoutingException, UnhandledException {
 		Response response = runMethod( routeMethod );
 		renderOutput( response );
 	}
@@ -43,7 +43,7 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 		renderer.render(response);
 	}
 
-	public Response runMethod(RouteMethod routeMethod) throws UnhandledException {
+	public Response runMethod(HandledMethod routeMethod) throws UnhandledException {
 		BusinessRoutingMethodRunner runner = new BusinessRoutingMethodRunner( configuration, requestContext, routeMethod );
 		Response response = runner.run();
 		return response;

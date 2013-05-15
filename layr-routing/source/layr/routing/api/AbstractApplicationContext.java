@@ -17,7 +17,7 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 	Cache cache;
 	Map<String, ComponentFactory> registeredTagLibs;
 	Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers;
-	List<RouteClass> exposedResources;
+	List<HandledClass> exposedResources;
 	String defaultEncoding;
 
 	@Override
@@ -48,11 +48,11 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 	}
 
 	@Override
-	public List<RouteClass> getRegisteredWebResources() {
+	public List<HandledClass> getRegisteredWebResources() {
 		return exposedResources;
 	}
 
-	public void setRegisteredWebResources(List<RouteClass> exposedMethods) {
+	public void setRegisteredWebResources(List<HandledClass> exposedMethods) {
 		this.exposedResources = exposedMethods;
 	}
 

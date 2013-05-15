@@ -16,21 +16,21 @@ import layr.routing.annotations.POST;
 import layr.routing.annotations.PUT;
 import layr.routing.annotations.Route;
 
-public class RouteMethod {
+public class HandledMethod {
 
-	RouteClass routeClass;
+	HandledClass routeClass;
 	Method targetMethod;
-	List<RouteParameter> parameters;
+	List<HandledParameter> parameters;
 	String pattern;
 	Route routeAnnotation;
 
 	Object lastReturnedValue;
 	String httpMethod;
 
-	public RouteMethod( RouteClass routeClass, Method targetMethod ){
+	public HandledMethod( HandledClass routeClass, Method targetMethod ){
 		this.routeClass = routeClass;
 		this.targetMethod = targetMethod;
-		this.parameters = new ArrayList<RouteParameter>();
+		this.parameters = new ArrayList<HandledParameter>();
 
 		extractRouteHttpMethod();
 		extractRouteMethodParameters();
@@ -62,14 +62,14 @@ public class RouteMethod {
 
 	void memorizeParameterFromAnnotation(Annotation annotation, Class<?> targetClazz) {
 		this.parameters.add(
-			RouteParameterFactory.newInstance( annotation, targetClazz ) );
+			HandledParameterFactory.newInstance( annotation, targetClazz ) );
 	}
 
 	public Object invoke(Request request, Object instance) throws Throwable {
 		try {
 			Object[] methodParameters = new Object[ parameters.size() ];
 			short cursor = 0;
-			for ( RouteParameter parameter : parameters )
+			for ( HandledParameter parameter : parameters )
 				methodParameters[cursor++] = request.getValue( parameter );
 			lastReturnedValue = targetMethod.invoke( instance, methodParameters );
 			return lastReturnedValue;
@@ -114,7 +114,7 @@ public class RouteMethod {
 		return routeAnnotation;
 	}
 	
-	public RouteClass getRouteClass() {
+	public HandledClass getRouteClass() {
 		return routeClass;
 	}
 	

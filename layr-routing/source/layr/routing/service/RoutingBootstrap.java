@@ -14,20 +14,22 @@ import layr.engine.components.TagLib;
 import layr.engine.components.template.TemplateComponentFactory;
 import layr.engine.components.xhtml.XHtmlComponentFactory;
 import layr.routing.annotations.Handler;
+import layr.routing.annotations.Parameter;
 import layr.routing.annotations.WebResource;
 import layr.routing.api.ApplicationContext;
 import layr.routing.api.ExceptionHandler;
-import layr.routing.api.RouteClass;
+import layr.routing.api.HandledClass;
 import layr.routing.exceptions.RoutingInitializationException;
 
 public abstract class RoutingBootstrap {
 
 	protected Map<String, ComponentFactory> registeredTagLibs;
-	protected List<RouteClass> registeredWebResources;
+	protected List<HandledClass> registeredWebResources;
+	protected List<HandledClass> registeredHandledParameters;
 	protected Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers;
 
 	public RoutingBootstrap() {
-		registeredWebResources = new ArrayList<RouteClass>();
+		registeredWebResources = new ArrayList<HandledClass>();
 		registeredTagLibs = new HashMap<String, ComponentFactory>();
 		registeredExceptionHandlers = new HashMap<String, Class<ExceptionHandler<?>>>();
 		populateWithDefaultTagLibs( registeredTagLibs );
@@ -63,13 +65,14 @@ public abstract class RoutingBootstrap {
 		tryToRegisterAWebResource(clazz);
 		tryToRegisterATag(clazz);
 		tryToRegisterAnExceptionHandler(clazz);
+		tryToRegisterAnParameterObject(clazz);
 	}
 
 	public void tryToRegisterAWebResource(Class<?> clazz) {
 		WebResource annotation = clazz.getAnnotation( WebResource.class );
 		if (annotation == null)
 			return;
-		registeredWebResources.add( new RouteClass( clazz ) );
+		registeredWebResources.add( new HandledClass( clazz ) );
 	}
 
 	public void tryToRegisterATag(Class<?> clazz) throws InstantiationException, IllegalAccessException {
@@ -108,11 +111,18 @@ public abstract class RoutingBootstrap {
 		}
 	}
 
+	public void tryToRegisterAnParameterObject(Class<?> clazz) {
+		Parameter annotation = clazz.getAnnotation( Parameter.class );
+		if (annotation == null)
+			return;
+		registeredHandledParameters.add( new HandledClass( clazz ) );
+	}
+
 	public Map<String, ComponentFactory> getRegisteredTagLibs() {
 		return registeredTagLibs;
 	}
 
-	public List<RouteClass> getRegisteredWebResources() {
+	public List<HandledClass> getRegisteredWebResources() {
 		return registeredWebResources;
 	}
 
@@ -120,4 +130,7 @@ public abstract class RoutingBootstrap {
 		return registeredExceptionHandlers;
 	}
 
+	public List<HandledClass> getRegisteredHandledParameters() {
+		return registeredHandledParameters;
+	}
 }

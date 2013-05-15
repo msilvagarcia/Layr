@@ -23,7 +23,7 @@ public interface ApplicationContext {
 	/**
 	 * @return a list of web resources found during the deploy
 	 */
-	public abstract List<RouteClass> getRegisteredWebResources();
+	public abstract List<HandledClass> getRegisteredWebResources();
 
 	/**
 	 * @return a map with Exception handlers found during the deploy
@@ -62,7 +62,7 @@ public interface ApplicationContext {
 	 * @return a new object instance from the RouteClass
 	 * @throws RoutingException
 	 */
-	public abstract Object newInstanceOf(RouteClass routeClass) throws Exception;
+	public abstract Object newInstanceOf(HandledClass routeClass) throws Exception;
 
 	/**
 	 * Retrieves the ExecutorService that will execute every asynchronous

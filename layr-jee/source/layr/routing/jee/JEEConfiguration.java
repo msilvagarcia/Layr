@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import layr.engine.RequestContext;
 import layr.routing.api.AbstractApplicationContext;
-import layr.routing.api.RouteClass;
+import layr.routing.api.HandledClass;
 import layr.routing.exceptions.RoutingException;
 import layr.routing.service.ContainerRequestData;
 
@@ -27,7 +27,7 @@ class JEEConfiguration extends AbstractApplicationContext {
 	}
 
 	@Override
-	public Object newInstanceOf(RouteClass routeClass) throws RoutingException {
+	public Object newInstanceOf(HandledClass routeClass) throws RoutingException {
 		Class<?> targetClass = routeClass.getTargetClass();
 		try {
 			Object instance = ejbContext.lookup( targetClass );

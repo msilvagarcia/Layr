@@ -32,19 +32,19 @@ public class Request {
 				requestContext.getRequestURI() );
 	}
 
-	public Object getValue(RouteParameter parameter) throws IOException {
+	public Object getValue(HandledParameter parameter) throws IOException {
 		String value = getParameterValue( parameter );
 		if ( isEmpty(value) )
 			return null;
-		Object convertedValue = requestContext.convert( value, parameter.targetClazz );
+		Object convertedValue = requestContext.convert( value, parameter.getTargetClazz() );
 		return convertedValue;
 	}
 
-	public String getParameterValue( RouteParameter parameter ) {
-		if ( parameter instanceof PathRouteParameter )
-			return pathParameters.get( parameter.name );
-		if ( parameter instanceof QueryRouteParameter )
-			return requestParameters.get( parameter.name );
+	public String getParameterValue( HandledParameter parameter ) {
+		if ( parameter instanceof PathHandledParameter )
+			return pathParameters.get( parameter.getName() );
+		if ( parameter instanceof QueryHandledParameter )
+			return requestParameters.get( parameter.getName() );
 		return null;
 	}
 }

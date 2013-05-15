@@ -10,8 +10,6 @@ public interface LifeCycle {
 
 	public void run() throws Exception;
 
-	void createContext(ContainerRequestData<?, ?> containerRequestData);
-	
 	public RequestContext getRequestContext();
 
 }

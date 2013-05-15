@@ -5,29 +5,26 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import layr.routing.api.Configuration;
-import layr.routing.exceptions.RoutingInitializationException;
 import layr.routing.exceptions.UnhandledException;
-import layr.routing.impl.StubRoutingBootstrap;
 import layr.routing.service.BusinessRoutingLifeCycle;
-import layr.routing.service.RoutingBootstrap;
+import layr.routing.service.LifeCycle;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 
 	static final int MANY_TIMES = 1000;
-	Configuration configuration;
 
-	public BusinessRoutingLifeCycleTest() throws RoutingInitializationException {
-		RoutingBootstrap routingBootstrap = new StubRoutingBootstrap();
-		configuration = routingBootstrap.configure( classes() );
+	public LifeCycle createLifeCycle(){
+		return new BusinessRoutingLifeCycle( getConfiguration(), getRequestContext() );
 	}
 
-	@Before
-	public void setup() throws RoutingInitializationException{
-		lifeCycle = new BusinessRoutingLifeCycle( configuration );
+	Set<Class<?>> classes(){
+		Set<Class<?>> classes = new HashSet<Class<?>>();
+		classes.add( HelloResource.class );
+		classes.add( HomeResource.class );
+		classes.add( NullPointerExceptionHandler.class );
+		return classes;
 	}
 
 	@Test
@@ -79,17 +76,8 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 
 	public void stressTest() throws Exception{
 		for ( int i=0; i<MANY_TIMES; i++ ){
-			setup();
 			get( "/hello/world/1234?requestParamOnBody=12.5" );
 		}
-	}
-
-	Set<Class<?>> classes(){
-		Set<Class<?>> classes = new HashSet<Class<?>>();
-		classes.add( HelloResource.class );
-		classes.add( HomeResource.class );
-		classes.add( NullPointerExceptionHandler.class );
-		return classes;
 	}
 
 }

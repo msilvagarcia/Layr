@@ -4,46 +4,40 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import layr.engine.RequestContext;
-import layr.routing.api.AbstractConfiguration;
+import layr.routing.api.AbstractApplicationContext;
 import layr.routing.api.RouteClass;
-import layr.routing.exceptions.RoutingException;
 import layr.routing.service.ContainerRequestData;
 
-public class StubConfiguration extends AbstractConfiguration {
-	
+public class StubConfiguration extends AbstractApplicationContext {
+
 	private ExecutorService executorService;
 
 	public StubConfiguration() {
 		setDefaultResource( "home" );
-		executorService = Executors.newFixedThreadPool( 5 );
+		executorService = Executors.newFixedThreadPool( 10 );
 	}
 
-	/* (non-Javadoc)
-	 * @see layr.routing.Configuration#createContext()
-	 */
 	@Override
-	public RequestContext createContext( ContainerRequestData<?, ?> containerRequestData ) {
+	public RequestContext createContext(ContainerRequestData<?, ?> containerRequestData) {
 		StubRequestContext requestContext = new StubRequestContext();
 		prePopulateContext( requestContext );
 		return requestContext;
 	}
 
-	/* (non-Javadoc)
-	 * @see layr.routing.Configuration#newInstanceOf(layr.routing.RouteClass)
-	 */
 	@Override
-	public Object newInstanceOf( RouteClass routeClass ) throws RoutingException {
-		Class<?> targetClass = routeClass.getTargetClass();
-		try {
-			return targetClass.newInstance();
-		} catch (Exception e) {
-			throw new RoutingException( "Can't instantiate " + targetClass.getCanonicalName(), e );
-		}
+	public Object newInstanceOf(RouteClass routeClass) throws Exception {
+		return routeClass.getTargetClass().newInstance();
 	}
 
 	@Override
-	public ExecutorService getExecutorService() {
+	public ExecutorService getRendererExecutorService() throws Exception {
 		return executorService;
 	}
+
+	@Override
+	public ExecutorService getTaskExecutorService() throws Exception {
+		return executorService;
+	}
+
 
 }

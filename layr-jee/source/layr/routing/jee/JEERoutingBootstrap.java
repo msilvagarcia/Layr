@@ -13,7 +13,7 @@ import javax.servlet.annotation.HandlesTypes;
 import layr.engine.Cache;
 import layr.engine.components.TagLib;
 import layr.routing.annotations.WebResource;
-import layr.routing.api.Configuration;
+import layr.routing.api.ApplicationContext;
 import layr.routing.exceptions.RoutingInitializationException;
 import layr.routing.service.RoutingBootstrap;
 
@@ -39,7 +39,7 @@ public class JEERoutingBootstrap extends RoutingBootstrap implements javax.servl
 	}
 
 	@Override
-	public Configuration createConfiguration() {
+	public ApplicationContext createConfiguration() {
 		JEEConfiguration configuration = new JEEConfiguration();
 		configuration.setEjbContext( ejbContext );
 		configuration.setCache( getCache() );
@@ -69,7 +69,7 @@ public class JEERoutingBootstrap extends RoutingBootstrap implements javax.servl
 	public void onStartup(Set<Class<?>> classes, ServletContext ctx) throws ServletException {
 		try {
 			analyse( classes );
-			Configuration configuration = createConfiguration();
+			ApplicationContext configuration = createConfiguration();
 			ctx.setAttribute( JEEConfiguration.class.getCanonicalName(), configuration );
 		} catch (RoutingInitializationException e) {
 			throw new ServletException( e );

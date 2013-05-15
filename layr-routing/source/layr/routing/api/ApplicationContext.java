@@ -11,10 +11,9 @@ import layr.routing.exceptions.RoutingException;
 import layr.routing.service.ContainerRequestData;
 
 /**
- * Represents the information from container needed to retrieve 
- * the WebResources, TagLibs and Providers classes before start the LifeCycle.
+ * Holds application data useful for all requests.
  */
-public interface Configuration {
+public interface ApplicationContext {
 
 	/**
 	 * @return a map with TagLibs found during the deploy
@@ -48,20 +47,38 @@ public interface Configuration {
 	 */
 	public abstract String getDefaultEncoding();
 
+
 	/**
 	 * @param containerRequestData
-	 * @return the request context object that will be used during request Life Cycle
+	 * @return the request context object that will be used during request Life
+	 *         Cycle
 	 */
 	public abstract RequestContext createContext(ContainerRequestData<?, ?> containerRequestData);
 
 	/**
 	 * Instantiate the route class
+	 * 
 	 * @param routeClass
 	 * @return a new object instance from the RouteClass
 	 * @throws RoutingException
 	 */
-	public abstract Object newInstanceOf(RouteClass routeClass) throws RoutingException;
-	
-	public abstract ExecutorService getExecutorService();
+	public abstract Object newInstanceOf(RouteClass routeClass) throws Exception;
 
+	/**
+	 * Retrieves the ExecutorService that will execute every asynchronous
+	 * template rendering process.
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public ExecutorService getRendererExecutorService() throws Exception;
+
+	/**
+	 * Retrieves the ExecutorService that will execute every CPU blocking route
+	 * during render Life Cycle.
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public ExecutorService getTaskExecutorService() throws Exception;
 }

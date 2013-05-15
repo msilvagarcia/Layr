@@ -3,7 +3,7 @@ package layr.routing.service;
 import layr.commons.Reflection;
 import layr.engine.RequestContext;
 import layr.routing.annotations.Route;
-import layr.routing.api.Configuration;
+import layr.routing.api.ApplicationContext;
 import layr.routing.api.ExceptionHandler;
 import layr.routing.api.Request;
 import layr.routing.api.Response;
@@ -16,12 +16,12 @@ import layr.routing.exceptions.UnhandledException;
 
 public class BusinessRoutingMethodRunner {
 
-    Configuration configuration;
+    ApplicationContext configuration;
 	RequestContext requestContext;
 	RouteMethod routeMethod;
 	
 	public BusinessRoutingMethodRunner(
-		    Configuration configuration,
+		    ApplicationContext configuration,
 			RequestContext requestContext,
 			RouteMethod routeMethod ) {
 		this.configuration = configuration;

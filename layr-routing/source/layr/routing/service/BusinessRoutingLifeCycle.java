@@ -1,7 +1,7 @@
 package layr.routing.service;
 
 import layr.engine.RequestContext;
-import layr.routing.api.Configuration;
+import layr.routing.api.ApplicationContext;
 import layr.routing.api.Response;
 import layr.routing.api.RouteMethod;
 import layr.routing.exceptions.NotFoundException;
@@ -10,15 +10,14 @@ import layr.routing.exceptions.UnhandledException;
 
 public class BusinessRoutingLifeCycle implements LifeCycle {
 
-    Configuration configuration;
+    ApplicationContext configuration;
 	RequestContext requestContext;
 
-	public BusinessRoutingLifeCycle(Configuration configuration) {
+	public BusinessRoutingLifeCycle(
+			ApplicationContext configuration,
+			RequestContext requestContext) {
     	this.configuration = configuration;
-	}
-
-	public void createContext( ContainerRequestData<?, ?> containerRequestData ) {
-		this.requestContext = configuration.createContext( containerRequestData );
+    	this.requestContext = requestContext;
 	}
 
     public void run() throws NotFoundException, RoutingException, UnhandledException {

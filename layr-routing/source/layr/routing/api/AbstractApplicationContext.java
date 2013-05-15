@@ -11,7 +11,7 @@ import layr.engine.components.ComponentFactory;
  * Default abstract implementation of Configuration interface. Developers
  * are encouraged to extends this class in order to avoid rework.
  */
-public abstract class AbstractConfiguration implements Configuration {
+public abstract class AbstractApplicationContext implements ApplicationContext {
 
 	String defaultResource;
 	Cache cache;
@@ -72,9 +72,10 @@ public abstract class AbstractConfiguration implements Configuration {
 		this.defaultEncoding = defaultEncoding;
 	}
 	
-	public void prePopulateContext( AbstractRequestContext requestContext ) {
+	protected void prePopulateContext( AbstractRequestContext requestContext ) {
 		requestContext.setCache( getCache() );
 		requestContext.setRegisteredTagLibs( getRegisteredTagLibs() );
 		requestContext.setDefaultResource( getDefaultResource() );
 	}
+
 }

@@ -3,29 +3,20 @@ package layr.routing;
 import static org.junit.Assert.assertEquals;
 
 import java.util.HashSet;
+import java.util.Set;
 
-import layr.routing.api.Configuration;
 import layr.routing.exceptions.RoutingInitializationException;
-import layr.routing.impl.StubRoutingBootstrap;
+import layr.routing.service.LifeCycle;
 import layr.routing.service.NaturalRoutingLifeCycle;
-import layr.routing.service.RoutingBootstrap;
 
-import org.junit.Before;
 import org.junit.Test;
 
 public class NaturalRoutingLifeCycleTest extends RoutingTestSupport {
 
 	static final int MANY_TIMES = 1000;
-	Configuration configuration;
 
-	public NaturalRoutingLifeCycleTest() throws RoutingInitializationException {
-		RoutingBootstrap routingBootstrap = new StubRoutingBootstrap();
-		configuration = routingBootstrap.configure( new HashSet<Class<?>>() );
-	}
-
-	@Before
-	public void setup() throws RoutingInitializationException{
-		lifeCycle = new NaturalRoutingLifeCycle( configuration );
+	public LifeCycle createLifeCycle() throws RoutingInitializationException{
+		return new NaturalRoutingLifeCycle( configuration, getRequestContext() );
 	}
 
 	@Test
@@ -42,9 +33,12 @@ public class NaturalRoutingLifeCycleTest extends RoutingTestSupport {
 
 	public void stressTest() throws Exception{
 		for ( int i=0; i<MANY_TIMES; i++ ){
-			setup();
 			get( "/hello/?requestParamOnBody=12.5&pathParamOnBody=1234" );
 		}
 	}
 
+	@Override
+	Set<Class<?>> classes() {
+		return new HashSet<Class<?>>();
+	}
 }

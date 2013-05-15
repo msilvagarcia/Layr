@@ -2,17 +2,39 @@ package layr.routing;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
+import layr.engine.RequestContext;
+import layr.routing.api.ApplicationContext;
+import layr.routing.exceptions.RoutingInitializationException;
 import layr.routing.impl.StubRequestContext;
+import layr.routing.impl.StubRoutingBootstrap;
 import layr.routing.service.LifeCycle;
+import layr.routing.service.RoutingBootstrap;
 
-public class RoutingTestSupport {
+import org.junit.Before;
+
+public abstract class RoutingTestSupport {
 
 	LifeCycle lifeCycle;
+	ApplicationContext configuration;
+	RequestContext requestContext;
 
-	public RoutingTestSupport() {
-		super();
+	abstract Set<Class<?>> classes();
+	
+	@Before
+	public void setup() throws Exception {
+		try {
+			RoutingBootstrap routingBootstrap = new StubRoutingBootstrap();
+			setConfiguration( routingBootstrap.configure( classes() ) );
+			requestContext = createRequestContext();
+			lifeCycle = createLifeCycle();
+		} catch (RoutingInitializationException e) {
+			e.printStackTrace();
+		}
 	}
+	
+	abstract LifeCycle createLifeCycle() throws Exception;
 
 	public void setRequestURI(String uri) {
 		String[] uriAndParams = split( uri, "\\?" );
@@ -30,35 +52,35 @@ public class RoutingTestSupport {
 	}
 	
 	public void get( String uri ) throws Exception {
-		lifeCycle.createContext( null );
 		setRequestURI( uri );
 		setRequestMethod( "GET" );
 		lifeCycle.run();
 	}
 
 	public void post( String uri ) throws Exception {
-		lifeCycle.createContext( null );
 		setRequestURI( uri );
 		setRequestMethod( "POST" );
 		lifeCycle.run();
 	}
 	
 	public void put( String uri ) throws Exception {
-		lifeCycle.createContext( null );
 		setRequestURI( uri );
 		setRequestMethod( "PUT" );
 		lifeCycle.run();
 	}
 	
 	public void delete( String uri ) throws Exception {
-		lifeCycle.createContext( null );
 		setRequestURI( uri );
 		setRequestMethod( "DELETE" );
 		lifeCycle.run();
 	}
 
+	private RequestContext createRequestContext() {
+		return configuration.createContext( null );
+	}
+
 	public StubRequestContext getRequestContext() {
-		return (StubRequestContext)lifeCycle.getRequestContext();
+		return (StubRequestContext)requestContext;
 	}
 
 	String[] split(String uri, String divider) {
@@ -80,4 +102,11 @@ public class RoutingTestSupport {
 		this.lifeCycle = lifeCycle;
 	}
 
+	public ApplicationContext getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(ApplicationContext configuration) {
+		this.configuration = configuration;
+	}
 }

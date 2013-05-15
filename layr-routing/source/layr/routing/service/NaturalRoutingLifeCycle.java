@@ -7,21 +7,19 @@ import layr.engine.RequestContext;
 import layr.engine.TemplateParser;
 import layr.engine.components.Component;
 import layr.engine.components.TemplateParsingException;
-import layr.routing.api.Configuration;
+import layr.routing.api.ApplicationContext;
 import layr.routing.exceptions.NotFoundException;
 
 public class NaturalRoutingLifeCycle implements LifeCycle {
 
-    Configuration configuration;
+    ApplicationContext configuration;
 	RequestContext requestContext;
 
-	public NaturalRoutingLifeCycle(Configuration configuration) {
+	public NaturalRoutingLifeCycle(
+			ApplicationContext configuration,
+			RequestContext requestContext) {
     	this.configuration = configuration;
-	}
-	
-	@Override
-	public void createContext(ContainerRequestData<?, ?> containerRequestData) {
-		this.requestContext = configuration.createContext( containerRequestData );
+    	this.requestContext = requestContext;
 	}
 
 	public void run() throws TemplateParsingException, NotFoundException, IOException {

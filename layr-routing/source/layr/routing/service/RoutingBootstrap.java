@@ -15,7 +15,7 @@ import layr.engine.components.template.TemplateComponentFactory;
 import layr.engine.components.xhtml.XHtmlComponentFactory;
 import layr.routing.annotations.Handler;
 import layr.routing.annotations.WebResource;
-import layr.routing.api.Configuration;
+import layr.routing.api.ApplicationContext;
 import layr.routing.api.ExceptionHandler;
 import layr.routing.api.RouteClass;
 import layr.routing.exceptions.RoutingInitializationException;
@@ -43,12 +43,12 @@ public abstract class RoutingBootstrap {
 		registeredTagLibs.put("urn:layr:template", new TemplateComponentFactory());
 	}
 
-	public Configuration configure(Set<Class<?>> classes) throws RoutingInitializationException {
+	public ApplicationContext configure(Set<Class<?>> classes) throws RoutingInitializationException {
 		analyse( classes );
 		return createConfiguration();
 	}
 
-	public abstract Configuration createConfiguration();
+	public abstract ApplicationContext createConfiguration();
 
 	public void analyse(Set<Class<?>> classes) throws RoutingInitializationException {
 		for (Class<?> clazz : classes)

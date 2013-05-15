@@ -1,16 +1,16 @@
 package layr.routing.service;
 
 import layr.engine.RequestContext;
-import layr.routing.api.Configuration;
+import layr.routing.api.ApplicationContext;
 import layr.routing.api.RouteClass;
 import layr.routing.api.RouteMethod;
 
 public class BusinessRoutingMethodMatching {
 
-	Configuration configuration;
+	ApplicationContext configuration;
 	RequestContext requestContext;
 
-	public BusinessRoutingMethodMatching(Configuration configuration, RequestContext requestContext) {
+	public BusinessRoutingMethodMatching(ApplicationContext configuration, RequestContext requestContext) {
 		this.configuration = configuration;
 		this.requestContext = requestContext;
 	}

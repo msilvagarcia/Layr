@@ -10,17 +10,17 @@ import layr.engine.RequestContext;
 import layr.engine.TemplateParser;
 import layr.engine.components.Component;
 import layr.engine.components.TemplateParsingException;
-import layr.routing.api.Configuration;
+import layr.routing.api.ApplicationContext;
 import layr.routing.api.Response;
 import layr.routing.exceptions.RoutingException;
 
 public class BusinessRoutingRenderer {
 
-	Configuration configuration;
+	ApplicationContext configuration;
 	RequestContext requestContext;
 
 	public BusinessRoutingRenderer(
-			Configuration configuration,
+			ApplicationContext configuration,
 			RequestContext requestContext) {
 		this.configuration = configuration;
 		this.requestContext = requestContext;

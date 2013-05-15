@@ -5,10 +5,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import layr.engine.RequestContext;
 import layr.routing.exceptions.NotFoundException;
 import layr.routing.service.BusinessRoutingLifeCycle;
-import layr.routing.service.ContainerRequestData;
-import layr.routing.service.LifeCycle;
 import layr.routing.service.NaturalRoutingLifeCycle;
 
 class JEELifeCycle {
@@ -24,23 +23,19 @@ class JEELifeCycle {
 	public void run() throws Exception {
 		JEEContainerRequestData containerRequestData = new JEEContainerRequestData( request, response );
 		JEEConfiguration configuration = retrieveConfiguration( request );
+		RequestContext requestContext = configuration.createContext( containerRequestData );
 		try {
-			NaturalRoutingLifeCycle naturalRoutingLifeCycle = new NaturalRoutingLifeCycle( configuration );
-			runLifeCycle(naturalRoutingLifeCycle, containerRequestData);
+			NaturalRoutingLifeCycle naturalRoutingLifeCycle = new NaturalRoutingLifeCycle( configuration, requestContext );
+			naturalRoutingLifeCycle.run();
 		} catch ( NotFoundException e ) {
-			BusinessRoutingLifeCycle businessRoutingLifeCycle = new BusinessRoutingLifeCycle( configuration );
-			runLifeCycle(businessRoutingLifeCycle, containerRequestData);
+			BusinessRoutingLifeCycle businessRoutingLifeCycle = new BusinessRoutingLifeCycle( configuration, requestContext );
+			businessRoutingLifeCycle.run();
 		}
 	}
 
 	public JEEConfiguration retrieveConfiguration(HttpServletRequest request) {
 		return (JEEConfiguration) request.getServletContext().getAttribute(
 				JEEConfiguration.class.getCanonicalName() );
-	}
-
-	public void runLifeCycle(LifeCycle lifeCycle, ContainerRequestData<?,?> containerRequestData) throws Exception {
-		lifeCycle.createContext( containerRequestData );
-		lifeCycle.run();
 	}
 
 }

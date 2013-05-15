@@ -7,12 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import layr.engine.RequestContext;
+import layr.routing.api.AbstractApplicationContext;
 import layr.routing.api.RouteClass;
 import layr.routing.exceptions.RoutingException;
-import layr.routing.service.AbstractConfiguration;
 import layr.routing.service.ContainerRequestData;
 
-class JEEConfiguration extends AbstractConfiguration {
+class JEEConfiguration extends AbstractApplicationContext {
 
 	EnterpriseJavaBeansContext ejbContext;
 
@@ -56,7 +56,13 @@ class JEEConfiguration extends AbstractConfiguration {
 	}
 
 	@Override
-	public ExecutorService getExecutorService() {
+	public ExecutorService getRendererExecutorService() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ExecutorService getTaskExecutorService() throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

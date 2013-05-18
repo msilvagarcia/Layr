@@ -1,16 +1,10 @@
-package layr.routing.service;
+package layr.routing.lifecycle;
 
 import layr.commons.Reflection;
 import layr.engine.RequestContext;
-import layr.routing.annotations.Route;
 import layr.routing.api.ApplicationContext;
 import layr.routing.api.ExceptionHandler;
-import layr.routing.api.Request;
 import layr.routing.api.Response;
-import layr.routing.api.HandledClass;
-import layr.routing.api.HandledMethod;
-import layr.routing.api.HandledParameter;
-import layr.routing.api.TemplateHandledParameter;
 import layr.routing.exceptions.RoutingException;
 import layr.routing.exceptions.UnhandledException;
 
@@ -103,12 +97,7 @@ public class BusinessRoutingMethodRunner {
 		if ( routeMethod.getLastReturnedValue() != null
 		&&   routeMethod.getLastReturnedValue() instanceof Response )
 			return (Response)routeMethod.getLastReturnedValue();
-
-		Route annotation = routeMethod.getRouteAnnotation();
-		Response response = new Response();
-		response.renderTemplate( annotation.template() );
-		response.redirectTo( annotation.redirectTo() );
-		return response;
+		return null;
 	}
 
 }

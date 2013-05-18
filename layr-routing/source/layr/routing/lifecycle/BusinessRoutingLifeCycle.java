@@ -1,9 +1,8 @@
-package layr.routing.service;
+package layr.routing.lifecycle;
 
 import layr.engine.RequestContext;
 import layr.routing.api.ApplicationContext;
 import layr.routing.api.Response;
-import layr.routing.api.HandledMethod;
 import layr.routing.exceptions.NotFoundException;
 import layr.routing.exceptions.RoutingException;
 import layr.routing.exceptions.UnhandledException;

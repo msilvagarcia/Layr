@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package layr.routing.annotations;
+package layr.routing.api;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,7 +21,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.FIELD})
-public @interface QueryParameter {
+@Target(ElementType.METHOD)
+public @interface POST {
+
 	String value() default "";
+
 }

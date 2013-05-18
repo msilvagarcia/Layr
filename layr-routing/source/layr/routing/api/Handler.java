@@ -1,5 +1,5 @@
 /**
- * Copyright 2012 Miere Liniel Teixeira
+ * Copyright 2011 Miere Liniel Teixeira
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package layr.routing.annotations;
+package layr.routing.api;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface POST {
-
-}
+@Target(ElementType.TYPE)
+public @interface Handler {}

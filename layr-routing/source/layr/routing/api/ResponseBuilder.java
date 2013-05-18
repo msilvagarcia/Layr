@@ -1,6 +1,5 @@
-package layr.routing.service;
+package layr.routing.api;
 
-import layr.routing.api.Response;
 
 final public class ResponseBuilder {
 

@@ -5,8 +5,8 @@ import java.util.concurrent.Executors;
 
 import layr.engine.RequestContext;
 import layr.routing.api.AbstractApplicationContext;
-import layr.routing.api.HandledClass;
-import layr.routing.service.ContainerRequestData;
+import layr.routing.lifecycle.ContainerRequestData;
+import layr.routing.lifecycle.HandledClass;
 
 public class StubConfiguration extends AbstractApplicationContext {
 

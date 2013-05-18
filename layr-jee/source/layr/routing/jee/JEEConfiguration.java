@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import layr.engine.RequestContext;
 import layr.routing.api.AbstractApplicationContext;
-import layr.routing.api.HandledClass;
 import layr.routing.exceptions.RoutingException;
-import layr.routing.service.ContainerRequestData;
+import layr.routing.lifecycle.ContainerRequestData;
+import layr.routing.lifecycle.HandledClass;
 
 class JEEConfiguration extends AbstractApplicationContext {
 

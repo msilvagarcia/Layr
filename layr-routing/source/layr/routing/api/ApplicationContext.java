@@ -8,7 +8,8 @@ import layr.engine.Cache;
 import layr.engine.RequestContext;
 import layr.engine.components.ComponentFactory;
 import layr.routing.exceptions.RoutingException;
-import layr.routing.service.ContainerRequestData;
+import layr.routing.lifecycle.ContainerRequestData;
+import layr.routing.lifecycle.HandledClass;
 
 /**
  * Holds application data useful for all requests.

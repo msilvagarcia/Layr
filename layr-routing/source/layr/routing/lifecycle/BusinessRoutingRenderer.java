@@ -1,4 +1,4 @@
-package layr.routing.service;
+package layr.routing.lifecycle;
 
 import static layr.commons.StringUtil.isEmpty;
 import static layr.commons.StringUtil.oneOf;
@@ -28,7 +28,9 @@ public class BusinessRoutingRenderer {
 
 	public void render( Response response ) throws RoutingException {
 		try {
-			if ( !isEmpty( response.redirectTo() ) )
+			if ( response == null )
+				responseNoContent();
+			else if ( !isEmpty( response.redirectTo() ) )
 				requestContext.redirectTo( response.redirectTo() );
 			else if ( !isEmpty( response.template() ) )
 				renderResponseTemplate( response );

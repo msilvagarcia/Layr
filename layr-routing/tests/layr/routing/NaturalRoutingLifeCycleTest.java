@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import layr.routing.exceptions.RoutingInitializationException;
-import layr.routing.service.LifeCycle;
-import layr.routing.service.NaturalRoutingLifeCycle;
+import layr.routing.lifecycle.LifeCycle;
+import layr.routing.lifecycle.NaturalRoutingLifeCycle;
 
 import org.junit.Test;
 

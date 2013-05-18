@@ -3,12 +3,12 @@ package home;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import layr.routing.annotations.GET;
 import layr.routing.annotations.Route;
-import layr.routing.annotations.TemplateParameter;
-import layr.routing.annotations.WebResource;
+import layr.routing.api.GET;
 import layr.routing.api.Response;
-import layr.routing.service.ResponseBuilder;
+import layr.routing.api.ResponseBuilder;
+import layr.routing.api.TemplateParameter;
+import layr.routing.api.WebResource;
 
 @WebResource("home")
 @Stateless

@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import layr.engine.RequestContext;
 import layr.routing.exceptions.NotFoundException;
-import layr.routing.service.BusinessRoutingLifeCycle;
-import layr.routing.service.NaturalRoutingLifeCycle;
+import layr.routing.lifecycle.BusinessRoutingLifeCycle;
+import layr.routing.lifecycle.NaturalRoutingLifeCycle;
 
 class JEELifeCycle {
 

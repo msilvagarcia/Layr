@@ -12,10 +12,10 @@ import javax.servlet.annotation.HandlesTypes;
 
 import layr.engine.Cache;
 import layr.engine.components.TagLib;
-import layr.routing.annotations.WebResource;
 import layr.routing.api.ApplicationContext;
+import layr.routing.api.WebResource;
 import layr.routing.exceptions.RoutingInitializationException;
-import layr.routing.service.RoutingBootstrap;
+import layr.routing.lifecycle.RoutingBootstrap;
 
 @HandlesTypes({
 	TagLib.class,

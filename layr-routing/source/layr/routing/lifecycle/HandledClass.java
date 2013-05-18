@@ -1,4 +1,6 @@
-package layr.routing.api;
+package layr.routing.lifecycle;
+
+import static layr.commons.StringUtil.oneOf;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -9,13 +11,22 @@ import java.util.List;
 import layr.commons.Reflection;
 import layr.engine.RequestContext;
 import layr.engine.expressions.URLPattern;
-import layr.routing.annotations.PathParameter;
-import layr.routing.annotations.QueryParameter;
-import layr.routing.annotations.Route;
-import layr.routing.annotations.TemplateParameter;
-import layr.routing.annotations.WebResource;
-import static layr.commons.StringUtil.*;
+import layr.routing.api.DELETE;
+import layr.routing.api.GET;
+import layr.routing.api.POST;
+import layr.routing.api.PUT;
+import layr.routing.api.PathParameter;
+import layr.routing.api.QueryParameter;
+import layr.routing.api.TemplateParameter;
+import layr.routing.api.WebResource;
 
+/**
+ * Extract all Layr needed information from an class that
+ * should to be used during requests. Developers should not
+ * "handle" classes during request time, but during deploy time
+ * instead. This approach will grant that requests are lightweight
+ * enough for a fast response.
+ */
 public class HandledClass {
 
     Class<?> targetClass;
@@ -44,7 +55,11 @@ public class HandledClass {
 	public List<HandledMethod> extractMethodRoutes() {
 		List<HandledMethod> routes = new ArrayList<HandledMethod>();
 		for ( Method method : measureAvailableRoutes() )
-			routes.add( createRouteMethod( method ) );
+			for ( Annotation annotation : method.getAnnotations() ) {
+				HandledMethod routeMethod = createRouteMethod( method, annotation );
+				if ( routeMethod != null )
+					routes.add( routeMethod );
+			}
 		return routes;
 	}
 
@@ -52,16 +67,26 @@ public class HandledClass {
 	 * @param method
 	 * @return
 	 */
-	public HandledMethod createRouteMethod(Method method) {
-		return new HandledMethod( this, method );
+	public HandledMethod createRouteMethod(Method method, Annotation httpMethodAnnotation) {
+		if (httpMethodAnnotation instanceof POST)
+			return new HandledMethod( this, method, "POST", ((POST) httpMethodAnnotation).value() );
+		else if (httpMethodAnnotation instanceof PUT)
+			return new HandledMethod( this, method, "PUT", ((PUT) httpMethodAnnotation).value() );
+		else if (httpMethodAnnotation instanceof DELETE)
+			return new HandledMethod( this, method, "DELETE", ((DELETE) httpMethodAnnotation).value() );
+		else if (httpMethodAnnotation instanceof GET)
+			return new HandledMethod( this, method, "GET", ((GET) httpMethodAnnotation).value() );
+		return null;
 	}
 
 	/**
 	 * Measure which route methods are available from target instance
 	 * @return 
 	 */
+	@SuppressWarnings("unchecked")
 	public List<Method> measureAvailableRoutes() {
-		return Reflection.extractAnnotatedMethodsFor(targetClass, Route.class);
+		return Reflection.extractAnnotatedMethodsFor(
+				targetClass, GET.class, POST.class, DELETE.class, PUT.class);
 	}
 
 	/**
@@ -79,10 +104,8 @@ public class HandledClass {
 
 	@SuppressWarnings("unchecked")
 	public List<Field> measureAvailableParameters() {
-		return Reflection.extractAnnotatedFieldsFor( targetClass,
-			TemplateParameter.class,
-			PathParameter.class,
-			QueryParameter.class );
+		return Reflection.extractAnnotatedFieldsFor(
+				targetClass, TemplateParameter.class, PathParameter.class, QueryParameter.class );
 	}
 
 	public void createRouteParameter(Field field) {

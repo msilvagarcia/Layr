@@ -1,17 +1,16 @@
 package layr.routing;
 
-import layr.routing.annotations.Route;
-import layr.routing.annotations.TemplateParameter;
-import layr.routing.annotations.WebResource;
+import layr.routing.api.*;
 
 @WebResource("home")
 public class HomeResource {
 	
 	@TemplateParameter User user; 
 
-	@Route( template="home.xhtml" )
-	public void renderHome(){
+	@GET
+	public Response renderHome(){
 		user = new User( true );
+		return ResponseBuilder.renderTemplate( "home.xhtml" );
 	}
 }
 

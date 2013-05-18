@@ -6,6 +6,7 @@ import java.util.Map;
 import layr.engine.AbstractRequestContext;
 import layr.engine.Cache;
 import layr.engine.components.ComponentFactory;
+import layr.routing.lifecycle.HandledClass;
 
 /**
  * Default abstract implementation of Configuration interface. Developers

@@ -2,7 +2,7 @@ package layr.routing.impl;
 
 import layr.engine.Cache;
 import layr.routing.api.ApplicationContext;
-import layr.routing.service.RoutingBootstrap;
+import layr.routing.lifecycle.RoutingBootstrap;
 
 public class StubRoutingBootstrap extends RoutingBootstrap {
 

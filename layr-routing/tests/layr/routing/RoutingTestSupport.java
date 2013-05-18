@@ -9,8 +9,8 @@ import layr.routing.api.ApplicationContext;
 import layr.routing.exceptions.RoutingInitializationException;
 import layr.routing.impl.StubRequestContext;
 import layr.routing.impl.StubRoutingBootstrap;
-import layr.routing.service.LifeCycle;
-import layr.routing.service.RoutingBootstrap;
+import layr.routing.lifecycle.LifeCycle;
+import layr.routing.lifecycle.RoutingBootstrap;
 
 import org.junit.Before;
 
@@ -43,7 +43,8 @@ public abstract class RoutingTestSupport {
 		stubRequestContext.setRequestURI( uriAndParams[0] );
 		stubRequestContext.setRequestParameters( new HashMap<String, String>() );
 		if ( uriAndParams.length == 2 )
-			stubRequestContext.getRequestParameters().putAll( parseURIParams( uriAndParams[1] ) );
+			stubRequestContext.getRequestParameters()
+				.putAll( parseURIParams( uriAndParams[1] ) );
 	}
 
 	public void setRequestMethod(String method) {

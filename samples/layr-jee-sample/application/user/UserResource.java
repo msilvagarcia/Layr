@@ -2,13 +2,13 @@ package user;
 
 import java.util.Date;
 
-import layr.routing.annotations.PathParameter;
-import layr.routing.annotations.QueryParameter;
 import layr.routing.annotations.Route;
-import layr.routing.annotations.TemplateParameter;
-import layr.routing.annotations.WebResource;
+import layr.routing.api.PathParameter;
+import layr.routing.api.QueryParameter;
 import layr.routing.api.Response;
-import layr.routing.service.ResponseBuilder;
+import layr.routing.api.ResponseBuilder;
+import layr.routing.api.TemplateParameter;
+import layr.routing.api.WebResource;
 
 @WebResource("user")
 public class UserResource {

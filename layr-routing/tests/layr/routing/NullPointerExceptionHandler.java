@@ -1,9 +1,9 @@
 package layr.routing;
 
-import layr.routing.annotations.Handler;
 import layr.routing.api.ExceptionHandler;
+import layr.routing.api.Handler;
 import layr.routing.api.Response;
-import layr.routing.service.ResponseBuilder;
+import layr.routing.api.ResponseBuilder;
 
 @Handler
 public class NullPointerExceptionHandler implements ExceptionHandler<NullPointerException> {

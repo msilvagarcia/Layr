@@ -1,11 +1,9 @@
 package layr.routing.lifecycle;
 
-import layr.commons.Reflection;
 import layr.engine.RequestContext;
 import layr.routing.api.ApplicationContext;
 import layr.routing.api.ExceptionHandler;
 import layr.routing.api.Response;
-import layr.routing.exceptions.RoutingException;
 import layr.routing.exceptions.UnhandledException;
 
 public class BusinessRoutingMethodRunner {
@@ -54,43 +52,8 @@ public class BusinessRoutingMethodRunner {
 	public Response runMethod(Request routingRequest, HandledMethod routeMethod) throws Throwable {
 		HandledClass routeClass = routeMethod.getRouteClass();
 		Object instance = configuration.newInstanceOf( routeClass );
-		populateWithParameters( instance, routeClass, routingRequest );
 		routeMethod.invoke( routingRequest, instance );
-		populateRequestContextWithInstanceTemplateParameters( instance, routeClass );
 		return createRoutingResponse(instance, routeMethod);
-	}
-
-	public void populateWithParameters(Object instance, HandledClass routeClass, Request routingRequest) throws RoutingException {
-		for ( HandledParameter parameter : routeClass.getParameters())
-			if ( !( parameter instanceof TemplateHandledParameter ) )
-				populateWithParameter( instance, routeClass, routingRequest, parameter );
-	}
-
-	public void populateWithParameter(
-			Object instance, HandledClass routeClass,
-			Request routingRequest, HandledParameter parameter) throws RoutingException {
-		Object value = null;
-		try {
-			value = routingRequest.getValue( parameter );
-			Reflection.setAttribute( instance, parameter.getName(), value );
-		} catch (Exception e) {
-			String message = String.format(
-				"[WARN] Can't set the value '%s' to %s.%s: %s",
-				value, routeClass.getTargetClass().getCanonicalName(),
-				parameter.getName(), e.getMessage());
-			requestContext.log( message );
-			throw new RoutingException( message, e );
-		}
-	}
-
-	public void populateRequestContextWithInstanceTemplateParameters(Object instance, HandledClass routeClass) {
-		Object value;
-		for ( HandledParameter parameter : routeClass.getParameters()){
-			if ( !(parameter instanceof TemplateHandledParameter) )
-				continue;
-			value = Reflection.getAttribute( instance, parameter.getName() );
-			requestContext.put( parameter.getName(), value );
-		}
 	}
 
 	public Response createRoutingResponse(Object instance, HandledMethod routeMethod) {

@@ -11,6 +11,7 @@ import layr.engine.TemplateParser;
 import layr.engine.components.Component;
 import layr.engine.components.TemplateParsingException;
 import layr.routing.api.ApplicationContext;
+import layr.routing.api.BuiltResponse;
 import layr.routing.api.Response;
 import layr.routing.exceptions.RoutingException;
 
@@ -30,18 +31,25 @@ public class BusinessRoutingRenderer {
 		try {
 			if ( response == null )
 				responseNoContent();
-			else if ( !isEmpty( response.redirectTo() ) )
-				requestContext.redirectTo( response.redirectTo() );
-			else if ( !isEmpty( response.template() ) )
-				renderResponseTemplate( response );
 			else
-				responseNoContent();
+				render( response.build() );
 		} catch ( IOException e ) {
 			throw new RoutingException( e );
 		}
 	}
 
-	public void renderResponseTemplate( Response response ) throws RoutingException {
+	public void render( BuiltResponse builtResponse ) throws IOException, RoutingException {
+		if ( builtResponse == null )
+			throw new NullPointerException("Built response returned null. Please check your implementation provider.");
+		else if ( !isEmpty( builtResponse.redirectTo() ) )
+			requestContext.redirectTo( builtResponse.redirectTo() );
+		else if ( !isEmpty( builtResponse.template() ) )
+			renderResponseTemplate( builtResponse );
+		else
+			responseNoContent();
+	}
+
+	public void renderResponseTemplate( BuiltResponse response ) throws RoutingException {
 		try {
 			setContentTypeAndEncoding( response );
 			TemplateParser parser = new TemplateParser( requestContext );
@@ -54,7 +62,7 @@ public class BusinessRoutingRenderer {
 		}
 	}
 
-	public void setContentTypeAndEncoding( Response response ) throws UnsupportedEncodingException {
+	public void setContentTypeAndEncoding( BuiltResponse response ) throws UnsupportedEncodingException {
 		requestContext.setContentType( "text/html" );
 		requestContext.setCharacterEncoding(
 			oneOf( response.encoding(), configuration.getDefaultEncoding() ) );

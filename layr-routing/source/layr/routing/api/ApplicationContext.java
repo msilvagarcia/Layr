@@ -48,7 +48,6 @@ public interface ApplicationContext {
 	 */
 	public abstract String getDefaultEncoding();
 
-
 	/**
 	 * @param containerRequestData
 	 * @return the request context object that will be used during request Life

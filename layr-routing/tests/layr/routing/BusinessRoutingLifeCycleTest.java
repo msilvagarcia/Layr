@@ -6,8 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import layr.routing.exceptions.UnhandledException;
+import layr.routing.impl.NullPointerExceptionHandler;
 import layr.routing.lifecycle.BusinessRoutingLifeCycle;
 import layr.routing.lifecycle.LifeCycle;
+import layr.routing.sample.HelloResource;
+import layr.routing.sample.HomeResource;
 
 import org.junit.Test;
 
@@ -35,7 +38,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 
 	@Test
 	public void grantThatSendGetAndRenderTemplateAsExpected() throws Exception {
-		get( "/hello/world/1234?requestParamOnBody=12.5" );
+		get( "/hello/world/1234?requestParam=12.5" );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
@@ -52,7 +55,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 
 	@Test
 	public void grantThatSendPutAndRenderTemplateAsExpected() throws Exception{
-		put( "/hello/world/1234?requestParamOnBody=12.5" );
+		put( "/hello/world/1234?requestParam=12.5" );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
@@ -76,7 +79,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 
 	public void stressTest() throws Exception{
 		for ( int i=0; i<MANY_TIMES; i++ ){
-			get( "/hello/world/1234?requestParamOnBody=12.5" );
+			get( "/hello/world/1234?requestParam=12.5" );
 		}
 	}
 

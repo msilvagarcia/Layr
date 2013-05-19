@@ -5,6 +5,7 @@ import static layr.commons.StringUtil.oneOf;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import layr.engine.RequestContext;
 import layr.engine.TemplateParser;
@@ -52,6 +53,7 @@ public class BusinessRoutingRenderer {
 	public void renderResponseTemplate( BuiltResponse response ) throws RoutingException {
 		try {
 			setContentTypeAndEncoding( response );
+			memorizeParameters( response );
 			TemplateParser parser = new TemplateParser( requestContext );
 			Component compiledTemplate = parser.compile( response.template() );
 			compiledTemplate.render();
@@ -66,6 +68,17 @@ public class BusinessRoutingRenderer {
 		requestContext.setContentType( "text/html" );
 		requestContext.setCharacterEncoding(
 			oneOf( response.encoding(), configuration.getDefaultEncoding() ) );
+	}
+	
+	public void memorizeParameters( BuiltResponse response) {
+		BusinessRoutingTemplateParameterObjectHandler parameterHandler = new BusinessRoutingTemplateParameterObjectHandler( requestContext );
+		parameterHandler.memorizeParameters(response.templateParameterObject());
+		memorizeParameters( response.parameters() );
+	}
+
+	public void memorizeParameters(Map<String, Object> parameters) {
+		for ( String key : parameters.keySet() )
+			requestContext.put(key, parameters.get(key));
 	}
 
 	public void responseNoContent() {

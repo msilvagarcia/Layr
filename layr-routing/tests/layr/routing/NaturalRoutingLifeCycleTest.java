@@ -21,7 +21,7 @@ public class NaturalRoutingLifeCycleTest extends RoutingTestSupport {
 
 	@Test
 	public void grantThatSendGetAndRenderTemplateAsExpected() throws Exception {
-		get( "/hello/?requestParamOnBody=12.5&pathParamOnBody=1234" );
+		get( "/hello/?requestParam=12.5&pathParam=1234" );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
@@ -33,7 +33,7 @@ public class NaturalRoutingLifeCycleTest extends RoutingTestSupport {
 
 	public void stressTest() throws Exception{
 		for ( int i=0; i<MANY_TIMES; i++ ){
-			get( "/hello/?requestParamOnBody=12.5&pathParamOnBody=1234" );
+			get( "/hello/?requestParam=12.5&pathParam=1234" );
 		}
 	}
 

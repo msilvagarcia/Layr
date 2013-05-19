@@ -16,9 +16,10 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 
 	String defaultResource;
 	Cache cache;
+	List<HandledClass> registeredWebResources;
+	List<HandledClass> registeredTemplateParameterObject;
 	Map<String, ComponentFactory> registeredTagLibs;
 	Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers;
-	List<HandledClass> exposedResources;
 	String defaultEncoding;
 
 	@Override
@@ -50,11 +51,11 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 
 	@Override
 	public List<HandledClass> getRegisteredWebResources() {
-		return exposedResources;
+		return registeredWebResources;
 	}
 
 	public void setRegisteredWebResources(List<HandledClass> exposedMethods) {
-		this.exposedResources = exposedMethods;
+		this.registeredWebResources = exposedMethods;
 	}
 
 	public Map<String, Class<ExceptionHandler<?>>> getRegisteredExceptionHandlers() {

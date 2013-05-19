@@ -79,7 +79,7 @@ class ResponseImpl implements TemplateResponse, TemplateOptionsResponse, Redirec
 		return parameters;
 	}
 
-	public Object parameterObject() {
+	public Object templateParameterObject() {
 		return parameterObject;
 	}
 

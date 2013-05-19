@@ -1,9 +1,6 @@
 package layr.routing.lifecycle;
 
-import static layr.commons.StringUtil.oneOf;
-
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +12,6 @@ import layr.routing.api.DELETE;
 import layr.routing.api.GET;
 import layr.routing.api.POST;
 import layr.routing.api.PUT;
-import layr.routing.api.PathParameter;
-import layr.routing.api.QueryParameter;
-import layr.routing.api.TemplateParameter;
 import layr.routing.api.WebResource;
 
 /**
@@ -31,7 +25,6 @@ public class HandledClass {
 
     Class<?> targetClass;
     List<HandledMethod> routes;
-    List<HandledParameter> parameters;
     String rootPath;
 
     public HandledClass(Class<?> targetClass) {
@@ -87,51 +80,6 @@ public class HandledClass {
 	public List<Method> measureAvailableRoutes() {
 		return Reflection.extractAnnotatedMethodsFor(
 				targetClass, GET.class, POST.class, DELETE.class, PUT.class);
-	}
-
-	/**
-	 * @return
-	 */
-	public List<HandledParameter> getParameters(){
-		if ( parameters == null ) {
-			parameters = new ArrayList<HandledParameter>();
-			for ( Field field : measureAvailableParameters() )
-				createRouteParameter( field );
-		}
-
-		return parameters;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Field> measureAvailableParameters() {
-		return Reflection.extractAnnotatedFieldsFor(
-				targetClass, TemplateParameter.class, PathParameter.class, QueryParameter.class );
-	}
-
-	public void createRouteParameter(Field field) {
-		for ( Annotation annotation : field.getAnnotations()){
-			if ( PathParameter.class.isInstance( annotation ) )
-				parameters.add( createPathParameter( field, annotation ));
-			else if ( QueryParameter.class.isInstance( annotation ) )
-				parameters.add( createQueryParameter( field, annotation ));
-			else if ( TemplateParameter.class.isInstance( annotation ) )
-				parameters.add( createTemplateParameter( field, annotation ));
-		}
-	}
-
-	public PathHandledParameter createPathParameter(Field field, Annotation annotation) {
-		String parameterName = oneOf( ((PathParameter)annotation).value(), field.getName() );
-		return new PathHandledParameter( parameterName, field.getType() );
-	}
-
-	public QueryHandledParameter createQueryParameter(Field field, Annotation annotation) {
-		String parameterName = oneOf( ((QueryParameter)annotation).value(), field.getName() );
-		return new QueryHandledParameter( parameterName, field.getType() );
-	}
-
-	public TemplateHandledParameter createTemplateParameter(Field field, Annotation annotation) {
-		String parameterName = oneOf( ((TemplateParameter)annotation).value(), field.getName() );
-		return new TemplateHandledParameter( parameterName, field.getType() );
 	}
 
 	public boolean matchesTheRequestURI(RequestContext requestContext) {

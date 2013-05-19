@@ -1,0 +1,76 @@
+package layr.routing.lifecycle;
+
+import static layr.commons.Reflection.extractGetterFor;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+
+import layr.engine.RequestContext;
+
+public class BusinessRoutingTemplateParameterObjectHandler {
+
+	RequestContext requestContext;
+
+	public BusinessRoutingTemplateParameterObjectHandler( RequestContext requestContext ) {
+		this.requestContext = requestContext;
+	}
+
+	public void memorizeParameters(Object instance) {
+			if ( instance == null )
+				return;
+
+			Class<?> clazz = instance.getClass();
+			while (!Object.class.equals(clazz) ){
+				for ( Field field : clazz.getDeclaredFields() )
+					memorizeFieldAsParameter( instance, field );
+				clazz = clazz.getSuperclass();
+			}
+	}
+
+	public void memorizeFieldAsParameter(Object instance, Field field) {
+		Object value;
+		if ( isPublic(field) )
+			value = getAttributeFromField(instance, field);
+		else
+			value = getAttributeFromGetterMethod(instance, field);
+		requestContext.put(field.getName(), value);
+	}
+
+	public Object getAttributeFromField(Object instance, Field field) {
+		try {
+			field.setAccessible(true);
+			Object value = field.get( instance );
+			return value;
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public Object getAttributeFromGetterMethod(Object instance, Field field) {
+		try {
+			Method getter = extractGetterFor(instance, field.getName());
+			if ( getter == null || !isPublic(getter) )
+				return null;
+			getter.setAccessible(true);
+			return getter.invoke(instance);
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public boolean isPublic( Method method ) {
+		return isPublic( method.getModifiers() );
+	}
+	
+	public boolean isPublic ( Field field ) {
+		return isPublic(field.getModifiers());
+	}
+
+	public boolean isPublic(int modifiers) {
+		return modifiers == Member.DECLARED
+			|| modifiers == Member.PUBLIC;
+	}
+}

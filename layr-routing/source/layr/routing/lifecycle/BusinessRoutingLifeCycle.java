@@ -37,16 +37,6 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 		renderOutput( response );
 	}
 
-	/*public void populateRequestContextWithInstanceTemplateParameters(Object instance, HandledClass routeClass) {
-		Object value;
-		for ( HandledParameter parameter : routeClass.getParameters()){
-			if ( !(parameter instanceof TemplateHandledParameter) )
-				continue;
-			value = Reflection.getAttribute( instance, parameter.getName() );
-			requestContext.put( parameter.getName(), value );
-		}
-	}*/
-
 	public void renderOutput(Response response) throws RoutingException {
 		BusinessRoutingRenderer renderer = new BusinessRoutingRenderer( configuration, requestContext );
 		renderer.render(response);

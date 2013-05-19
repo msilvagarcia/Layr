@@ -16,7 +16,6 @@ import layr.engine.components.xhtml.XHtmlComponentFactory;
 import layr.routing.api.ApplicationContext;
 import layr.routing.api.ExceptionHandler;
 import layr.routing.api.Handler;
-import layr.routing.api.Parameter;
 import layr.routing.api.WebResource;
 import layr.routing.exceptions.RoutingInitializationException;
 
@@ -24,7 +23,6 @@ public abstract class RoutingBootstrap {
 
 	protected Map<String, ComponentFactory> registeredTagLibs;
 	protected List<HandledClass> registeredWebResources;
-	protected List<HandledClass> registeredHandledParameters;
 	protected Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers;
 
 	public RoutingBootstrap() {
@@ -64,7 +62,6 @@ public abstract class RoutingBootstrap {
 		tryToRegisterAWebResource(clazz);
 		tryToRegisterATag(clazz);
 		tryToRegisterAnExceptionHandler(clazz);
-		tryToRegisterAnParameterObject(clazz);
 	}
 
 	public void tryToRegisterAWebResource(Class<?> clazz) {
@@ -110,13 +107,6 @@ public abstract class RoutingBootstrap {
 		}
 	}
 
-	public void tryToRegisterAnParameterObject(Class<?> clazz) {
-		Parameter annotation = clazz.getAnnotation( Parameter.class );
-		if (annotation == null)
-			return;
-		registeredHandledParameters.add( new HandledClass( clazz ) );
-	}
-
 	public Map<String, ComponentFactory> getRegisteredTagLibs() {
 		return registeredTagLibs;
 	}
@@ -127,9 +117,5 @@ public abstract class RoutingBootstrap {
 
 	public Map<String, Class<ExceptionHandler<?>>> getExceptionHandlers() {
 		return registeredExceptionHandlers;
-	}
-
-	public List<HandledClass> getRegisteredHandledParameters() {
-		return registeredHandledParameters;
 	}
 }

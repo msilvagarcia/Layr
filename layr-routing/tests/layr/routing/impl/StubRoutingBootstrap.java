@@ -14,4 +14,5 @@ public class StubRoutingBootstrap extends RoutingBootstrap {
 		configuration.setCache( new Cache() );
 		return configuration;
 	}
+
 }

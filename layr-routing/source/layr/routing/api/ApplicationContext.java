@@ -27,7 +27,14 @@ public interface ApplicationContext {
 	/**
 	 * @return a map with Exception handlers found during the deploy
 	 */
-	public abstract Map<String, Class<ExceptionHandler<?>>> getRegisteredExceptionHandlers();
+	@SuppressWarnings("rawtypes")
+	public abstract Map<String, Class<ExceptionHandler>> getRegisteredExceptionHandlers();
+
+	/**
+	 * @return a map with Exception handlers found during the deploy
+	 */
+	@SuppressWarnings("rawtypes")
+	public abstract Map<String, Class<DataProvider>> getRegisteredDataProviders();
 
 	/**
 	 * @return the cache defined during deploy

@@ -1,20 +1,20 @@
 package layr.routing;
 
 import layr.routing.impl.StubRequestContext;
-import layr.routing.lifecycle.BusinessRoutingTemplateParameterObjectHandler;
+import layr.routing.lifecycle.TemplateParameterObjectHandler;
 import layr.routing.sample.SampleTemplateObject;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class BusinessRoutingTemplateParameterObjectHandlerTest {
+public class TemplateParameterObjectHandlerTest {
 	
 	private StubRequestContext context;
-	private BusinessRoutingTemplateParameterObjectHandler handler;
+	private TemplateParameterObjectHandler handler;
 
-	public BusinessRoutingTemplateParameterObjectHandlerTest() {
+	public TemplateParameterObjectHandlerTest() {
 		context = new StubRequestContext();
-		handler = new BusinessRoutingTemplateParameterObjectHandler(context);
+		handler = new TemplateParameterObjectHandler(context);
 	}
 
 	@Test

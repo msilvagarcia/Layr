@@ -18,7 +18,12 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 	List<HandledClass> registeredWebResources;
 	List<HandledClass> registeredTemplateParameterObject;
 	Map<String, ComponentFactory> registeredTagLibs;
-	Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers;
+
+	@SuppressWarnings("rawtypes")
+	protected Map<String, Class<ExceptionHandler>> registeredExceptionHandlers;
+	@SuppressWarnings("rawtypes")
+	protected Map<String, Class<DataProvider>> registeredDataProviders;
+
 	String defaultEncoding;
 
 	@Override
@@ -57,12 +62,26 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 		this.registeredWebResources = exposedMethods;
 	}
 
-	public Map<String, Class<ExceptionHandler<?>>> getRegisteredExceptionHandlers() {
+	@SuppressWarnings("rawtypes")
+	public Map<String, Class<ExceptionHandler>> getRegisteredExceptionHandlers() {
 		return registeredExceptionHandlers;
 	}
 
-	public void setRegisteredExceptionHandlers(Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers) {
+	@SuppressWarnings("rawtypes")
+	public void setRegisteredExceptionHandlers(Map<String, Class<ExceptionHandler>> registeredExceptionHandlers) {
 		this.registeredExceptionHandlers = registeredExceptionHandlers;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Map<String, Class<DataProvider>> getRegisteredDataProviders() {
+		return registeredDataProviders;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public void setRegisteredDataProviders(
+			Map<String, Class<DataProvider>> registeredDataProviders) {
+		this.registeredDataProviders = registeredDataProviders;
 	}
 	
 	public String getDefaultEncoding() {

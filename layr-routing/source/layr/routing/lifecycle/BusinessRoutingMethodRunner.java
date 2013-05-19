@@ -30,10 +30,10 @@ public class BusinessRoutingMethodRunner {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public <T extends Throwable> Response handleException(T e) throws UnhandledException {
 		String canonicalName = e.getClass().getCanonicalName();
-		Class<ExceptionHandler<?>> exceptionHandlerClass = configuration.getRegisteredExceptionHandlers().get( canonicalName );
+		Class<ExceptionHandler> exceptionHandlerClass = configuration.getRegisteredExceptionHandlers().get( canonicalName );
 		if ( exceptionHandlerClass == null )
 			throw new UnhandledException( e );
 		

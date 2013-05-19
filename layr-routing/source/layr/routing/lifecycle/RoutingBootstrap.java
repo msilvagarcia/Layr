@@ -1,7 +1,5 @@
 package layr.routing.lifecycle;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +12,8 @@ import layr.engine.components.TagLib;
 import layr.engine.components.template.TemplateComponentFactory;
 import layr.engine.components.xhtml.XHtmlComponentFactory;
 import layr.routing.api.ApplicationContext;
+import layr.routing.api.DataProvider;
 import layr.routing.api.ExceptionHandler;
-import layr.routing.api.Handler;
 import layr.routing.api.WebResource;
 import layr.routing.exceptions.RoutingInitializationException;
 
@@ -23,12 +21,23 @@ public abstract class RoutingBootstrap {
 
 	protected Map<String, ComponentFactory> registeredTagLibs;
 	protected List<HandledClass> registeredWebResources;
-	protected Map<String, Class<ExceptionHandler<?>>> registeredExceptionHandlers;
+
+	@SuppressWarnings("rawtypes")
+	protected Map<String, Class<ExceptionHandler>> registeredExceptionHandlers;
+	@SuppressWarnings("rawtypes")
+	protected Map<String, Class<DataProvider>> registeredDataProviders;
+	
+	@SuppressWarnings("rawtypes")
+	private HandlerClassExtractor<ExceptionHandler> exceptionHandlerClassExtractor;
+	@SuppressWarnings("rawtypes")
+	private HandlerClassExtractor<DataProvider> dataProviderClassExtractor;
 
 	public RoutingBootstrap() {
 		registeredWebResources = new ArrayList<HandledClass>();
 		registeredTagLibs = new HashMap<String, ComponentFactory>();
-		registeredExceptionHandlers = new HashMap<String, Class<ExceptionHandler<?>>>();
+		exceptionHandlerClassExtractor = HandlerClassExtractor.newInstance(ExceptionHandler.class);
+		dataProviderClassExtractor = HandlerClassExtractor.newInstance(DataProvider.class);
+
 		populateWithDefaultTagLibs( registeredTagLibs );
 	}
 
@@ -44,7 +53,13 @@ public abstract class RoutingBootstrap {
 
 	public ApplicationContext configure(Set<Class<?>> classes) throws RoutingInitializationException {
 		analyse( classes );
+		memorizeRegisteredHandlers();
 		return createConfiguration();
+	}
+
+	public void memorizeRegisteredHandlers() {
+		registeredExceptionHandlers = exceptionHandlerClassExtractor.getRegisteredHandlers();
+		registeredDataProviders = dataProviderClassExtractor.getRegisteredHandlers();
 	}
 
 	public abstract ApplicationContext createConfiguration();
@@ -62,6 +77,7 @@ public abstract class RoutingBootstrap {
 		tryToRegisterAWebResource(clazz);
 		tryToRegisterATag(clazz);
 		tryToRegisterAnExceptionHandler(clazz);
+		tryToRegisterAnDataProvider(clazz);
 	}
 
 	public void tryToRegisterAWebResource(Class<?> clazz) {
@@ -86,25 +102,12 @@ public abstract class RoutingBootstrap {
 		registeredTagLibs.put(namespace, factory);
 	}
 
-	public void tryToRegisterAnExceptionHandler(Class<?> clazz) {
-		if ( !clazz.isAnnotationPresent( Handler.class )
-		||   !ExceptionHandler.class.isAssignableFrom( clazz ))
-			return;
-
-		for ( Type type : clazz.getGenericInterfaces() )
-			registerExceptionHandler( clazz, type );
+	public void tryToRegisterAnExceptionHandler(Class<?> clazz){
+		exceptionHandlerClassExtractor.extract(clazz);
 	}
 
-	@SuppressWarnings("unchecked")
-	public void registerExceptionHandler(Class<?> clazz, Type type) {
-		if ( !ParameterizedType.class.isInstance( type ) )
-			return;
-		
-		ParameterizedType ptype = (ParameterizedType)type;
-		if ( ExceptionHandler.class.equals( ptype.getRawType() ) ){
-			Class<?> exceptionClass = (Class<?>)ptype.getActualTypeArguments()[0];
-			registeredExceptionHandlers.put( exceptionClass.getCanonicalName(), (Class<ExceptionHandler<?>>) clazz );
-		}
+	public void tryToRegisterAnDataProvider(Class<?> clazz){
+		dataProviderClassExtractor.extract(clazz);
 	}
 
 	public Map<String, ComponentFactory> getRegisteredTagLibs() {
@@ -115,7 +118,13 @@ public abstract class RoutingBootstrap {
 		return registeredWebResources;
 	}
 
-	public Map<String, Class<ExceptionHandler<?>>> getExceptionHandlers() {
+	@SuppressWarnings("rawtypes")
+	public Map<String, Class<ExceptionHandler>> getRegisteredExceptionHandlers() {
 		return registeredExceptionHandlers;
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public Map<String, Class<DataProvider>> getRegisteredDataProviders() {
+		return registeredDataProviders;
 	}
 }

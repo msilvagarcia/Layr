@@ -71,7 +71,7 @@ public class BusinessRoutingRenderer {
 	}
 	
 	public void memorizeParameters( BuiltResponse response) {
-		BusinessRoutingTemplateParameterObjectHandler parameterHandler = new BusinessRoutingTemplateParameterObjectHandler( requestContext );
+		TemplateParameterObjectHandler parameterHandler = new TemplateParameterObjectHandler( requestContext );
 		parameterHandler.memorizeParameters(response.templateParameterObject());
 		memorizeParameters( response.parameters() );
 	}

@@ -8,11 +8,11 @@ import java.lang.reflect.Method;
 
 import layr.engine.RequestContext;
 
-public class BusinessRoutingTemplateParameterObjectHandler {
+public class TemplateParameterObjectHandler {
 
 	RequestContext requestContext;
 
-	public BusinessRoutingTemplateParameterObjectHandler( RequestContext requestContext ) {
+	public TemplateParameterObjectHandler( RequestContext requestContext ) {
 		this.requestContext = requestContext;
 	}
 

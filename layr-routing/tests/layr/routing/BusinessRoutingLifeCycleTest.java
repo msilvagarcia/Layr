@@ -7,6 +7,7 @@ import java.util.Set;
 
 import layr.routing.exceptions.UnhandledException;
 import layr.routing.impl.NullPointerExceptionHandler;
+import layr.routing.impl.RequestContextDataProvider;
 import layr.routing.lifecycle.BusinessRoutingLifeCycle;
 import layr.routing.lifecycle.LifeCycle;
 import layr.routing.sample.HelloResource;
@@ -27,6 +28,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 		classes.add( HelloResource.class );
 		classes.add( HomeResource.class );
 		classes.add( NullPointerExceptionHandler.class );
+		classes.add( RequestContextDataProvider.class );
 		return classes;
 	}
 
@@ -57,6 +59,12 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public void grantThatSendPutAndRenderTemplateAsExpected() throws Exception{
 		put( "/hello/world/1234?requestParam=12.5" );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
+	}
+
+	@Test
+	public void grantThatSendPostAndRenderTemplateAsExpected() throws Exception{
+		post( "/hello/world" );
+		assertEquals( "<p>/:/home/</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
 	@Test

@@ -3,6 +3,7 @@ package layr.routing.sample;
 import java.io.IOException;
 
 import static layr.routing.api.ResponseBuilder.*;
+import layr.engine.RequestContext;
 import layr.routing.api.*;
 
 @WebResource("hello")
@@ -49,5 +50,13 @@ public class HelloResource {
 	@GET("unhandled/error")
 	public void unhandledError() throws IOException{
 		throw new IOException();
+	}
+	
+	@POST("world")
+	public Response renderWithHandledData(
+			@Data RequestContext requestContext ){
+		return renderTemplate("hello.xhtml")
+				.set("pathParam", requestContext.getApplicationRootPath())
+				.set("requestParam", requestContext.getDefaultResource());
 	}
 }

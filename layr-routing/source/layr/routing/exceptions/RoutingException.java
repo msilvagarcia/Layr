@@ -1,7 +1,8 @@
 package layr.routing.exceptions;
 
+import java.io.IOException;
 
-public class RoutingException extends Exception {
+public class RoutingException extends IOException {
 
 	private static final long serialVersionUID = 5061318521017132669L;
 

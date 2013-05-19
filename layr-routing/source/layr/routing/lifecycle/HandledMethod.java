@@ -1,5 +1,6 @@
 package layr.routing.lifecycle;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,7 +35,6 @@ public class HandledMethod {
 		Class<?>[] parameterTypes = targetMethod.getParameterTypes();
 		Annotation[][] parameterAnnotations = targetMethod
 				.getParameterAnnotations();
-
 		short cursor = 0;
 		for (Annotation[] annotations : parameterAnnotations) {
 			Annotation annotation = annotations[0];
@@ -55,12 +55,22 @@ public class HandledMethod {
 			Object[] methodParameters = new Object[parameters.size()];
 			short cursor = 0;
 			for (HandledParameter parameter : parameters)
-				methodParameters[cursor++] = request.getValue(parameter);
-			lastReturnedValue = targetMethod.invoke(instance, methodParameters);
-			return lastReturnedValue;
+				methodParameters[cursor++] = getParameterValue(request, parameter);
+			return invokeMethod(instance, methodParameters);
 		} catch (InvocationTargetException e) {
 			throw e.getTargetException();
 		}
+	}
+
+	public Object getParameterValue(Request request, HandledParameter parameter)
+			throws IOException {
+		return request.getValue(parameter);
+	}
+
+	public Object invokeMethod(Object instance, Object[] methodParameters)
+			throws IllegalAccessException, InvocationTargetException {
+		lastReturnedValue = targetMethod.invoke(instance, methodParameters);
+		return lastReturnedValue;
 	}
 
 	public Map<String, String> extractPathParameters(

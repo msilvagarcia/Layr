@@ -10,6 +10,7 @@ public class StubRoutingBootstrap extends RoutingBootstrap {
 		StubConfiguration configuration = new StubConfiguration();
 		configuration.setRegisteredTagLibs( registeredTagLibs );
 		configuration.setRegisteredWebResources( registeredWebResources );
+		configuration.setRegisteredDataProviders(getRegisteredDataProviders());
 		configuration.setRegisteredExceptionHandlers( registeredExceptionHandlers );
 		configuration.setCache( new Cache() );
 		return configuration;

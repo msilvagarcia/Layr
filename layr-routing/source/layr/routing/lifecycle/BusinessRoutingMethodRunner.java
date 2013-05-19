@@ -29,24 +29,9 @@ public class BusinessRoutingMethodRunner {
 			return handleException( e );
 		}
 	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T extends Throwable> Response handleException(T e) throws UnhandledException {
-		String canonicalName = e.getClass().getCanonicalName();
-		Class<ExceptionHandler> exceptionHandlerClass = configuration.getRegisteredExceptionHandlers().get( canonicalName );
-		if ( exceptionHandlerClass == null )
-			throw new UnhandledException( e );
-		
-		try {
-			ExceptionHandler<?> exceptionHandlerInstance = exceptionHandlerClass.newInstance();
-			return ((ExceptionHandler<T>)exceptionHandlerInstance).render( e );
-		} catch (Throwable e1) {
-			throw new UnhandledException( e1 );
-		}
-	}
 
     public Request createRoutingRequest(HandledMethod routeMethod) {
-    	return new Request( requestContext, routeMethod.getRouteMethodPattern() );
+    	return new Request( configuration, requestContext, routeMethod.getRouteMethodPattern() );
     }
 
 	public Response runMethod(Request routingRequest, HandledMethod routeMethod) throws Throwable {
@@ -61,6 +46,20 @@ public class BusinessRoutingMethodRunner {
 		&&   routeMethod.getLastReturnedValue() instanceof Response )
 			return (Response)routeMethod.getLastReturnedValue();
 		return null;
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T extends Throwable> Response handleException(T e) throws UnhandledException {
+		String canonicalName = e.getClass().getCanonicalName();
+		Class<ExceptionHandler> exceptionHandlerClass = configuration.getRegisteredExceptionHandlers().get( canonicalName );
+		if ( exceptionHandlerClass == null )
+			throw new UnhandledException( e );
+		try {
+			ExceptionHandler<?> exceptionHandlerInstance = exceptionHandlerClass.newInstance();
+			return ((ExceptionHandler<T>)exceptionHandlerInstance).render( e );
+		} catch (Throwable e1) {
+			throw new UnhandledException( e1 );
+		}
 	}
 
 }

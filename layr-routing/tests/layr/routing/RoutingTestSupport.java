@@ -5,34 +5,34 @@ import java.util.Map;
 import java.util.Set;
 
 import layr.engine.RequestContext;
+import layr.routing.api.AbstractApplicationContext;
 import layr.routing.api.ApplicationContext;
 import layr.routing.exceptions.RoutingInitializationException;
 import layr.routing.impl.StubRequestContext;
 import layr.routing.impl.StubRoutingBootstrap;
 import layr.routing.lifecycle.LifeCycle;
-import layr.routing.lifecycle.RoutingBootstrap;
 
 import org.junit.Before;
 
 public abstract class RoutingTestSupport {
 
 	LifeCycle lifeCycle;
-	ApplicationContext configuration;
+	AbstractApplicationContext configuration;
 	RequestContext requestContext;
-
-	abstract Set<Class<?>> classes();
 	
 	@Before
 	public void setup() throws Exception {
 		try {
-			RoutingBootstrap routingBootstrap = new StubRoutingBootstrap();
-			setConfiguration( routingBootstrap.configure( classes() ) );
+			StubRoutingBootstrap routingBootstrap = new StubRoutingBootstrap();
+			setConfiguration( (AbstractApplicationContext)routingBootstrap.configure( classes() ) );
 			requestContext = createRequestContext();
 			lifeCycle = createLifeCycle();
 		} catch (RoutingInitializationException e) {
 			e.printStackTrace();
 		}
 	}
+
+	abstract Set<Class<?>> classes();
 	
 	abstract LifeCycle createLifeCycle() throws Exception;
 
@@ -77,7 +77,11 @@ public abstract class RoutingTestSupport {
 	}
 
 	private RequestContext createRequestContext() {
-		return configuration.createContext( null );
+		StubRequestContext requestContext = new StubRequestContext();
+		requestContext.setCache( configuration.getCache() );
+		requestContext.setRegisteredTagLibs( configuration.getRegisteredTagLibs() );
+		requestContext.setDefaultResource( configuration.getDefaultResource() );
+		return requestContext;
 	}
 
 	public StubRequestContext getRequestContext() {
@@ -107,7 +111,7 @@ public abstract class RoutingTestSupport {
 		return configuration;
 	}
 
-	public void setConfiguration(ApplicationContext configuration) {
+	public void setConfiguration(AbstractApplicationContext configuration) {
 		this.configuration = configuration;
 	}
 }

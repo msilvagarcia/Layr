@@ -3,9 +3,7 @@ package layr.routing.impl;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import layr.engine.RequestContext;
 import layr.routing.api.AbstractApplicationContext;
-import layr.routing.lifecycle.ContainerRequestData;
 import layr.routing.lifecycle.HandledClass;
 
 public class StubConfiguration extends AbstractApplicationContext {
@@ -15,13 +13,6 @@ public class StubConfiguration extends AbstractApplicationContext {
 	public StubConfiguration() {
 		setDefaultResource( "home" );
 		executorService = Executors.newFixedThreadPool( 10 );
-	}
-
-	@Override
-	public RequestContext createContext(ContainerRequestData<?, ?> containerRequestData) {
-		StubRequestContext requestContext = new StubRequestContext();
-		prePopulateContext( requestContext );
-		return requestContext;
 	}
 
 	@Override

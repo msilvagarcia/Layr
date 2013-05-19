@@ -3,7 +3,6 @@ package layr.routing.api;
 import java.util.List;
 import java.util.Map;
 
-import layr.engine.AbstractRequestContext;
 import layr.engine.Cache;
 import layr.engine.components.ComponentFactory;
 import layr.routing.lifecycle.HandledClass;
@@ -72,12 +71,6 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 	
 	public void setDefaultEncoding(String defaultEncoding) {
 		this.defaultEncoding = defaultEncoding;
-	}
-	
-	protected void prePopulateContext( AbstractRequestContext requestContext ) {
-		requestContext.setCache( getCache() );
-		requestContext.setRegisteredTagLibs( getRegisteredTagLibs() );
-		requestContext.setDefaultResource( getDefaultResource() );
 	}
 
 }

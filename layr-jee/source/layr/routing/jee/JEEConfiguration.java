@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import layr.engine.RequestContext;
 import layr.routing.api.AbstractApplicationContext;
+import layr.routing.api.ContainerRequestData;
 import layr.routing.exceptions.RoutingException;
-import layr.routing.lifecycle.ContainerRequestData;
 import layr.routing.lifecycle.HandledClass;
 
 class JEEConfiguration extends AbstractApplicationContext {

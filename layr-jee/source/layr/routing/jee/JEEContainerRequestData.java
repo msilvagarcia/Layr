@@ -3,7 +3,7 @@ package layr.routing.jee;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import layr.routing.lifecycle.ContainerRequestData;
+import layr.routing.api.ContainerRequestData;
 
 class JEEContainerRequestData 
 	implements ContainerRequestData<HttpServletRequest, HttpServletResponse> {

@@ -5,10 +5,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import layr.engine.Cache;
-import layr.engine.RequestContext;
 import layr.engine.components.ComponentFactory;
 import layr.routing.exceptions.RoutingException;
-import layr.routing.lifecycle.ContainerRequestData;
 import layr.routing.lifecycle.HandledClass;
 
 /**
@@ -47,13 +45,6 @@ public interface ApplicationContext {
 	 * @return the default encoding for template and request
 	 */
 	public abstract String getDefaultEncoding();
-
-	/**
-	 * @param containerRequestData
-	 * @return the request context object that will be used during request Life
-	 *         Cycle
-	 */
-	public abstract RequestContext createContext(ContainerRequestData<?, ?> containerRequestData);
 
 	/**
 	 * Instantiate the route class

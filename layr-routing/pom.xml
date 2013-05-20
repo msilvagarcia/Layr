@@ -39,12 +39,6 @@
         <!-- Project Dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>layr-commons</artifactId>
-            <version>${project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>layr-engine</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>

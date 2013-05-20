@@ -50,7 +50,6 @@
 	</build>
 
 	<modules>
-		<module>../layr-commons</module>
 		<module>../layr-jackson-converter</module>
 		<module>../layr-engine</module>
 		<module>../layr-routing</module>

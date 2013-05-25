@@ -2,9 +2,9 @@ package layr.routing.lifecycle;
 
 import java.lang.annotation.Annotation;
 
-import layr.routing.api.Data;
-import layr.routing.api.PathParameter;
-import layr.routing.api.QueryParameter;
+import layr.api.Data;
+import layr.api.PathParameter;
+import layr.api.QueryParameter;
 
 public final class HandledParameterFactory {
 

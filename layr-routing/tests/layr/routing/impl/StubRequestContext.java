@@ -6,9 +6,9 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import layr.api.Cache;
+import layr.api.ComponentFactory;
 import layr.engine.AbstractRequestContext;
-import layr.engine.Cache;
-import layr.engine.components.ComponentFactory;
 import layr.org.codehaus.jackson.ConversionException;
 import layr.org.codehaus.jackson.ConverterFactory;
 

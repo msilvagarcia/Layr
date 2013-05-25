@@ -9,10 +9,10 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
 
-import layr.engine.components.TagLib;
-import layr.routing.api.ApplicationContext;
-import layr.routing.api.Handler;
-import layr.routing.api.WebResource;
+import layr.api.Handler;
+import layr.api.TagLib;
+import layr.api.WebResource;
+import layr.routing.lifecycle.ApplicationContext;
 
 @HandlesTypes({
 	TagLib.class,

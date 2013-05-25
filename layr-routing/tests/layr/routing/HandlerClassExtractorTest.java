@@ -3,17 +3,15 @@ package layr.routing;
 import java.util.Map;
 
 import junit.framework.Assert;
-
-import org.junit.Test;
-
-import layr.engine.RequestContext;
-import layr.routing.api.ApplicationContext;
-import layr.routing.api.DataProvider;
-import layr.routing.api.ExceptionHandler;
-import layr.routing.api.Handler;
-import layr.routing.api.Response;
+import layr.api.DataProvider;
+import layr.api.ExceptionHandler;
+import layr.api.Handler;
+import layr.api.RequestContext;
+import layr.api.Response;
 import layr.routing.impl.RequestContextDataProvider;
 import layr.routing.lifecycle.HandlerClassExtractor;
+
+import org.junit.Test;
 
 public class HandlerClassExtractorTest {
 
@@ -62,8 +60,7 @@ public class HandlerClassExtractorTest {
 	@Handler
 	class ValidHandler implements ExceptionHandler<Throwable>, FakeHandler {
 		@Override
-		public Response render(Throwable exception,
-				ApplicationContext appContext, RequestContext reqContext) {
+		public Response render(Throwable exception, RequestContext reqContext) {
 			return null;
 		}
 	}

@@ -1,17 +1,15 @@
 package layr.routing.impl;
 
-import layr.engine.RequestContext;
-import layr.routing.api.ApplicationContext;
-import layr.routing.api.DataProvider;
-import layr.routing.api.Handler;
-import layr.routing.exceptions.DataProviderException;
+import layr.api.DataProvider;
+import layr.api.Handler;
+import layr.api.RequestContext;
+import layr.exceptions.DataProviderException;
 
 @Handler
 public class RequestContextDataProvider implements DataProvider<RequestContext> {
 
 	@Override
-	public RequestContext newDataInstance(
-			ApplicationContext applicationContext, RequestContext requestContext)
+	public RequestContext newDataInstance( RequestContext requestContext)
 				throws DataProviderException {
 		return requestContext;
 	}

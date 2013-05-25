@@ -6,16 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import layr.engine.components.ComponentFactory;
+import layr.api.ComponentFactory;
+import layr.api.DataProvider;
+import layr.api.ExceptionHandler;
+import layr.api.TagLib;
+import layr.api.WebResource;
 import layr.engine.components.DefaultComponentFactory;
-import layr.engine.components.TagLib;
 import layr.engine.components.template.TemplateComponentFactory;
 import layr.engine.components.xhtml.XHtmlComponentFactory;
-import layr.routing.api.ApplicationContext;
-import layr.routing.api.DataProvider;
-import layr.routing.api.ExceptionHandler;
-import layr.routing.api.WebResource;
-import layr.routing.exceptions.RoutingInitializationException;
+import layr.exceptions.RoutingInitializationException;
 
 public abstract class RoutingBootstrap {
 

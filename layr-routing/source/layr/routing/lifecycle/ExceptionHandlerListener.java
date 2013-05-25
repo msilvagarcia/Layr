@@ -1,11 +1,10 @@
 package layr.routing.lifecycle;
 
-import layr.engine.RequestContext;
-import layr.routing.api.ApplicationContext;
-import layr.routing.api.ExceptionHandler;
-import layr.routing.api.Response;
-import layr.routing.async.Listener;
-import layr.routing.exceptions.UnhandledException;
+import layr.api.ExceptionHandler;
+import layr.api.RequestContext;
+import layr.api.Response;
+import layr.commons.Listener;
+import layr.exceptions.UnhandledException;
 
 public class ExceptionHandlerListener implements Listener<Exception> {
 
@@ -49,7 +48,7 @@ public class ExceptionHandlerListener implements Listener<Exception> {
 			Class<ExceptionHandler> exceptionHandlerClass)
 			throws InstantiationException, IllegalAccessException {
 		ExceptionHandler<?> exceptionHandlerInstance = exceptionHandlerClass.newInstance();
-		return ((ExceptionHandler<T>) exceptionHandlerInstance).render(e, applicationContext, requestContext );
+		return ((ExceptionHandler<T>) exceptionHandlerInstance).render(e, requestContext );
 	}
 
 }

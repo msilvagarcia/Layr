@@ -2,9 +2,8 @@ package layr.routing.sample;
 
 import java.io.IOException;
 
-import static layr.routing.api.ResponseBuilder.*;
-import layr.engine.RequestContext;
-import layr.routing.api.*;
+import static layr.api.ResponseBuilder.*;
+import layr.api.*;
 
 @WebResource("hello")
 public class HelloResource {

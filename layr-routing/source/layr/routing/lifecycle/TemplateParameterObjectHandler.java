@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import layr.engine.RequestContext;
+import layr.api.RequestContext;
 
 public class TemplateParameterObjectHandler {
 

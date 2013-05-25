@@ -5,7 +5,7 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import layr.routing.api.Handler;
+import layr.api.Handler;
 
 public class HandlerClassExtractor<T> {
 	

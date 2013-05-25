@@ -1,7 +1,7 @@
 package layr.routing.sample;
 
-import static layr.routing.api.ResponseBuilder.*;
-import layr.routing.api.*;
+import static layr.api.ResponseBuilder.*;
+import layr.api.*;
 
 @WebResource("home")
 public class HomeResource {

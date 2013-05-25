@@ -5,14 +5,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import layr.api.DELETE;
+import layr.api.GET;
+import layr.api.POST;
+import layr.api.PUT;
+import layr.api.RequestContext;
+import layr.api.WebResource;
 import layr.commons.Reflection;
-import layr.engine.RequestContext;
 import layr.engine.expressions.URLPattern;
-import layr.routing.api.DELETE;
-import layr.routing.api.GET;
-import layr.routing.api.POST;
-import layr.routing.api.PUT;
-import layr.routing.api.WebResource;
 
 /**
  * Extract all Layr needed information from an class that

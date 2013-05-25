@@ -3,11 +3,10 @@ package layr.routing.lifecycle;
 import java.io.IOException;
 import java.util.Map;
 
-import layr.engine.RequestContext;
+import layr.api.DataProvider;
+import layr.api.RequestContext;
 import layr.engine.expressions.URLPattern;
-import layr.routing.api.ApplicationContext;
-import layr.routing.api.DataProvider;
-import layr.routing.exceptions.RoutingException;
+import layr.exceptions.RoutingException;
 
 public class Request {
 
@@ -61,7 +60,7 @@ public class Request {
 			String canonicalName = parameter.getTargetClazz().getCanonicalName();
 			Class<DataProvider> dataProviderClass = applicationContext.getRegisteredDataProviders().get(canonicalName);
 			DataProvider dataProvider = (DataProvider<?>)dataProviderClass.newInstance();
-			return dataProvider.newDataInstance(applicationContext, requestContext);
+			return dataProvider.newDataInstance(requestContext);
 		} catch ( Throwable t ){
 			throw new RoutingException(t);
 		}

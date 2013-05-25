@@ -10,7 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
-import layr.routing.exceptions.NotFoundException;
+import layr.exceptions.NotFoundException;
 
 @WebFilter(filterName="layr.routing.jee.Application")
 public class Application implements Filter {

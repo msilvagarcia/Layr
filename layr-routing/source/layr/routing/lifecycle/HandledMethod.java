@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import layr.engine.RequestContext;
+import layr.api.RequestContext;
 import layr.engine.expressions.URLPattern;
 
 public class HandledMethod {

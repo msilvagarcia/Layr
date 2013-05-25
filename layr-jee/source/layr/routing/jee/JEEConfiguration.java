@@ -2,7 +2,7 @@ package layr.routing.jee;
 
 import javax.naming.NamingException;
 
-import layr.routing.exceptions.RoutingException;
+import layr.exceptions.RoutingException;
 import layr.routing.lifecycle.DefaultApplicationContextImpl;
 import layr.routing.lifecycle.HandledClass;
 

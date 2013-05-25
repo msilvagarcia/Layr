@@ -13,12 +13,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
 
-import layr.engine.Cache;
-import layr.engine.components.TagLib;
-import layr.routing.api.ApplicationContext;
-import layr.routing.api.ThreadPoolFactory;
-import layr.routing.api.WebResource;
-import layr.routing.exceptions.RoutingInitializationException;
+import layr.api.Cache;
+import layr.api.TagLib;
+import layr.api.ThreadPoolFactory;
+import layr.api.WebResource;
+import layr.exceptions.RoutingInitializationException;
+import layr.routing.lifecycle.ApplicationContext;
 import layr.routing.lifecycle.RoutingBootstrap;
 
 @HandlesTypes({

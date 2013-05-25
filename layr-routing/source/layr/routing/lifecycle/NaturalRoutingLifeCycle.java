@@ -3,13 +3,12 @@ package layr.routing.lifecycle;
 import java.io.IOException;
 import java.util.Map;
 
-import layr.engine.RequestContext;
+import layr.api.Component;
+import layr.api.RequestContext;
+import layr.api.Response;
+import layr.commons.Listener;
 import layr.engine.TemplateParser;
-import layr.engine.components.Component;
 import layr.engine.components.TemplateParsingException;
-import layr.routing.api.ApplicationContext;
-import layr.routing.api.Response;
-import layr.routing.async.Listener;
 
 public class NaturalRoutingLifeCycle implements LifeCycle {
 

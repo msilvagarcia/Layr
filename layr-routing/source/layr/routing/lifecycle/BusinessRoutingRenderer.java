@@ -7,14 +7,13 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import layr.engine.RequestContext;
+import layr.api.BuiltResponse;
+import layr.api.Component;
+import layr.api.RequestContext;
+import layr.api.Response;
 import layr.engine.TemplateParser;
-import layr.engine.components.Component;
 import layr.engine.components.TemplateParsingException;
-import layr.routing.api.ApplicationContext;
-import layr.routing.api.BuiltResponse;
-import layr.routing.api.Response;
-import layr.routing.exceptions.RoutingException;
+import layr.exceptions.RoutingException;
 
 public class BusinessRoutingRenderer {
 

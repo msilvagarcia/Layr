@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import layr.routing.exceptions.RoutingInitializationException;
+import layr.exceptions.RoutingInitializationException;
 import layr.routing.lifecycle.LifeCycle;
 import layr.routing.lifecycle.NaturalRoutingLifeCycle;
 

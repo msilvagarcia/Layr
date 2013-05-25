@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import layr.engine.RequestContext;
-import layr.routing.api.ApplicationContext;
-import layr.routing.exceptions.RoutingInitializationException;
+import layr.api.RequestContext;
+import layr.exceptions.RoutingInitializationException;
 import layr.routing.impl.StubRequestContext;
 import layr.routing.impl.StubRoutingBootstrap;
+import layr.routing.lifecycle.ApplicationContext;
 import layr.routing.lifecycle.DefaultApplicationContextImpl;
 import layr.routing.lifecycle.LifeCycle;
 

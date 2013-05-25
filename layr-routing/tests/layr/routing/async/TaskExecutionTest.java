@@ -2,10 +2,16 @@ package layr.routing.async;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import junit.framework.Assert;
 
 import layr.api.Cache;
+import layr.api.Response;
+import layr.commons.Listener;
 import layr.engine.TemplateParser;
 import layr.engine.components.template.TemplateComponentFactory;
 import layr.engine.components.xhtml.XHtmlComponentFactory;
@@ -23,13 +29,16 @@ import org.junit.Test;
 public class TaskExecutionTest {
 
 	static final String THEME_XHTML = "stress-template-theme.xhtml";
-	static final int MANY_TIMES = 5000;
+	static final int MANY_TIMES = 25000;
 	static final int NUM_THREADS = MANY_TIMES;
 	static final Cache CACHE = new Cache();
 
-	static final ExecutorService CPUEXECUTOR = Executors.newFixedThreadPool(4);
+	static final ExecutorService CPUEXECUTOR = Executors.newFixedThreadPool(4+1);
 	static final ExecutorService LONGIOEXECUTOR = Executors.newCachedThreadPool();
-	private StubApplicationContext applicationContext;
+	
+	StubApplicationContext applicationContext;
+	CountDownLatch countDownLatch;
+	AtomicInteger failureCount;
 	
 	@Before
 	public void setup() throws RoutingInitializationException{
@@ -40,6 +49,8 @@ public class TaskExecutionTest {
 			XHtmlComponentFactory.class));
 		applicationContext.setMethodExecutionThreadPool(CPUEXECUTOR);
 		applicationContext.getRegisteredTagLibs().put("", new XHtmlComponentFactory());
+		countDownLatch = new CountDownLatch(MANY_TIMES);
+		failureCount = new AtomicInteger(0);
 	}
 
 	Set<Class<?>> classes(Class<?>...classes) {
@@ -49,11 +60,12 @@ public class TaskExecutionTest {
 		return set;
 	}
 
-	@Test
+	@Test(timeout=2500)
 	public void grantThatCouldRenderHelloManyTimesInCachedMode() throws Exception {
 		for (int i = 0; i < MANY_TIMES; i++)
 			simulateRequest(i);
-		Thread.sleep(MANY_TIMES);
+		countDownLatch.await();
+		Assert.assertEquals(0, failureCount.get());
 	}
 
 	void precompileTemplateSharingSameCache() throws Exception {
@@ -65,8 +77,16 @@ public class TaskExecutionTest {
 		StubRequestContext context = createCachedContext(i);
 		context.setRequestURI("/stress/");
 		context.setRequestHttpMethod("GET");
-		new BusinessRoutingLifeCycle(applicationContext, context)
-				.run();
+		BusinessRoutingLifeCycle lifeCycle = createLifeCycle(context);
+		lifeCycle.canHandleRequest();
+		lifeCycle.run();
+	}
+
+	private BusinessRoutingLifeCycle createLifeCycle(StubRequestContext context) {
+		BusinessRoutingLifeCycle lifeCycle = new BusinessRoutingLifeCycle(applicationContext, context);
+		lifeCycle.onSuccess(createOnSuccessListener());
+		lifeCycle.onFail(createOnFailListener());
+		return lifeCycle;
 	}
 
 	StubRequestContext createContext(int i) {
@@ -81,5 +101,22 @@ public class TaskExecutionTest {
 		StubRequestContext context = createContext(i);
 		context.setCache(CACHE);
 		return context;
+	}
+
+	public Listener<Response> createOnSuccessListener(){
+		return new Listener<Response>() {
+			public void listen(Response result) {
+				countDownLatch.countDown();
+			}
+		};
+	}
+
+	public Listener<Exception> createOnFailListener(){
+		return new Listener<Exception>() {
+			public void listen(Exception result) {
+				countDownLatch.countDown();
+				failureCount.incrementAndGet();
+			}
+		};
 	}
 }

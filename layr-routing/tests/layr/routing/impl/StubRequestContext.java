@@ -9,6 +9,8 @@ import java.util.Map;
 import layr.api.Cache;
 import layr.api.ComponentFactory;
 import layr.engine.AbstractRequestContext;
+import layr.engine.components.template.TemplateComponentFactory;
+import layr.engine.components.xhtml.XHtmlComponentFactory;
 import layr.org.codehaus.jackson.ConversionException;
 import layr.org.codehaus.jackson.ConverterFactory;
 
@@ -37,6 +39,10 @@ public class StubRequestContext extends AbstractRequestContext {
 
 	public void populateWithDefaultTagLibs() {
 		HashMap<String, ComponentFactory> registeredTagLibs = new HashMap<String, ComponentFactory>();
+		XHtmlComponentFactory xHtmlComponentFactory = new XHtmlComponentFactory();
+		registeredTagLibs.put("", xHtmlComponentFactory);
+		registeredTagLibs.put("http://www.w3.org/1999/xhtml", xHtmlComponentFactory);
+		registeredTagLibs.put("urn:layr:template", new TemplateComponentFactory());
 		setRegisteredTagLibs( registeredTagLibs );
 	}
 

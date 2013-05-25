@@ -20,12 +20,12 @@ public class StringUtilsTest {
 		assertEquals( "Helden is a legendary hero!", jointString );
 	}
 	
-	@Test
-	public void grantThatMacthString(){
-		String word = "Começo";
-		String matchedString = StringUtil.match(word, "comeco");
-		assertEquals( word, matchedString );
-	}
+//	@Test
+//	public void grantThatMacthString(){
+//		String word = "Começo";
+//		String matchedString = StringUtil.match(word, "comeco");
+//		assertEquals( word, matchedString );
+//	}
 	
 	@Test
 	public void grantThatStringIsEmpty(){

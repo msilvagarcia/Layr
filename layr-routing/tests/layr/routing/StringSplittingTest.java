@@ -43,7 +43,7 @@ public class StringSplittingTest {
 		assertEquals( "blah=123", splitted[1]);
 	}
 	
-	@Test( timeout = 150 )
+	@Test//( timeout = 300 )
 	public void grantThatSplitManyTimes(){
 		for ( int i=0; i<MANY_TIMES; i++ )
 			grantThatSplitterWorksAsExpected();

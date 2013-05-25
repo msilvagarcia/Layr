@@ -8,9 +8,9 @@ import layr.routing.lifecycle.HandledClass;
 
 public class StubApplicationContext extends DefaultApplicationContextImpl {
 
-
 	public StubApplicationContext() {
 		setDefaultResource( "home" );
+		//XXX: newFixedThreadPool(Runtime.getRuntime().availableProcessors()+1);//
 		ExecutorService executorService = Executors.newCachedThreadPool();
 		setMethodExecutionThreadPool(executorService);
 		setRenderingThreadPool(executorService);

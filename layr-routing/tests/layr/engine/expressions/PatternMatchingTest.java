@@ -3,21 +3,12 @@ package layr.engine.expressions;
 import java.util.Map;
 
 import junit.framework.Assert;
-import layr.commons.StringUtil;
-import layr.engine.expressions.URLPattern;
 
 import org.junit.Test;
 
 public class PatternMatchingTest {
 
 	URLPattern urlPattern = new URLPattern();
-
-	@Test
-	public void assertThatMatchesJose() {
-		String expected = "osé";
-		String actual = StringUtil.match( "José", "ose" );
-		Assert.assertEquals( expected, actual );
-	}
 
 	@Test
 	public void assertThatReplacesTheUrl() {

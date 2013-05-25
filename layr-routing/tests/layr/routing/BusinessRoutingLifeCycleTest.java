@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 
-	static final int MANY_TIMES = 1000;
+	static final int MANY_TIMES = 1200;
 
 	public LifeCycle createLifeCycle(){
 		return new BusinessRoutingLifeCycle( getConfiguration(), getRequestContext() );
@@ -73,7 +73,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 		assertEquals( 204, getRequestContext().getStatusCode() );
 	}
 
-	@Test( timeout=2200 )
+	@Test( timeout=2500 )
 	public void stressTestFiveTimes() throws Exception{
 		for ( int i=0; i<5; i++ )
 			stressTest();
@@ -81,6 +81,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 
 	public void stressTest() throws Exception{
 		for ( int i=0; i<MANY_TIMES; i++ ){
+			recreateLifeCycle();
 			get( "/hello/world/1234?requestParam=12.5" );
 		}
 	}

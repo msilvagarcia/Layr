@@ -25,8 +25,7 @@ public abstract class RoutingTestSupport {
 		try {
 			StubRoutingBootstrap routingBootstrap = new StubRoutingBootstrap();
 			setConfiguration( (DefaultApplicationContextImpl)routingBootstrap.configure( classes() ) );
-			requestContext = createRequestContext();
-			lifeCycle = createLifeCycle();
+			recreateLifeCycle();
 		} catch (RoutingInitializationException e) {
 			e.printStackTrace();
 		}
@@ -55,37 +54,47 @@ public abstract class RoutingTestSupport {
 	public void get( String uri ) throws Exception {
 		setRequestURI( uri );
 		setRequestMethod( "GET" );
-		lifeCycle.run();
+		run();
+	}
+
+	private void run() throws Exception {
+		if (lifeCycle.canHandleRequest())
+			lifeCycle.run();
 	}
 
 	public void post( String uri ) throws Exception {
 		setRequestURI( uri );
 		setRequestMethod( "POST" );
-		lifeCycle.run();
+		run();
 	}
 	
 	public void put( String uri ) throws Exception {
 		setRequestURI( uri );
 		setRequestMethod( "PUT" );
-		lifeCycle.run();
+		run();
 	}
 	
 	public void delete( String uri ) throws Exception {
 		setRequestURI( uri );
 		setRequestMethod( "DELETE" );
-		lifeCycle.run();
+		run();
 	}
 
-	private RequestContext createRequestContext() {
+	public StubRequestContext getRequestContext() {
+		return (StubRequestContext) requestContext;
+	}
+	
+	public void recreateLifeCycle() throws Exception{
+		requestContext = createRequestContext();
+		lifeCycle = createLifeCycle();
+	}
+
+	public StubRequestContext createRequestContext() {
 		StubRequestContext requestContext = new StubRequestContext();
 		requestContext.setCache( configuration.getCache() );
 		requestContext.setRegisteredTagLibs( configuration.getRegisteredTagLibs() );
 		requestContext.setDefaultResource( configuration.getDefaultResource() );
 		return requestContext;
-	}
-
-	public StubRequestContext getRequestContext() {
-		return (StubRequestContext)requestContext;
 	}
 
 	String[] split(String uri, String divider) {

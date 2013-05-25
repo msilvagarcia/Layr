@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>layr-jee</artifactId>
-    <name>Layr: JEE Servlet API Wrapper</name>
+    <name>Layr: JEE Wrapper</name>
     <packaging>jar</packaging>
 
 	<dependencies>

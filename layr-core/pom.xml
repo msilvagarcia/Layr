@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>layr-core</artifactId>
-    <name>Layr: Routing</name>
+    <name>Layr: Core Implementation</name>
     <packaging>jar</packaging>
 
     <licenses>

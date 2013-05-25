@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>layr-api</artifactId>
-    <name>Layr: Template Engine</name>
+    <name>Layr: API</name>
     <description>Layr Web Framework Development</description>
     <packaging>jar</packaging>
 

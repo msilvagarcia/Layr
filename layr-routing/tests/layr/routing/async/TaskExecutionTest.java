@@ -38,7 +38,7 @@ public class TaskExecutionTest {
 			StressTemplateResource.class,
 			TemplateComponentFactory.class,
 			XHtmlComponentFactory.class));
-		applicationContext.setExecutorService(CPUEXECUTOR);
+		applicationContext.setMethodExecutionThreadPool(CPUEXECUTOR);
 		applicationContext.getRegisteredTagLibs().put("", new XHtmlComponentFactory());
 	}
 

@@ -63,10 +63,16 @@ public interface ApplicationContext {
 	public abstract Object newInstanceOf(HandledClass routeClass) throws Exception;
 
 	/**
-	 * Retrieves the ExecutorService that will execute every asynchronous  process.
+	 * Retrieves the ExecutorService that will execute every asynchronous method.
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	public ExecutorService getExecutorService();
+	public ExecutorService getMethodExecutionThreadPool();
+	
+	/**
+	 * Retrieves the ExecutorService that will render templates.
+	 * @return
+	 */
+	public ExecutorService getRenderingThreadPool();
 }

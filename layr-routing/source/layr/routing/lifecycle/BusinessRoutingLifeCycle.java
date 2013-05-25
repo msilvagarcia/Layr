@@ -10,13 +10,14 @@ import layr.routing.api.ApplicationContext;
 import layr.routing.api.Response;
 import layr.routing.async.ListenableCall;
 import layr.routing.async.Listener;
-import layr.routing.exceptions.NotFoundException;
-import layr.routing.exceptions.RoutingException;
 
 public class BusinessRoutingLifeCycle implements LifeCycle {
 
     ApplicationContext configuration;
 	RequestContext requestContext;
+	Listener<Response> onSuccess;
+	Listener<Exception> onFail;
+	HandledMethod matchedRouteMethod;
 
 	public BusinessRoutingLifeCycle(
 			ApplicationContext configuration,
@@ -24,13 +25,12 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
     	this.configuration = configuration;
     	this.requestContext = requestContext;
 	}
-
-    public void run() throws NotFoundException, RoutingException {
-    	HandledMethod routeMethod = getMatchedRouteMethod();
-    	if ( routeMethod == null )
-    		throw new NotFoundException( "No route found." );
-		runMethod( routeMethod );
-    }
+	
+	@Override
+	public boolean canHandleRequest() {
+		matchedRouteMethod = getMatchedRouteMethod();
+		return matchedRouteMethod != null;
+	}
 
 	public HandledMethod getMatchedRouteMethod() {
 		BusinessRoutingMethodMatching businessRoutingMethodMatching = new BusinessRoutingMethodMatching( configuration, requestContext );
@@ -38,11 +38,15 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 		return routeMethod;
 	}
 
+    public void run() {
+		runMethod( matchedRouteMethod );
+    }
+
 	public void runMethod(HandledMethod routeMethod) {
 		Listener<Exception> exceptionHandler = new ExceptionHandlerListener(configuration, requestContext);
 		try {
 			ListenableCall<Response> listenable = createListenableAsyncRunner(routeMethod, exceptionHandler);
-			Future<?> submit = configuration.getExecutorService().submit(listenable);
+			Future<?> submit = configuration.getMethodExecutionThreadPool().submit(listenable);
 			if ( !requestContext.isAsyncRequest() )
 				submit.get();
 		} catch ( ExecutionException e ) {
@@ -57,7 +61,9 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 		BusinessRoutingMethodRunner runner = new BusinessRoutingMethodRunner( configuration, requestContext, routeMethod );
 		ListenableCall<Response> listenable = listenable(runner);
 		listenable.onSuccess(new RendererListener(configuration, requestContext));
+		listenable.onSuccess(onSuccess);
 		listenable.onFail(exceptionHandler);
+		listenable.onFail(onFail);
 		return listenable;
 	}
 
@@ -65,4 +71,11 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 		return requestContext;
 	}
 
+	public void onFail( Listener<Exception> listener ){
+		this.onFail = listener;
+	}
+
+	public void onSuccess( Listener<Response> listener ){
+		this.onSuccess = listener;
+	}
 }

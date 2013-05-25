@@ -21,7 +21,7 @@ public class StubApplicationContext extends DefaultApplicationContextImpl {
 	}
 
 	@Override
-	public ExecutorService getExecutorService() {
+	public ExecutorService getMethodExecutionThreadPool() {
 		return executorService;
 	}
 

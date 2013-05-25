@@ -16,14 +16,14 @@ import layr.routing.api.ExceptionHandler;
  */
 public class DefaultApplicationContextImpl implements ApplicationContext {
 
-	String defaultResource;
 	Cache cache;
+	String defaultResource;
+	String defaultEncoding;
+	ExecutorService renderingThreadPool;
+	ExecutorService methodExecutionThreadPool;
 	List<HandledClass> registeredWebResources;
 	List<HandledClass> registeredTemplateParameterObject;
 	Map<String, ComponentFactory> registeredTagLibs;
-
-	String defaultEncoding;
-	ExecutorService executorService;
 
 	@SuppressWarnings("rawtypes")
 	Map<String, Class<ExceptionHandler>> registeredExceptionHandlers;
@@ -102,11 +102,20 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	}
 
 	@Override
-	public ExecutorService getExecutorService() {
-		return executorService;
+	public ExecutorService getMethodExecutionThreadPool() {
+		return methodExecutionThreadPool;
 	}
 
-	public void setExecutorService(ExecutorService executorService) {
-		this.executorService = executorService;
+	public void setMethodExecutionThreadPool(ExecutorService executorService) {
+		this.methodExecutionThreadPool = executorService;
+	}
+
+	@Override
+	public ExecutorService getRenderingThreadPool() {
+		return renderingThreadPool;
+	}
+	
+	public void setRenderingThreadPool(ExecutorService renderingThreadPool) {
+		this.renderingThreadPool = renderingThreadPool;
 	}
 }

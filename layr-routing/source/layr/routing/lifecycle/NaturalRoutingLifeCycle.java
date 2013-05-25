@@ -8,12 +8,16 @@ import layr.engine.TemplateParser;
 import layr.engine.components.Component;
 import layr.engine.components.TemplateParsingException;
 import layr.routing.api.ApplicationContext;
-import layr.routing.exceptions.NotFoundException;
+import layr.routing.api.Response;
+import layr.routing.async.Listener;
 
 public class NaturalRoutingLifeCycle implements LifeCycle {
 
     ApplicationContext configuration;
 	RequestContext requestContext;
+	Listener<Response> onSuccess;
+	Listener<Exception> onFail;
+	private Component compiledWebPage;
 
 	public NaturalRoutingLifeCycle(
 			ApplicationContext configuration,
@@ -21,14 +25,22 @@ public class NaturalRoutingLifeCycle implements LifeCycle {
     	this.configuration = configuration;
     	this.requestContext = requestContext;
 	}
-
-	public void run() throws TemplateParsingException, NotFoundException, IOException {
+	
+	@Override
+	public boolean canHandleRequest() throws Exception {
 		String template = measureTemplateFromRequestedURI();
-		Component webpage = compile( template );
-		if ( webpage == null )
-			throw new NotFoundException( "No template found" );
-		populateRequestContextWithSentParamsFromRequest();
-		webpage.render();
+		compiledWebPage = compile( template );
+		return compiledWebPage != null;
+	}
+
+	public void run() {
+		try {
+			populateRequestContextWithSentParamsFromRequest();
+			compiledWebPage.render();
+		} catch (IOException e) {
+			if ( onFail != null )
+				onFail.listen(e);
+		}
 	}
 
 	public String measureTemplateFromRequestedURI() {
@@ -53,5 +65,13 @@ public class NaturalRoutingLifeCycle implements LifeCycle {
 	@Override
 	public RequestContext getRequestContext() {
 		return requestContext;
+	}
+
+	public void onFail( Listener<Exception> listener ){
+		this.onFail = listener;
+	}
+
+	public void onSuccess( Listener<Response> listener ){
+		this.onSuccess = listener;
 	}
 }

@@ -1,15 +1,19 @@
 package layr.routing.async;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 public class ListenableCall<T> implements Runnable {
 
 	Callable<T> callable;
-	Listener<T> onSuccess;
-	Listener<Exception> onFail;
+	List<Listener<T>> onSuccessListeners;
+	List<Listener<Exception>> onFailListeners;
 	
 	public ListenableCall( Callable<T> callable ) {
 		this.callable = callable;
+		this.onSuccessListeners = new ArrayList<Listener<T>>();
+		this.onFailListeners = new ArrayList<Listener<Exception>>();
 	}
 	
 	public static <T> ListenableCall<T> listenable(Callable<T> callable) {
@@ -26,23 +30,26 @@ public class ListenableCall<T> implements Runnable {
 	}
 
 	private void onSuccess(T result) {
-		if ( onSuccess != null )
-			onSuccess.listen(result);
+		for ( Listener<T> listener : onSuccessListeners )
+			listener.listen(result);
 	}
 
 	public void onSuccess( Listener<T> onSuccess ){
-		this.onSuccess = onSuccess;
+		if ( onSuccess != null )
+			this.onSuccessListeners.add(onSuccess);
 	}
 
 	private void onFail(Exception e) {
-		if ( onFail != null )
-			onFail.listen(e);
+		if ( onFailListeners.size() > 0 )
+			for ( Listener<Exception> listener : onFailListeners )
+				listener.listen(e);
 		else
 			e.printStackTrace();
 	}
 
 	public void onFail( Listener<Exception> onFail ){
-		this.onFail = onFail;
+		if ( onFail != null )
+			this.onFailListeners.add(onFail);
 	}
 
 }

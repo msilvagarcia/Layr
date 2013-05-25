@@ -123,4 +123,9 @@ class JEERequestContext extends AbstractRequestContext {
 	public ServletContext getServletContext() {
 		return request.getServletContext();
 	}
+	
+	@Override
+	public boolean isAsyncRequest() {
+		return request.isAsyncSupported();
+	}
 }

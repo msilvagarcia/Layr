@@ -1,4 +1,4 @@
-package layr.routing.jee;
+package layr.jee;
 
 import javax.naming.NamingException;
 

@@ -33,26 +33,13 @@
 					<projectNameTemplate>[artifactId]</projectNameTemplate>
 				</configuration>
 			</plugin>
-			<!--plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.5.1</version>
-                <executions>
-                    <execution>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>cobertura</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin-->
 		</plugins>
 	</build>
 
 	<modules>
 		<module>../layr-jackson-converter</module>
-		<module>../layr-engine</module>
-		<module>../layr-routing</module>
+		<module>../layr-api</module>
+		<module>../layr-core</module>
 		<module>../layr-jee</module>
 	</modules>
 </project>

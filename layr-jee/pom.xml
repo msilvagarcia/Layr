@@ -40,7 +40,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>layr-routing</artifactId>
+			<artifactId>layr-core</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>

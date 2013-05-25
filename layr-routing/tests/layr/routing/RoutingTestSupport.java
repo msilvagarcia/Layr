@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.Set;
 
 import layr.engine.RequestContext;
-import layr.routing.api.AbstractApplicationContext;
 import layr.routing.api.ApplicationContext;
 import layr.routing.exceptions.RoutingInitializationException;
 import layr.routing.impl.StubRequestContext;
 import layr.routing.impl.StubRoutingBootstrap;
+import layr.routing.lifecycle.DefaultApplicationContextImpl;
 import layr.routing.lifecycle.LifeCycle;
 
 import org.junit.Before;
@@ -17,14 +17,14 @@ import org.junit.Before;
 public abstract class RoutingTestSupport {
 
 	LifeCycle lifeCycle;
-	AbstractApplicationContext configuration;
+	DefaultApplicationContextImpl configuration;
 	RequestContext requestContext;
 	
 	@Before
 	public void setup() throws Exception {
 		try {
 			StubRoutingBootstrap routingBootstrap = new StubRoutingBootstrap();
-			setConfiguration( (AbstractApplicationContext)routingBootstrap.configure( classes() ) );
+			setConfiguration( (DefaultApplicationContextImpl)routingBootstrap.configure( classes() ) );
 			requestContext = createRequestContext();
 			lifeCycle = createLifeCycle();
 		} catch (RoutingInitializationException e) {
@@ -111,7 +111,7 @@ public abstract class RoutingTestSupport {
 		return configuration;
 	}
 
-	public void setConfiguration(AbstractApplicationContext configuration) {
+	public void setConfiguration(DefaultApplicationContextImpl configuration) {
 		this.configuration = configuration;
 	}
 }

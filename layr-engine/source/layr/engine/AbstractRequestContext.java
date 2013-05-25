@@ -1,6 +1,6 @@
 package layr.engine;
 
-import static layr.commons.StringUtil.stripURLFirstSlash;
+import static layr.commons.StringUtil.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +16,7 @@ public abstract class AbstractRequestContext implements RequestContext {
 	Map<String, ComponentFactory> registeredTagLibs;
 	Cache cache;
 	String defaultResource;
+	Boolean isAsyncRequest;
 
 	public AbstractRequestContext() {
 		properties = new HashMap<String, Object>();
@@ -120,10 +121,9 @@ public abstract class AbstractRequestContext implements RequestContext {
 	 * @return
 	 */
 	public Component getResourceFromCache(String templateName) {
-		Map<String, Component> cachedComponents = getCachedSnippets();
-		if ( cachedComponents == null )
+		if ( cache == null || isEmpty( templateName ) )
 			return null;
-		return cachedComponents.get(templateName);
+		return cache.get(templateName);
 	}
 
 	/**
@@ -131,23 +131,10 @@ public abstract class AbstractRequestContext implements RequestContext {
 	 * @param application
 	 */
 	public void cacheCompiledResource(String templateName, Component application) {
-		if ( application == null
-		||   templateName == null
-		||   templateName.isEmpty())
-			return;
-
-		Map<String, Component> compiledSnippets = getCachedSnippets();
-		if ( compiledSnippets != null )
-			compiledSnippets.put(templateName, application);
-	}
-
-	/**
-	 * @return
-	 */
-	public Map<String, Component> getCachedSnippets() {
-		if ( cache == null )
-			return null;
-		return cache.getCompiledSnippets();
+		if ( cache != null
+		&&   application != null
+		&&   !isEmpty( templateName ) )
+			cache.put(templateName, application);
 	}
 
 	/* (non-Javadoc)
@@ -177,5 +164,14 @@ public abstract class AbstractRequestContext implements RequestContext {
 	public void setDefaultResource(String defaultResource) {
 		defaultResource = ("/" + defaultResource + "/").replace( "//", "/" );
 		this.defaultResource = defaultResource;
+	}
+	
+	@Override
+	public boolean isAsyncRequest() {
+		return isAsyncRequest;
+	}
+	
+	public void setIsAsyncRequest(Boolean isAsyncRequest) {
+		this.isAsyncRequest = isAsyncRequest;
 	}
 }

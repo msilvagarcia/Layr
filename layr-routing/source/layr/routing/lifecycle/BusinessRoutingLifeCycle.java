@@ -1,11 +1,17 @@
 package layr.routing.lifecycle;
 
+import static layr.routing.async.ListenableCall.listenable;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
 import layr.engine.RequestContext;
 import layr.routing.api.ApplicationContext;
 import layr.routing.api.Response;
+import layr.routing.async.ListenableCall;
+import layr.routing.async.Listener;
 import layr.routing.exceptions.NotFoundException;
 import layr.routing.exceptions.RoutingException;
-import layr.routing.exceptions.UnhandledException;
 
 public class BusinessRoutingLifeCycle implements LifeCycle {
 
@@ -19,11 +25,11 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
     	this.requestContext = requestContext;
 	}
 
-    public void run() throws NotFoundException, RoutingException, UnhandledException {
+    public void run() throws NotFoundException, RoutingException {
     	HandledMethod routeMethod = getMatchedRouteMethod();
     	if ( routeMethod == null )
     		throw new NotFoundException( "No route found." );
-		runMethodAndRenderOutput( routeMethod );
+		runMethod( routeMethod );
     }
 
 	public HandledMethod getMatchedRouteMethod() {
@@ -32,23 +38,31 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 		return routeMethod;
 	}
 
-	public void runMethodAndRenderOutput(HandledMethod routeMethod) throws RoutingException, UnhandledException {
-		Response response = runMethod( routeMethod );
-		renderOutput( response );
+	public void runMethod(HandledMethod routeMethod) {
+		Listener<Exception> exceptionHandler = new ExceptionHandlerListener(configuration, requestContext);
+		try {
+			ListenableCall<Response> listenable = createListenableAsyncRunner(routeMethod, exceptionHandler);
+			Future<?> submit = configuration.getExecutorService().submit(listenable);
+			if ( !requestContext.isAsyncRequest() )
+				submit.get();
+		} catch ( ExecutionException e ) {
+			exceptionHandler.listen(e);
+		} catch (Exception e) {
+			exceptionHandler.listen(e);
+		}
 	}
 
-	public void renderOutput(Response response) throws RoutingException {
-		BusinessRoutingRenderer renderer = new BusinessRoutingRenderer( configuration, requestContext );
-		renderer.render(response);
-	}
-
-	public Response runMethod(HandledMethod routeMethod) throws UnhandledException {
+	public ListenableCall<Response> createListenableAsyncRunner(
+			HandledMethod routeMethod, Listener<Exception> exceptionHandler) {
 		BusinessRoutingMethodRunner runner = new BusinessRoutingMethodRunner( configuration, requestContext, routeMethod );
-		Response response = runner.run();
-		return response;
+		ListenableCall<Response> listenable = listenable(runner);
+		listenable.onSuccess(new RendererListener(configuration, requestContext));
+		listenable.onFail(exceptionHandler);
+		return listenable;
 	}
 
 	public RequestContext getRequestContext() {
 		return requestContext;
 	}
+
 }

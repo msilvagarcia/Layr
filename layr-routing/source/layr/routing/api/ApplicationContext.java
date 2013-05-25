@@ -63,20 +63,10 @@ public interface ApplicationContext {
 	public abstract Object newInstanceOf(HandledClass routeClass) throws Exception;
 
 	/**
-	 * Retrieves the ExecutorService that will execute every asynchronous
-	 * template rendering process.
+	 * Retrieves the ExecutorService that will execute every asynchronous  process.
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	public ExecutorService getRendererExecutorService() throws Exception;
-
-	/**
-	 * Retrieves the ExecutorService that will execute every CPU blocking route
-	 * during render Life Cycle.
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	public ExecutorService getTaskExecutorService() throws Exception;
+	public ExecutorService getExecutorService();
 }

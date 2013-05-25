@@ -57,4 +57,6 @@ public interface RequestContext {
 
 	public abstract String getDefaultResource();
 
+	public abstract boolean isAsyncRequest();
+
 }

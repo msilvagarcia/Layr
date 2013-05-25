@@ -100,7 +100,7 @@ public class Input extends XHtmlComponent {
 	public Object parseExpression( Object expression ){
 		if ( expression == null )
 			return null;
-		return new Evaluator(requestContext, expression.toString()).eval();
+		return new Evaluator(getRequestContext(), expression.toString()).eval();
 	}
 
 	public boolean isTextInput () {

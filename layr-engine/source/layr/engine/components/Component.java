@@ -21,13 +21,9 @@ import java.util.List;
 import layr.engine.RequestContext;
 
 
-
-
 /**
  * Default component interface. Here are defined the minimum methods to the
  * component works well on Layr Life Cycle.
- * 
- * @author Miere Liniel Teixeira
  */
 public interface Component extends Cloneable {
 

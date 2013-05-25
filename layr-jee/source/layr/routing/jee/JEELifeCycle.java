@@ -5,7 +5,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import layr.engine.RequestContext;
 import layr.routing.exceptions.NotFoundException;
 import layr.routing.lifecycle.BusinessRoutingLifeCycle;
 import layr.routing.lifecycle.NaturalRoutingLifeCycle;
@@ -21,9 +20,8 @@ class JEELifeCycle {
 	}
 
 	public void run() throws Exception {
-		JEEContainerRequestData containerRequestData = new JEEContainerRequestData( request, response );
 		JEEConfiguration configuration = retrieveConfiguration( request );
-		RequestContext requestContext = configuration.createContext( containerRequestData );
+		JEERequestContext requestContext = createContext( configuration );
 		try {
 			NaturalRoutingLifeCycle naturalRoutingLifeCycle = new NaturalRoutingLifeCycle( configuration, requestContext );
 			naturalRoutingLifeCycle.run();
@@ -38,4 +36,15 @@ class JEELifeCycle {
 				JEEConfiguration.class.getCanonicalName() );
 	}
 
+	public JEERequestContext createContext(JEEConfiguration configuration){
+		JEERequestContext requestContext = new JEERequestContext(request, response);
+		requestContext.setRegisteredTagLibs(configuration.getRegisteredTagLibs());
+		requestContext.setIsAsyncRequest(isAsyncRequest());
+		requestContext.setDefaultResource(configuration.getDefaultResource());
+		return requestContext;
+	}
+
+	public Boolean isAsyncRequest() {
+		return request.isAsyncSupported();
+	}
 }

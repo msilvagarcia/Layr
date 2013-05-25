@@ -18,6 +18,7 @@ public class StubRequestContext extends AbstractRequestContext {
 	String requestHttpMethod;
 	String redirectedURL;
 	int statusCode;
+	boolean isAsyncRequest = false;
 
 	public StubRequestContext() {
 		writer = new StringWriter();
@@ -106,8 +107,13 @@ public class StubRequestContext extends AbstractRequestContext {
 	public void setStatusCode(int statusCode) {
 		this.statusCode = statusCode;
 	}
-	
+
 	public int getStatusCode() {
 		return statusCode;
+	}
+
+	@Override
+	public boolean isAsyncRequest() {
+		return isAsyncRequest;
 	}
 }

@@ -47,7 +47,8 @@ public class JEERoutingBootstrap extends RoutingBootstrap implements javax.servl
 		configuration.setDefaultEncoding( getDefaultEncoding() );
 		configuration.setRegisteredTagLibs( getRegisteredTagLibs() );
 		configuration.setRegisteredWebResources( getRegisteredWebResources() );
-		configuration.setRegisteredExceptionHandlers( getExceptionHandlers() );
+		configuration.setRegisteredExceptionHandlers( getRegisteredExceptionHandlers() );
+		configuration.setRegisteredDataProviders(getRegisteredDataProviders());
 		return configuration;
 	}
 	

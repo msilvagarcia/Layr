@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import layr.routing.exceptions.UnhandledException;
 import layr.routing.impl.NullPointerExceptionHandler;
 import layr.routing.impl.RequestContextDataProvider;
 import layr.routing.lifecycle.BusinessRoutingLifeCycle;
@@ -48,11 +47,6 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public void grantThatHandleNullPointerExceptionAsExpected() throws Exception {
 		get( "/hello/handled/error" );
 		assertEquals( "/fail/", getRequestContext().getRedirectedURL() );
-	}
-
-	@Test( expected=UnhandledException.class )
-	public void grantThatCantHandleIOExceptinException() throws Exception {
-		get( "/hello/unhandled/error" );
 	}
 
 	@Test

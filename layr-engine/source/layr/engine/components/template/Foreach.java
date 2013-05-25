@@ -3,6 +3,7 @@ package layr.engine.components.template;
 import java.io.IOException;
 import java.util.Collection;
 
+import layr.engine.RequestContext;
 import layr.engine.components.Component;
 import layr.engine.components.GenericComponent;
 
@@ -32,10 +33,11 @@ public class Foreach extends GenericComponent {
 
 	public int renderChildNode(String definedVar, int i, Object value)
 			throws IOException {
-		requestContext.put(definedVar, value);
-		requestContext.put(definedVar+":i", i++);
+		RequestContext context = getRequestContext();
+		context.put(definedVar, value);
+		context.put(definedVar+":i", i++);
 		for (Component child : getChildren()) {
-			child.setRequestContext(requestContext);
+			child.setRequestContext(context);
 			child.render();
 		}
 		return i;

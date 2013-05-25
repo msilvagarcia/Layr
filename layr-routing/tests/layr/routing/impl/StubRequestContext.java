@@ -21,6 +21,7 @@ public class StubRequestContext extends AbstractRequestContext {
 	String redirectedURL;
 	int statusCode;
 	ConverterFactory converter;
+	Boolean isAsyncRequest = false;
 
 	public StubRequestContext() {
 		writer = new StringWriter();
@@ -113,5 +114,14 @@ public class StubRequestContext extends AbstractRequestContext {
 	
 	public int getStatusCode() {
 		return statusCode;
+	}
+
+	@Override
+	public boolean isAsyncRequest() {
+		return isAsyncRequest;
+	}
+
+	public void setIsAsyncRequest(Boolean isAsyncRequest) {
+		this.isAsyncRequest = isAsyncRequest;
 	}
 }

@@ -1,17 +1,20 @@
-package layr.routing.api;
+package layr.routing.lifecycle;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 import layr.engine.Cache;
 import layr.engine.components.ComponentFactory;
-import layr.routing.lifecycle.HandledClass;
+import layr.routing.api.ApplicationContext;
+import layr.routing.api.DataProvider;
+import layr.routing.api.ExceptionHandler;
 
 /**
- * Default abstract implementation of Configuration interface. Developers
+ * Default implementation of ApplicationContext interface. Developers
  * are encouraged to extends this class in order to avoid rework.
  */
-public abstract class AbstractApplicationContext implements ApplicationContext {
+public class DefaultApplicationContextImpl implements ApplicationContext {
 
 	String defaultResource;
 	Cache cache;
@@ -19,12 +22,13 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 	List<HandledClass> registeredTemplateParameterObject;
 	Map<String, ComponentFactory> registeredTagLibs;
 
-	@SuppressWarnings("rawtypes")
-	protected Map<String, Class<ExceptionHandler>> registeredExceptionHandlers;
-	@SuppressWarnings("rawtypes")
-	protected Map<String, Class<DataProvider>> registeredDataProviders;
-
 	String defaultEncoding;
+	ExecutorService executorService;
+
+	@SuppressWarnings("rawtypes")
+	Map<String, Class<ExceptionHandler>> registeredExceptionHandlers;
+	@SuppressWarnings("rawtypes")
+	Map<String, Class<DataProvider>> registeredDataProviders;
 
 	@Override
 	public String getDefaultResource() {
@@ -92,4 +96,17 @@ public abstract class AbstractApplicationContext implements ApplicationContext {
 		this.defaultEncoding = defaultEncoding;
 	}
 
+	@Override
+	public Object newInstanceOf(HandledClass routeClass) throws Exception {
+		return routeClass.getTargetClass().newInstance();
+	}
+
+	@Override
+	public ExecutorService getExecutorService() {
+		return executorService;
+	}
+
+	public void setExecutorService(ExecutorService executorService) {
+		this.executorService = executorService;
+	}
 }

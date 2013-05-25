@@ -16,7 +16,7 @@ public class Option extends XHtmlComponent {
 	@Override
 	public void render() throws IOException {
 		String name = getParent().getAttributeAsString("name");
-		Object value = new Evaluator(requestContext, "#{"+name+"}").eval();
+		Object value = new Evaluator(getRequestContext(), "#{"+name+"}").eval();
 		if (value == null || !value.equals(getAttributeAsString("value")))
 			ignoreAttribute("selected");
 		else

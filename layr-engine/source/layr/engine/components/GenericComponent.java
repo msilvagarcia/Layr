@@ -49,7 +49,7 @@ public class GenericComponent implements Component {
 	private Component parent;
 	private String textContent;
 	private String id;
-	protected RequestContext requestContext;
+	private RequestContext requestContext;
 	private boolean selfCloseable;
 	private List<String> ignoredAttributes;
 
@@ -179,10 +179,10 @@ public class GenericComponent implements Component {
 	}
 
 	/* (non-Javadoc)
-	 * @see layr.components.IComponent#clone(layr.RequestContext)
+	 * @see layr.components.Component#clone(layr.RequestContext)
 	 */
 	@Override
-	public Object clone(RequestContext context)
+	public synchronized Object clone(RequestContext context)
 			throws CloneNotSupportedException, IOException {
 		flush();
 
@@ -228,7 +228,7 @@ public class GenericComponent implements Component {
 	 */
 	public void flush() {
 		this.setIgnoredAttributes(new ArrayList<String>());
-		this.setRequestContext(null);
+//		this.setRequestContext(null);
 	}
 
 	@Override
@@ -378,7 +378,7 @@ public class GenericComponent implements Component {
 	 * @see org.layr.engine.components.IComponent#setRequestContext(org.layr.engine.IRequestContext)
 	 */
 	@Override
-	public Component setRequestContext(RequestContext context) {
+	public  Component setRequestContext(RequestContext context) {
 		this.requestContext = context;
 		return this;
 	}

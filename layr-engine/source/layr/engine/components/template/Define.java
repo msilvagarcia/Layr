@@ -27,7 +27,7 @@ public class Define extends GenericComponent {
 	@Override
 	public void configure() {
 		String name = getAttributeAsString("name");
-		requestContext.put(Var.LAYR_COMPONENTS_TEMPLATE_VALUE + name, getDefinedValue());
+		getRequestContext().put(Var.LAYR_COMPONENTS_TEMPLATE_VALUE + name, getDefinedValue());
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class Define extends GenericComponent {
 	public Object getDefinedValue() {
 		if (getNumChildren() == 0) {
 			String value = getAttributeAsString("value");
-			return new Evaluator(requestContext, value).eval();
+			return new Evaluator(getRequestContext(), value).eval();
 		}
 
 		HolderComponent component = new HolderComponent();

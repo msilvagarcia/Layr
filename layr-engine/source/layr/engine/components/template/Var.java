@@ -18,6 +18,7 @@ package layr.engine.components.template;
 import java.io.IOException;
 import java.io.Writer;
 
+import layr.engine.RequestContext;
 import layr.engine.components.Component;
 import layr.engine.components.GenericComponent;
 import layr.engine.expressions.Evaluator;
@@ -48,8 +49,9 @@ public class Var extends GenericComponent {
 	}
 
 	public void renderValue(Object definedValue) throws IOException {
-		Writer writer = requestContext.getWriter();
-		Object value = new Evaluator( getRequestContext(), definedValue.toString() ).eval();
+		RequestContext context = getRequestContext();
+		Writer writer = context.getWriter();
+		Object value = new Evaluator( context, definedValue.toString() ).eval();
 
 		if (value != null)
 			writer.append( value.toString() );

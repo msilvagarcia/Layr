@@ -3,16 +3,16 @@ package layr.routing.impl;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import layr.routing.api.AbstractApplicationContext;
+import layr.routing.lifecycle.DefaultApplicationContextImpl;
 import layr.routing.lifecycle.HandledClass;
 
-public class StubConfiguration extends AbstractApplicationContext {
+public class StubApplicationContext extends DefaultApplicationContextImpl {
 
 	private ExecutorService executorService;
 
-	public StubConfiguration() {
+	public StubApplicationContext() {
 		setDefaultResource( "home" );
-		executorService = Executors.newFixedThreadPool( 10 );
+		executorService = Executors.newCachedThreadPool();
 	}
 
 	@Override
@@ -21,14 +21,8 @@ public class StubConfiguration extends AbstractApplicationContext {
 	}
 
 	@Override
-	public ExecutorService getRendererExecutorService() throws Exception {
+	public ExecutorService getExecutorService() {
 		return executorService;
 	}
-
-	@Override
-	public ExecutorService getTaskExecutorService() throws Exception {
-		return executorService;
-	}
-
 
 }

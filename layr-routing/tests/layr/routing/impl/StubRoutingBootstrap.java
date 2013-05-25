@@ -7,7 +7,7 @@ import layr.routing.lifecycle.RoutingBootstrap;
 public class StubRoutingBootstrap extends RoutingBootstrap {
 
 	public ApplicationContext createConfiguration(){
-		StubConfiguration configuration = new StubConfiguration();
+		StubApplicationContext configuration = new StubApplicationContext();
 		configuration.setRegisteredTagLibs( registeredTagLibs );
 		configuration.setRegisteredWebResources( registeredWebResources );
 		configuration.setRegisteredDataProviders(getRegisteredDataProviders());

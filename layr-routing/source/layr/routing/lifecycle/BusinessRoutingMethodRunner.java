@@ -1,17 +1,18 @@
 package layr.routing.lifecycle;
 
+import java.util.concurrent.Callable;
+
 import layr.engine.RequestContext;
 import layr.routing.api.ApplicationContext;
-import layr.routing.api.ExceptionHandler;
 import layr.routing.api.Response;
-import layr.routing.exceptions.UnhandledException;
+import layr.routing.exceptions.UnhandableException;
 
-public class BusinessRoutingMethodRunner {
+public class BusinessRoutingMethodRunner implements Callable<Response> {
 
     ApplicationContext configuration;
 	RequestContext requestContext;
 	HandledMethod routeMethod;
-	
+
 	public BusinessRoutingMethodRunner(
 		    ApplicationContext configuration,
 			RequestContext requestContext,
@@ -21,16 +22,18 @@ public class BusinessRoutingMethodRunner {
 		this.routeMethod = routeMethod;
 	}
 
-	public Response run() throws UnhandledException {
+	public Response call() throws Exception {
 		Request routingRequest = createRoutingRequest( routeMethod );
 		try {
 			return runMethod( routingRequest, routeMethod );
-		} catch ( Throwable e ) {
-			return handleException( e );
+		} catch (Throwable e) {
+			if ( e instanceof Exception )
+				throw (Exception)e;
+			throw new UnhandableException(e);
 		}
 	}
 
-    public Request createRoutingRequest(HandledMethod routeMethod) {
+	public Request createRoutingRequest(HandledMethod routeMethod) {
     	return new Request( configuration, requestContext, routeMethod.getRouteMethodPattern() );
     }
 
@@ -46,20 +49,6 @@ public class BusinessRoutingMethodRunner {
 		&&   routeMethod.getLastReturnedValue() instanceof Response )
 			return (Response)routeMethod.getLastReturnedValue();
 		return null;
-	}
-	
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T extends Throwable> Response handleException(T e) throws UnhandledException {
-		String canonicalName = e.getClass().getCanonicalName();
-		Class<ExceptionHandler> exceptionHandlerClass = configuration.getRegisteredExceptionHandlers().get( canonicalName );
-		if ( exceptionHandlerClass == null )
-			throw new UnhandledException( e );
-		try {
-			ExceptionHandler<?> exceptionHandlerInstance = exceptionHandlerClass.newInstance();
-			return ((ExceptionHandler<T>)exceptionHandlerInstance).render( e );
-		} catch (Throwable e1) {
-			throw new UnhandledException( e1 );
-		}
 	}
 
 }

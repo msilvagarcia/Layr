@@ -33,7 +33,7 @@ public class TextNode extends GenericComponent {
 
 	@Override
 	public void render() throws IOException {
-		Writer writer = requestContext.getWriter();
+		Writer writer = getRequestContext().getWriter();
 		String value = getTextContent();
 		if (!StringUtil.isEmpty(value))
 			writer.append(value);

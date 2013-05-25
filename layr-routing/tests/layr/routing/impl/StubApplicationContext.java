@@ -8,21 +8,17 @@ import layr.routing.lifecycle.HandledClass;
 
 public class StubApplicationContext extends DefaultApplicationContextImpl {
 
-	private ExecutorService executorService;
 
 	public StubApplicationContext() {
 		setDefaultResource( "home" );
-		executorService = Executors.newCachedThreadPool();
+		ExecutorService executorService = Executors.newCachedThreadPool();
+		setMethodExecutionThreadPool(executorService);
+		setRenderingThreadPool(executorService);
 	}
 
 	@Override
 	public Object newInstanceOf(HandledClass routeClass) throws Exception {
 		return routeClass.getTargetClass().newInstance();
-	}
-
-	@Override
-	public ExecutorService getMethodExecutionThreadPool() {
-		return executorService;
 	}
 
 }

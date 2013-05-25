@@ -19,18 +19,18 @@ import layr.routing.exceptions.RoutingInitializationException;
 
 public abstract class RoutingBootstrap {
 
-	protected Map<String, ComponentFactory> registeredTagLibs;
-	protected List<HandledClass> registeredWebResources;
+	Map<String, ComponentFactory> registeredTagLibs;
+	List<HandledClass> registeredWebResources;
 
 	@SuppressWarnings("rawtypes")
-	protected Map<String, Class<ExceptionHandler>> registeredExceptionHandlers;
+	Map<String, Class<ExceptionHandler>> registeredExceptionHandlers;
 	@SuppressWarnings("rawtypes")
-	protected Map<String, Class<DataProvider>> registeredDataProviders;
+	Map<String, Class<DataProvider>> registeredDataProviders;
 	
 	@SuppressWarnings("rawtypes")
-	private HandlerClassExtractor<ExceptionHandler> exceptionHandlerClassExtractor;
+	HandlerClassExtractor<ExceptionHandler> exceptionHandlerClassExtractor;
 	@SuppressWarnings("rawtypes")
-	private HandlerClassExtractor<DataProvider> dataProviderClassExtractor;
+	HandlerClassExtractor<DataProvider> dataProviderClassExtractor;
 
 	public RoutingBootstrap() {
 		registeredWebResources = new ArrayList<HandledClass>();
@@ -62,7 +62,7 @@ public abstract class RoutingBootstrap {
 		registeredDataProviders = dataProviderClassExtractor.getRegisteredHandlers();
 	}
 
-	public abstract ApplicationContext createConfiguration();
+	public abstract ApplicationContext createConfiguration() throws RoutingInitializationException;
 
 	public void analyse(Set<Class<?>> classes) throws RoutingInitializationException {
 		for (Class<?> clazz : classes)

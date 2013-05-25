@@ -8,10 +8,11 @@ public class StubRoutingBootstrap extends RoutingBootstrap {
 
 	public ApplicationContext createConfiguration(){
 		StubApplicationContext configuration = new StubApplicationContext();
-		configuration.setRegisteredTagLibs( registeredTagLibs );
-		configuration.setRegisteredWebResources( registeredWebResources );
+		configuration.setDefaultEncoding( "UTF-8" );
+		configuration.setRegisteredTagLibs( getRegisteredTagLibs() );
+		configuration.setRegisteredWebResources( getRegisteredWebResources() );
 		configuration.setRegisteredDataProviders(getRegisteredDataProviders());
-		configuration.setRegisteredExceptionHandlers( registeredExceptionHandlers );
+		configuration.setRegisteredExceptionHandlers( getRegisteredExceptionHandlers() );
 		configuration.setCache( new Cache() );
 		return configuration;
 	}

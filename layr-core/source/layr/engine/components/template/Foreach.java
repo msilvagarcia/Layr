@@ -7,8 +7,6 @@ import layr.api.Component;
 import layr.api.RequestContext;
 import layr.engine.components.GenericComponent;
 
-
-
 public class Foreach extends GenericComponent {
 
 	@Override
@@ -18,6 +16,8 @@ public class Foreach extends GenericComponent {
 	public void render() throws IOException {
 		String definedVar = getAttribute("var").toString();
 		Object collection = getParsedAttribute("values");
+		if ( collection instanceof String )
+			throw new IOException("Attribute 'values' doesn't have valid value");
 
 		Collection<?> values = (Collection<?>)collection;
 		if (values != null)

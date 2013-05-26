@@ -16,22 +16,20 @@ public class ApplicationLifeCycle {
 
 	public void run(ApplicationContext applicationContext, RequestContext requestContext) throws Exception {
 		LifeCycle[] lifeCycles = createLifeCycles(applicationContext, requestContext);
-		
-		boolean found = false;
+
 		for ( LifeCycle lifeCycle : lifeCycles )
 			if ( lifeCycle.canHandleRequest() ){
-				found = true;
 				lifeCycle.run();
+				return;
 			}
-		
-		if ( !found )
-			throw new NotFoundException("Not found");
+
+		throw new NotFoundException("Not found");
 	}
 
 	protected LifeCycle[] createLifeCycles(ApplicationContext applicationContext, RequestContext requestContext) {
 		LifeCycle[] lifeCycles = new LifeCycle[]{
-			createNaturalRoutingLifeCycle(applicationContext, requestContext),
-			createBusinessRoutingLifeCycle(applicationContext, requestContext)
+			createBusinessRoutingLifeCycle(applicationContext, requestContext),
+			createNaturalRoutingLifeCycle(applicationContext, requestContext)
 		};
 		return lifeCycles;
 	}

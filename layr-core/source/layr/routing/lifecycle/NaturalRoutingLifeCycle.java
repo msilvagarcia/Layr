@@ -1,12 +1,11 @@
 package layr.routing.lifecycle;
 
-import java.io.IOException;
-import java.util.Map;
-
-import static layr.commons.StringUtil.*;
+import static layr.commons.ListenableCall.listenable;
+import static layr.commons.StringUtil.isEmpty;
 import layr.api.Component;
 import layr.api.RequestContext;
 import layr.api.Response;
+import layr.commons.ListenableCall;
 import layr.commons.Listener;
 import layr.engine.TemplateParser;
 import layr.engine.components.TemplateParsingException;
@@ -34,13 +33,11 @@ public class NaturalRoutingLifeCycle implements LifeCycle {
 	}
 
 	public void run() {
-		try {
-			populateRequestContextWithSentParamsFromRequest();
-			compiledWebPage.render();
-		} catch (IOException e) {
-			if ( onFail != null )
-				onFail.listen(e);
-		}
+		NaturalRouterRenderer renderer = new NaturalRouterRenderer(requestContext, compiledWebPage);
+		ListenableCall<Response> listenableRenderer = listenable( renderer );
+		listenableRenderer.onSuccess(onSuccess);
+		listenableRenderer.onFail(onFail);
+		configuration.getRenderingThreadPool().submit(listenableRenderer);
 	}
 
 	public String measureTemplateFromRequestedURI() {
@@ -61,12 +58,6 @@ public class NaturalRoutingLifeCycle implements LifeCycle {
 		TemplateParser parser = new TemplateParser(requestContext);
 		Component compiledTemplate = parser.compile(templateName);
 		return compiledTemplate;
-	}
-
-	public void populateRequestContextWithSentParamsFromRequest() {
-		Map<String, String> requestParameters = requestContext.getRequestParameters();
-		for ( String paramName : requestParameters.keySet() )
-			requestContext.put( paramName, requestParameters.get( paramName ) );
 	}
 
 	@Override

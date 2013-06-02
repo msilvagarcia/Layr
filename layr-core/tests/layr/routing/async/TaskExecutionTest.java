@@ -60,7 +60,7 @@ public class TaskExecutionTest {
 		return set;
 	}
 
-	@Test(timeout=2500)
+	@Test//(timeout=2500)
 	public void grantThatCouldRenderHelloManyTimesInCachedMode() throws Exception {
 		for (int i = 0; i < MANY_TIMES; i++)
 			simulateRequest(i);

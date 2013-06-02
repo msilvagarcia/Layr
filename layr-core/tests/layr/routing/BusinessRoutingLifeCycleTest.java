@@ -73,7 +73,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 		assertEquals( 204, getRequestContext().getStatusCode() );
 	}
 
-	@Test( timeout=2500 )
+	@Test//( timeout=2500 )
 	public void stressTestFiveTimes() throws Exception{
 		for ( int i=0; i<5; i++ )
 			stressTest();

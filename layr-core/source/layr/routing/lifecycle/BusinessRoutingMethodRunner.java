@@ -11,14 +11,17 @@ public class BusinessRoutingMethodRunner implements Callable<Response> {
     ApplicationContext configuration;
 	RequestContext requestContext;
 	HandledMethod routeMethod;
+	Object instance;
 
 	public BusinessRoutingMethodRunner(
 		    ApplicationContext configuration,
 			RequestContext requestContext,
-			HandledMethod routeMethod ) {
+			HandledMethod routeMethod,
+			Object instance ) {
 		this.configuration = configuration;
 		this.requestContext = requestContext;
 		this.routeMethod = routeMethod;
+		this.instance = instance;
 	}
 
 	public Response call() throws Exception {
@@ -37,8 +40,6 @@ public class BusinessRoutingMethodRunner implements Callable<Response> {
     }
 
 	public Response runMethod(Request routingRequest, HandledMethod routeMethod) throws Throwable {
-		HandledClass routeClass = routeMethod.getRouteClass();
-		Object instance = configuration.newInstanceOf( routeClass );
 		routeMethod.invoke( routingRequest, instance );
 		return createRoutingResponse(instance, routeMethod);
 	}

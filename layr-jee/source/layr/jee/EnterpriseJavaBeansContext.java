@@ -13,18 +13,13 @@ import javax.naming.NamingException;
 
 import layr.commons.StringUtil;
 
-
-/**
- * @author Miere Liniel Teixeira
- *
- */
 public class EnterpriseJavaBeansContext {
 	
 	private InitialContext context;
 	private Map<String, String> registeredEJBViews;
 	
 	public EnterpriseJavaBeansContext() throws NamingException {
-		context = new InitialContext();
+		//context = new InitialContext();
 	}
 
 	/**
@@ -86,7 +81,8 @@ public class EnterpriseJavaBeansContext {
 	 * @param clazz
 	 */
 	public void register(Class<?> clazz) {
-		register(clazz.getCanonicalName(), clazz.getSimpleName());
+		register(clazz.getCanonicalName(),
+				clazz.getSimpleName() + "!" + clazz.getCanonicalName());
 	}
 	
 	public void register(String clazz, String jndiPath) {
@@ -111,7 +107,7 @@ public class EnterpriseJavaBeansContext {
 	}
 
 	public Object lookup(String jndiName) throws NamingException {
-		return context.lookup(jndiName);
+		return getContext().lookup(jndiName);
 	}
 
 	public Map<String, String> getRegisteredEJBViews() {
@@ -124,12 +120,13 @@ public class EnterpriseJavaBeansContext {
 		this.registeredEJBViews = registeredEJBViews;
 	}
 
-	public InitialContext getContext() {
+	public InitialContext getContext() throws NamingException {
+		if ( context == null )
+			context = new InitialContext();
 		return context;
 	}
 
 	public void setContext(InitialContext context) {
 		this.context = context;
 	}
-	
 }

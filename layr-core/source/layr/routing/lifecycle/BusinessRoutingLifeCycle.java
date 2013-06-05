@@ -56,8 +56,9 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 	}
 
 	public ListenableCall<Response> createListenableAsyncRunner(
-			HandledMethod routeMethod, Listener<Exception> exceptionHandler) {
-		BusinessRoutingMethodRunner runner = new BusinessRoutingMethodRunner( configuration, requestContext, routeMethod );
+			HandledMethod routeMethod, Listener<Exception> exceptionHandler) throws Exception {
+		Object instance = configuration.newInstanceOf(routeMethod.getRouteClass());
+		BusinessRoutingMethodRunner runner = new BusinessRoutingMethodRunner( configuration, requestContext, routeMethod, instance );
 		ListenableCall<Response> listenable = listenable(runner);
 		listenable.onSuccess(new RendererListener(configuration, requestContext));
 		listenable.onSuccess(onSuccess);

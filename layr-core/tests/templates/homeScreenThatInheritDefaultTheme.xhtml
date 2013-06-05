@@ -2,7 +2,7 @@
 <tpl:template
 		xmlns="http://www.w3.org/1999/xhtml"
 		xmlns:tpl="urn:layr:template"
-		xmlns:ui="urn:dependencies:components"
+		xmlns:ui="urn:components"
 		src="templates/defaultTheme.xhtml" >
 
 	<tpl:define name="title" id="title" value="Welcome to the Sample" />
@@ -10,7 +10,9 @@
 	<tpl:define name="body" id="body">
 
 		<p>Why don't you try <a href="user/edit/">a form</a>?</p>
-		<textarea name="comments"></textarea>
+		<ui:FormItem label="comments">
+			<textarea name="comments"></textarea>
+		</ui:FormItem>
 
 	</tpl:define>
 </tpl:template>

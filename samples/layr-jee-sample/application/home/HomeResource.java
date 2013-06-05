@@ -1,24 +1,18 @@
 package home;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-
-import layr.routing.annotations.Route;
-import layr.routing.api.GET;
-import layr.routing.api.Response;
-import layr.routing.api.ResponseBuilder;
-import layr.routing.api.TemplateParameter;
-import layr.routing.api.WebResource;
+import static layr.api.ResponseBuilder.*;
+import layr.api.*;
+import javax.ejb.*;
 
 @WebResource("home")
 @Stateless
 public class HomeResource {
 
 	@EJB ProfileMeasurer profileMeasurer;
-	@TemplateParameter String userName;
 
-	@GET @Route
-	public Response chooseARandomHomeScreen(){
+	@GET
+	public Response chooseARandomHomeScreen(
+			@QueryParameter("userName") String userName){
 		String templateName = ( profileMeasurer.measure() == 0 )
 							? "home/default.xhtml"
 							: "home/alternative.xhtml";
@@ -26,6 +20,7 @@ public class HomeResource {
 		if ( userName == null )
 			userName = "Guest";
 
-		return ResponseBuilder.renderTemplate( templateName );
+		return renderTemplate( templateName )
+				.set("userName", userName);
 	}
 }

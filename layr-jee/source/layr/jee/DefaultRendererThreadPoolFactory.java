@@ -10,7 +10,7 @@ public class DefaultRendererThreadPoolFactory implements ThreadPoolFactory {
 	@Override
 	public ExecutorService newInstance() {
 		int availableNumberOfProcessors = Runtime.getRuntime().availableProcessors();
-		return Executors.newFixedThreadPool(availableNumberOfProcessors);
+		return Executors.newFixedThreadPool(availableNumberOfProcessors + 1);
 	}
 
 }

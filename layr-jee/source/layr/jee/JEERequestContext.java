@@ -17,6 +17,7 @@ package layr.jee;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
@@ -39,18 +40,31 @@ class JEERequestContext extends AbstractRequestContext {
 	private ConverterFactory converter;
 	private String applicationRootPath;
 	private String requestURI;
+	private Boolean asyncSupported;
+	private ServletContext servletContext;
+	private PrintWriter writer;
+	private String httpMethod;
 
 	public JEERequestContext(
-			HttpServletRequest request, HttpServletResponse response  ) {
+			HttpServletRequest request, HttpServletResponse response  ) throws IOException {
 		super();
 		this.request = request;
 		this.response = response;
 		this.converter = new ConverterFactory();
+		prePopulateContext();
+	}
+
+	private void prePopulateContext() throws IOException {
+		this.servletContext = this.request.getServletContext();
+		this.writer = this.response.getWriter();
+		this.httpMethod = request.getMethod();
+		this.requestParameter = getRequestParameters();
+		this.asyncSupported = request.isAsyncSupported();
 	}
 
 	@Override
 	public Writer getWriter() throws IOException {
-		return response.getWriter();
+		return writer;
 	}
 
 	@Override
@@ -76,7 +90,7 @@ class JEERequestContext extends AbstractRequestContext {
 
 	@Override
 	public String getRequestHttpMethod() {
-		return request.getMethod();
+		return httpMethod;
 	}
 
 	@Override
@@ -121,11 +135,11 @@ class JEERequestContext extends AbstractRequestContext {
 	}
 
 	public ServletContext getServletContext() {
-		return request.getServletContext();
+		return servletContext;
 	}
-	
+
 	@Override
 	public boolean isAsyncRequest() {
-		return request.isAsyncSupported();
+		return asyncSupported;
 	}
 }

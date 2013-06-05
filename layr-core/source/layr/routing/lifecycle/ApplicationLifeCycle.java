@@ -19,12 +19,17 @@ public class ApplicationLifeCycle {
 
 		for ( LifeCycle lifeCycle : lifeCycles )
 			if ( lifeCycle.canHandleRequest() ){
+				beforeRun();
 				lifeCycle.run();
+				afterRun();
 				return;
 			}
 
 		throw new NotFoundException("Not found");
 	}
+
+	protected void beforeRun() {}
+	protected void afterRun() {}
 
 	protected LifeCycle[] createLifeCycles(ApplicationContext applicationContext, RequestContext requestContext) {
 		LifeCycle[] lifeCycles = new LifeCycle[]{

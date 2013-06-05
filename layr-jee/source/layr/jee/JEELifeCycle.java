@@ -1,5 +1,7 @@
 package layr.jee;
 
+import java.io.IOException;
+
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -9,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import layr.api.Response;
 import layr.commons.Listener;
 import layr.routing.lifecycle.ApplicationLifeCycle;
-
 
 class JEELifeCycle extends ApplicationLifeCycle {
 
@@ -28,14 +29,13 @@ class JEELifeCycle extends ApplicationLifeCycle {
 	public void run() throws Exception {
 		JEEConfiguration configuration = retrieveConfiguration( request );
 		requestContext = createContext( configuration );
-		asyncContext = createAsyncContext();
 		run( configuration, requestContext );
 	}
 
-	public AsyncContext createAsyncContext() {
+	@Override
+	protected void beforeRun() {
 		if (isAsyncRequest())
-			return request.startAsync(request, response);
-		return null;
+			asyncContext = request.startAsync(request, response);
 	}
 
 	public JEEConfiguration retrieveConfiguration(HttpServletRequest request) {
@@ -43,7 +43,7 @@ class JEELifeCycle extends ApplicationLifeCycle {
 				JEEConfiguration.class.getCanonicalName() );
 	}
 
-	public JEERequestContext createContext(JEEConfiguration configuration){
+	public JEERequestContext createContext(JEEConfiguration configuration) throws IOException{
 		JEERequestContext requestContext = new JEERequestContext(request, response);
 		requestContext.setRegisteredTagLibs(configuration.getRegisteredTagLibs());
 		requestContext.setDefaultResource(configuration.getDefaultResource());
@@ -66,12 +66,13 @@ class JEELifeCycle extends ApplicationLifeCycle {
 	public Listener<Exception> createOnFailListener(){
 		return new Listener<Exception>() {
 			public void listen(Exception result) {
+				result.printStackTrace();
 				onFinishRequest();
 			}
 		};
 	}
 
 	private boolean isAsyncRequest() {
-		return request.isAsyncSupported();
+		return requestContext.isAsyncRequest();
 	}
 }

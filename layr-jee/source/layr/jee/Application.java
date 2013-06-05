@@ -12,7 +12,7 @@ import javax.servlet.annotation.WebFilter;
 
 import layr.exceptions.NotFoundException;
 
-@WebFilter(filterName="layr.jee.Application")
+@WebFilter(filterName="layr.jee.Application", asyncSupported=true)
 public class Application implements Filter {
 
 	@Override

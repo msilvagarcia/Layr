@@ -9,7 +9,7 @@ import layr.api.Response;
 import layr.commons.Listener;
 
 public class NaturalRouterRenderer implements Callable<Response> {
-	
+
 	RequestContext requestContext;
 	Listener<Response> onSuccess;
 	Listener<Exception> onFail;

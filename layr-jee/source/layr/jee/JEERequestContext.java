@@ -32,7 +32,7 @@ import layr.engine.AbstractRequestContext;
 import layr.org.codehaus.jackson.ConversionException;
 import layr.org.codehaus.jackson.ConverterFactory;
 
-class JEERequestContext extends AbstractRequestContext {
+public class JEERequestContext extends AbstractRequestContext {
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -141,5 +141,13 @@ class JEERequestContext extends AbstractRequestContext {
 	@Override
 	public boolean isAsyncRequest() {
 		return asyncSupported;
+	}
+	
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+	
+	public HttpServletResponse getResponse() {
+		return response;
 	}
 }

@@ -35,6 +35,7 @@ public class HandledMethod {
 		Class<?>[] parameterTypes = targetMethod.getParameterTypes();
 		Annotation[][] parameterAnnotations = targetMethod
 				.getParameterAnnotations();
+
 		short cursor = 0;
 		for (Annotation[] annotations : parameterAnnotations) {
 			Annotation annotation = annotations[0];
@@ -69,8 +70,7 @@ public class HandledMethod {
 
 	public Object invokeMethod(Object instance, Object[] methodParameters)
 			throws IllegalAccessException, InvocationTargetException {
-		lastReturnedValue = targetMethod.invoke(instance, methodParameters);
-		return lastReturnedValue;
+		return targetMethod.invoke(instance, methodParameters);
 	}
 
 	public Map<String, String> extractPathParameters(

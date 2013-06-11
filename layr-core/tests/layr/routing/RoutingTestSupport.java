@@ -10,6 +10,7 @@ import layr.routing.impl.StubRequestContext;
 import layr.routing.impl.StubRoutingBootstrap;
 import layr.routing.lifecycle.ApplicationContext;
 import layr.routing.lifecycle.DefaultApplicationContextImpl;
+import layr.routing.lifecycle.ExceptionHandlerListener;
 import layr.routing.lifecycle.LifeCycle;
 
 import org.junit.Before;
@@ -87,6 +88,7 @@ public abstract class RoutingTestSupport {
 	public void recreateLifeCycle() throws Exception{
 		requestContext = createRequestContext();
 		lifeCycle = createLifeCycle();
+		lifeCycle.onFail( new ExceptionHandlerListener(getConfiguration(), getRequestContext()) );
 	}
 
 	public StubRequestContext createRequestContext() {

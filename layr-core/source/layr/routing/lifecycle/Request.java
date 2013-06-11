@@ -58,7 +58,7 @@ public class Request {
 	public Object createDataHandledObject(HandledParameter parameter) throws RoutingException {
 		try {
 			String canonicalName = parameter.getTargetClazz().getCanonicalName();
-			Class<DataProvider> dataProviderClass = applicationContext.getRegisteredDataProviders().get(canonicalName);
+			Class<? extends DataProvider> dataProviderClass = applicationContext.getRegisteredDataProviders().get(canonicalName);
 			DataProvider dataProvider = (DataProvider<?>)dataProviderClass.newInstance();
 			return dataProvider.newDataInstance(requestContext);
 		} catch ( Throwable t ){

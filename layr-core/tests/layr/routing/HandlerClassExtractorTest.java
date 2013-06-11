@@ -33,7 +33,7 @@ public class HandlerClassExtractorTest {
 	public void grantThatExtractDataAsExpected() {
 		exceptionHandlerExtractor.extract(ValidHandler.class);
 		exceptionHandlerExtractor.extract(InvalidHandler.class);
-		Map<String, Class<ExceptionHandler>> handlers = exceptionHandlerExtractor
+		Map<String, Class<? extends ExceptionHandler>> handlers = exceptionHandlerExtractor
 				.getRegisteredHandlers();
 		Assert.assertNotNull(handlers);
 		Assert.assertEquals(1, handlers.size());
@@ -45,7 +45,7 @@ public class HandlerClassExtractorTest {
 	@Test
 	public void grantThatExtractDataProviderAsExpected() {
 		handlerClassExtractor.extract(RequestContextDataProvider.class);
-		Map<String, Class<DataProvider>> handlers = handlerClassExtractor
+		Map<String, Class<? extends DataProvider>> handlers = handlerClassExtractor
 				.getRegisteredHandlers();
 		Assert.assertNotNull(handlers);
 		Assert.assertEquals(1, handlers.size());

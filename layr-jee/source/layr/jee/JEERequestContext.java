@@ -15,9 +15,10 @@
  */
 package layr.jee;
 
+import static layr.commons.StringUtil.isEmpty;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
@@ -27,7 +28,6 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static layr.commons.StringUtil.isEmpty;
 import layr.engine.AbstractRequestContext;
 import layr.org.codehaus.jackson.ConversionException;
 import layr.org.codehaus.jackson.ConverterFactory;
@@ -42,7 +42,6 @@ public class JEERequestContext extends AbstractRequestContext {
 	private String requestURI;
 	private Boolean asyncSupported;
 	private ServletContext servletContext;
-	private PrintWriter writer;
 	private String httpMethod;
 
 	public JEERequestContext(
@@ -56,7 +55,6 @@ public class JEERequestContext extends AbstractRequestContext {
 
 	private void prePopulateContext() throws IOException {
 		this.servletContext = this.request.getServletContext();
-		this.writer = this.response.getWriter();
 		this.httpMethod = request.getMethod();
 		this.requestParameter = getRequestParameters();
 		this.asyncSupported = request.isAsyncSupported();
@@ -64,7 +62,7 @@ public class JEERequestContext extends AbstractRequestContext {
 
 	@Override
 	public Writer getWriter() throws IOException {
-		return writer;
+		return this.response.getWriter();
 	}
 
 	@Override

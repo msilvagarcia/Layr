@@ -25,9 +25,9 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	Map<String, ComponentFactory> registeredTagLibs;
 
 	@SuppressWarnings("rawtypes")
-	Map<String, Class<ExceptionHandler>> registeredExceptionHandlers;
+	Map<String, Class<? extends ExceptionHandler>> registeredExceptionHandlers;
 	@SuppressWarnings("rawtypes")
-	Map<String, Class<DataProvider>> registeredDataProviders;
+	Map<String, Class<? extends DataProvider>> registeredDataProviders;
 
 	@Override
 	public String getDefaultResource() {
@@ -66,24 +66,24 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Map<String, Class<ExceptionHandler>> getRegisteredExceptionHandlers() {
+	public Map<String, Class<? extends ExceptionHandler>> getRegisteredExceptionHandlers() {
 		return registeredExceptionHandlers;
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void setRegisteredExceptionHandlers(Map<String, Class<ExceptionHandler>> registeredExceptionHandlers) {
+	public void setRegisteredExceptionHandlers(Map<String, Class<? extends ExceptionHandler>> registeredExceptionHandlers) {
 		this.registeredExceptionHandlers = registeredExceptionHandlers;
 	}
 	
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Map<String, Class<DataProvider>> getRegisteredDataProviders() {
+	public Map<String, Class<? extends DataProvider>> getRegisteredDataProviders() {
 		return registeredDataProviders;
 	}
 	
 	@SuppressWarnings("rawtypes")
 	public void setRegisteredDataProviders(
-			Map<String, Class<DataProvider>> registeredDataProviders) {
+			Map<String, Class<? extends DataProvider>> registeredDataProviders) {
 		this.registeredDataProviders = registeredDataProviders;
 	}
 	

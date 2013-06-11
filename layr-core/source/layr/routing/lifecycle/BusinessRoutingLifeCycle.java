@@ -2,6 +2,8 @@ package layr.routing.lifecycle;
 
 import static layr.commons.ListenableCall.listenable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -15,7 +17,7 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
     ApplicationContext configuration;
 	RequestContext requestContext;
 	Listener<Response> onSuccess;
-	Listener<Exception> onFail;
+	List<Listener<Exception>> onFail;
 	HandledMethod matchedRouteMethod;
 
 	public BusinessRoutingLifeCycle(
@@ -23,6 +25,7 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 			RequestContext requestContext) {
     	this.configuration = configuration;
     	this.requestContext = requestContext;
+    	this.onFail = new ArrayList<Listener<Exception>>();
 	}
 	
 	@Override
@@ -42,29 +45,32 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
     }
 
 	public void runMethod(HandledMethod routeMethod) {
-		Listener<Exception> exceptionHandler = new ExceptionHandlerListener(configuration, requestContext);
 		try {
-			ListenableCall<Response> listenable = createListenableAsyncRunner(routeMethod, exceptionHandler);
+			ListenableCall<Response> listenable = createListenableAsyncRunner(routeMethod);
 			Future<?> submit = configuration.getMethodExecutionThreadPool().submit(listenable);
 			if ( !requestContext.isAsyncRequest() )
 				submit.get();
 		} catch ( ExecutionException e ) {
-			exceptionHandler.listen(e);
+			onFail(e);
 		} catch (Exception e) {
-			exceptionHandler.listen(e);
+			onFail(e);
 		}
 	}
 
 	public ListenableCall<Response> createListenableAsyncRunner(
-			HandledMethod routeMethod, Listener<Exception> exceptionHandler) throws Exception {
+			HandledMethod routeMethod) throws Exception {
 		Object instance = configuration.newInstanceOf(routeMethod.getRouteClass());
 		BusinessRoutingMethodRunner runner = new BusinessRoutingMethodRunner( configuration, requestContext, routeMethod, instance );
 		ListenableCall<Response> listenable = listenable(runner);
 		listenable.onSuccess(new RendererListener(configuration, requestContext));
 		listenable.onSuccess(onSuccess);
-		listenable.onFail(exceptionHandler);
-		listenable.onFail(onFail);
+		defineOnFail( listenable );
 		return listenable;
+	}
+
+	public void defineOnFail( ListenableCall<Response> listenable ){
+		for ( Listener<Exception> onFailListener : onFail )
+			listenable.onFail(onFailListener);
 	}
 
 	public RequestContext getRequestContext() {
@@ -72,7 +78,12 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 	}
 
 	public void onFail( Listener<Exception> listener ){
-		this.onFail = listener;
+		this.onFail.add(listener);
+	}
+
+	protected void onFail( Exception cause ) {
+		for ( Listener<Exception> onFailListener : onFail )
+			onFailListener.listen(cause);
 	}
 
 	public void onSuccess( Listener<Response> listener ){

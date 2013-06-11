@@ -9,12 +9,14 @@ public class ApplicationLifeCycle {
 
 	Listener<Response> onSuccess;
 	Listener<Exception> onFail;
+	Listener<Exception> exceptionHandler;
 
 	public ApplicationLifeCycle() {
 		super();
 	}
 
 	public void run(ApplicationContext applicationContext, RequestContext requestContext) throws Exception {
+		createRequestExceptionHandler(applicationContext, requestContext);
 		LifeCycle[] lifeCycles = createLifeCycles(applicationContext, requestContext);
 
 		for ( LifeCycle lifeCycle : lifeCycles )
@@ -28,8 +30,10 @@ public class ApplicationLifeCycle {
 		throw new NotFoundException("Not found");
 	}
 
-	protected void beforeRun() {}
-	protected void afterRun() {}
+	protected void createRequestExceptionHandler(ApplicationContext applicationContext,
+			RequestContext requestContext) {
+		exceptionHandler = new ExceptionHandlerListener(applicationContext, requestContext);
+	}
 
 	protected LifeCycle[] createLifeCycles(ApplicationContext applicationContext, RequestContext requestContext) {
 		LifeCycle[] lifeCycles = new LifeCycle[]{
@@ -42,6 +46,7 @@ public class ApplicationLifeCycle {
 	protected BusinessRoutingLifeCycle createBusinessRoutingLifeCycle(ApplicationContext applicationContext, RequestContext requestContext) {
 		BusinessRoutingLifeCycle lifeCycle = new BusinessRoutingLifeCycle( applicationContext, requestContext );
 		lifeCycle.onSuccess(onSuccess);
+		lifeCycle.onFail(exceptionHandler);
 		lifeCycle.onFail(onFail);
 		return lifeCycle;
 	}
@@ -49,9 +54,13 @@ public class ApplicationLifeCycle {
 	protected NaturalRoutingLifeCycle createNaturalRoutingLifeCycle(ApplicationContext applicationContext, RequestContext requestContext) {
 		NaturalRoutingLifeCycle lifeCycle = new NaturalRoutingLifeCycle( applicationContext, requestContext );
 		lifeCycle.onSuccess(onSuccess);
+		lifeCycle.onFail(exceptionHandler);
 		lifeCycle.onFail(onFail);
 		return lifeCycle;
 	}
+
+	protected void beforeRun() {}
+	protected void afterRun() {}
 
 	public void onFail(Listener<Exception> listener) {
 		this.onFail = listener;

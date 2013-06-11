@@ -30,12 +30,8 @@ public class ExceptionHandlerListener implements Listener<Exception> {
 
 	@SuppressWarnings("rawtypes")
 	public <T extends Throwable> Response handleException(T e) throws UnhandledException {
-		String canonicalName = e.getClass().getCanonicalName();
-		Class<ExceptionHandler> exceptionHandlerClass = applicationContext
-				.getRegisteredExceptionHandlers().get(canonicalName);
-		if (exceptionHandlerClass == null)
-			throw new UnhandledException(e);
 		try {
+			Class<? extends ExceptionHandler> exceptionHandlerClass = getExceptionHandlerOrDefaultHandler(e);
 			Response render = handleException(e, exceptionHandlerClass);
 			return render;
 		} catch (Throwable e1) {
@@ -43,9 +39,30 @@ public class ExceptionHandlerListener implements Listener<Exception> {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
+	protected <T extends Throwable> Class<? extends ExceptionHandler>
+				getExceptionHandlerOrDefaultHandler( T e ) throws Throwable {
+		Throwable t = e;
+		Class<? extends ExceptionHandler> exceptionHandlerClass = getExceptionHandler(t);
+		if (exceptionHandlerClass == null)
+			t = new UnhandledException(e);
+		exceptionHandlerClass = getExceptionHandler(t);
+		if (exceptionHandlerClass == null)
+			throw t;
+		return exceptionHandlerClass;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public <T extends Throwable> Class<? extends ExceptionHandler> getExceptionHandler(T e) {
+		String canonicalName = e.getClass().getCanonicalName();
+		Class<? extends ExceptionHandler> exceptionHandlerClass = applicationContext
+				.getRegisteredExceptionHandlers().get(canonicalName);
+		return exceptionHandlerClass;
+	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public <T extends Throwable> Response handleException(T e,
-			Class<ExceptionHandler> exceptionHandlerClass)
+			Class<? extends ExceptionHandler> exceptionHandlerClass)
 			throws InstantiationException, IllegalAccessException {
 		ExceptionHandler<?> exceptionHandlerInstance = exceptionHandlerClass.newInstance();
 		return ((ExceptionHandler<T>) exceptionHandlerInstance).render(e, requestContext );

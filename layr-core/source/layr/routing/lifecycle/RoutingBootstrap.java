@@ -15,6 +15,7 @@ import layr.engine.components.DefaultComponentFactory;
 import layr.engine.components.template.TemplateComponentFactory;
 import layr.engine.components.xhtml.XHtmlComponentFactory;
 import layr.exceptions.RoutingInitializationException;
+import layr.exceptions.UnhandledException;
 
 public abstract class RoutingBootstrap {
 
@@ -22,9 +23,9 @@ public abstract class RoutingBootstrap {
 	List<HandledClass> registeredWebResources;
 
 	@SuppressWarnings("rawtypes")
-	Map<String, Class<ExceptionHandler>> registeredExceptionHandlers;
+	Map<String, Class<? extends ExceptionHandler>> registeredExceptionHandlers;
 	@SuppressWarnings("rawtypes")
-	Map<String, Class<DataProvider>> registeredDataProviders;
+	Map<String, Class<? extends DataProvider>> registeredDataProviders;
 	
 	@SuppressWarnings("rawtypes")
 	HandlerClassExtractor<ExceptionHandler> exceptionHandlerClassExtractor;
@@ -58,6 +59,9 @@ public abstract class RoutingBootstrap {
 
 	public void memorizeRegisteredHandlers() {
 		registeredExceptionHandlers = exceptionHandlerClassExtractor.getRegisteredHandlers();
+		if (!registeredExceptionHandlers.containsKey(UnhandledException.class.getCanonicalName()) )
+			registeredExceptionHandlers.put(UnhandledException.class.getCanonicalName(), DefaultUnhandledExceptionHandler.class);
+		
 		registeredDataProviders = dataProviderClassExtractor.getRegisteredHandlers();
 	}
 
@@ -118,12 +122,12 @@ public abstract class RoutingBootstrap {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public Map<String, Class<ExceptionHandler>> getRegisteredExceptionHandlers() {
+	public Map<String, Class<? extends ExceptionHandler>> getRegisteredExceptionHandlers() {
 		return registeredExceptionHandlers;
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public Map<String, Class<DataProvider>> getRegisteredDataProviders() {
+	public Map<String, Class<? extends DataProvider>> getRegisteredDataProviders() {
 		return registeredDataProviders;
 	}
 }

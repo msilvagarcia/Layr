@@ -9,11 +9,11 @@ import layr.api.Handler;
 
 public class HandlerClassExtractor<T> {
 	
-	Map<String, Class<T>> registeredHandlers;
+	Map<String, Class<? extends T>> registeredHandlers;
 	Class<T> interfaceClass;
 	
 	public HandlerClassExtractor(Class<T> interfaceClass) {
-		this.registeredHandlers = new HashMap<String, Class<T>>();
+		this.registeredHandlers = new HashMap<String, Class<? extends T>>();
 		this.interfaceClass = interfaceClass;
 	}
 	
@@ -42,7 +42,7 @@ public class HandlerClassExtractor<T> {
 		}
 	}
 
-	public Map<String, Class<T>> getRegisteredHandlers() {
+	public Map<String, Class<? extends T>> getRegisteredHandlers() {
 		return registeredHandlers;
 	}
 }

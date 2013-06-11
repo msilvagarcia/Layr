@@ -8,8 +8,8 @@ final public class ResponseBuilder {
 		return new ResponseImpl().redirectTo( url );
 	}
 	
-	public static TemplateOptionsResponse renderTemplate( String template ){
-		return new ResponseImpl().renderTemplate( template );
+	public static TemplateOptionsResponse template( String template ){
+		return new ResponseImpl().template( template );
 	}
 
 	public static HeaderResponse header( String name, String value ){
@@ -18,6 +18,10 @@ final public class ResponseBuilder {
 	
 	public static StatusCodeResponse statusCode( int statusCode ) {
 		return new ResponseImpl().statusCode(statusCode);
+	}
+	
+	public static JSONResponse json(Object object) {
+		return new ResponseImpl().json(object);
 	}
 
 }

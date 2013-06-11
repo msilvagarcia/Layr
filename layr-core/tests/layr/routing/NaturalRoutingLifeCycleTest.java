@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import layr.api.Response;
 import layr.commons.Listener;
 import layr.exceptions.RoutingInitializationException;
 import layr.routing.lifecycle.LifeCycle;
@@ -65,9 +64,9 @@ public class NaturalRoutingLifeCycleTest extends RoutingTestSupport {
 		return new HashSet<Class<?>>();
 	}
 	
-	class SuccessListener implements Listener<Response> {
+	class SuccessListener implements Listener<Object> {
 		@Override
-		public void listen(Response result) {
+		public void listen(Object result) {
 			availableRequests.countDown();
 		}
 	}

@@ -8,7 +8,6 @@ import java.util.List;
 
 import layr.api.Component;
 import layr.api.RequestContext;
-import layr.api.Response;
 import layr.commons.ListenableCall;
 import layr.commons.Listener;
 import layr.engine.TemplateParser;
@@ -18,7 +17,7 @@ public class NaturalRoutingLifeCycle implements LifeCycle {
 
 	ApplicationContext configuration;
 	RequestContext requestContext;
-	Listener<Response> onSuccess;
+	Listener<Object> onSuccess;
 	List<Listener<Exception>> onFail;
 	Component compiledWebPage;
 
@@ -40,7 +39,7 @@ public class NaturalRoutingLifeCycle implements LifeCycle {
 		try {
 			NaturalRouterRenderer renderer = new NaturalRouterRenderer(
 					requestContext, compiledWebPage);
-			ListenableCall<Response> listenableRenderer = listenable(renderer);
+			ListenableCall listenableRenderer = listenable(renderer);
 			listenableRenderer.onSuccess(onSuccess);
 			defineOnFail(listenableRenderer);
 			configuration.getRenderingThreadPool().submit(listenableRenderer);
@@ -49,7 +48,7 @@ public class NaturalRoutingLifeCycle implements LifeCycle {
 		}
 	}
 
-	public void defineOnFail(ListenableCall<Response> listenable) {
+	public void defineOnFail(ListenableCall listenable) {
 		for (Listener<Exception> onFailListener : onFail)
 			listenable.onFail(onFailListener);
 	}
@@ -89,7 +88,7 @@ public class NaturalRoutingLifeCycle implements LifeCycle {
 			exceptionListener.listen(cause);
 	}
 
-	public void onSuccess(Listener<Response> listener) {
+	public void onSuccess(Listener<Object> listener) {
 		this.onSuccess = listener;
 	}
 }

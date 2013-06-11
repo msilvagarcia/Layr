@@ -5,7 +5,11 @@ import java.util.Map;
 
 import layr.api.TemplateResponse.TemplateOptionsResponse;
 
-class ResponseImpl implements TemplateResponse, TemplateOptionsResponse, RedirectResponse, HeaderResponse, StatusCodeResponse, BuiltResponse {
+class ResponseImpl
+implements 
+	TemplateResponse, TemplateOptionsResponse, RedirectResponse,
+	HeaderResponse, StatusCodeResponse, BuiltResponse,
+	JSONResponse {
 
 	String template;
 	String redirectTo;
@@ -14,13 +18,14 @@ class ResponseImpl implements TemplateResponse, TemplateOptionsResponse, Redirec
 	Map<String, String> headers;
 	Map<String, Object> parameters;
 	Object parameterObject;
+	Object jsonObject;
 
 	public ResponseImpl() {
 		headers = new HashMap<String, String>();
 		parameters = new HashMap<String, Object>();
 	}
 
-	public ResponseImpl renderTemplate(String template) {
+	public ResponseImpl template(String template) {
 		this.template = template;
 		return this;
 	}
@@ -86,5 +91,15 @@ class ResponseImpl implements TemplateResponse, TemplateOptionsResponse, Redirec
 	@Override
 	public ResponseImpl build() {
 		return this;
+	}
+
+	@Override
+	public JSONResponse json( Object jsonObject ) {
+		this.jsonObject = jsonObject;
+		return this;
+	}
+	
+	public Object jsonObject(){
+		return jsonObject;
 	}
 }

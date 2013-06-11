@@ -34,12 +34,14 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	@Test
 	public void grantThatRenderHome() throws Exception {
 		get( "/" );
+		assertEquals( 200, getRequestContext().getStatusCode() );
 		assertEquals( "<p><button class=\"btn\">Premium Panel</button><p>:</p></p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
 	@Test
 	public void grantThatSendGetAndRenderTemplateAsExpected() throws Exception {
 		get( "/hello/world/1234?requestParam=12.5" );
+		assertEquals( 200, getRequestContext().getStatusCode() );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
@@ -52,12 +54,14 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	@Test
 	public void grantThatSendPutAndRenderTemplateAsExpected() throws Exception{
 		put( "/hello/world/1234?requestParam=12.5" );
+		assertEquals( 200, getRequestContext().getStatusCode() );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
 	@Test
 	public void grantThatSendPostAndRenderTemplateAsExpected() throws Exception{
 		post( "/hello/world" );
+		assertEquals( 200, getRequestContext().getStatusCode() );
 		assertEquals( "<p>/:/home/</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
@@ -71,6 +75,20 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public void grantThatReceive204WhenNoTemplateIsDefined() throws Exception{
 		delete( "/hello/world/" );
 		assertEquals( 204, getRequestContext().getStatusCode() );
+	}
+
+	@Test
+	public void grantThatRenderJSonWithResponseBuilderAsExpected() throws Exception {
+		get( "/hello/json/builder" );
+		assertEquals( 200, getRequestContext().getStatusCode() );
+		assertEquals( "{\"pathParam\":3336,\"requestParam\":5432.1}", getRequestContext().getBufferedWroteContentToOutput() );
+	}
+
+	@Test
+	public void grantThatRenderJSonWithoutResponseBuilderAsExpected() throws Exception {
+		get( "/hello/json/object" );
+		assertEquals( 200, getRequestContext().getStatusCode() );
+		assertEquals( "{\"pathParam\":3336,\"requestParam\":5432.1}", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
 	@Test//( timeout=2500 )

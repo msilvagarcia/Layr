@@ -20,7 +20,7 @@ public class HomeResource {
 		if ( userName == null )
 			userName = "Guest";
 
-		return renderTemplate( templateName )
+		return template( templateName )
 				.set("userName", userName);
 	}
 }

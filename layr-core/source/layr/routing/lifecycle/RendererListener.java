@@ -1,11 +1,10 @@
 package layr.routing.lifecycle;
 
 import layr.api.RequestContext;
-import layr.api.Response;
 import layr.commons.Listener;
 import layr.exceptions.RoutingException;
 
-public class RendererListener implements Listener<Response> {
+public class RendererListener implements Listener<Object> {
 
     ApplicationContext configuration;
 	RequestContext requestContext;
@@ -18,7 +17,7 @@ public class RendererListener implements Listener<Response> {
 	}
 
 	@Override
-	public void listen(Response response){
+	public void listen(Object response){
 		BusinessRoutingRenderer renderer = new BusinessRoutingRenderer( configuration, requestContext );
 		try {
 			renderer.render(response);

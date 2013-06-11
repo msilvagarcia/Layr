@@ -8,9 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.Assert;
-
 import layr.api.Cache;
-import layr.api.Response;
 import layr.commons.Listener;
 import layr.engine.TemplateParser;
 import layr.engine.components.template.TemplateComponentFactory;
@@ -103,9 +101,9 @@ public class TaskExecutionTest {
 		return context;
 	}
 
-	public Listener<Response> createOnSuccessListener(){
-		return new Listener<Response>() {
-			public void listen(Response result) {
+	public Listener<Object> createOnSuccessListener(){
+		return new Listener<Object>() {
+			public void listen(Object result) {
 				countDownLatch.countDown();
 			}
 		};

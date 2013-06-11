@@ -13,7 +13,7 @@ public class HelloResource {
 		@PathParameter("pathParam") Long pathParam,
 		@QueryParameter("requestParam") Double requestParam )
 	{
-		return renderTemplate( "hello.xhtml" )
+		return template( "hello.xhtml" )
 				.set("pathParam", pathParam)
 				.set("requestParam", requestParam);
 	}
@@ -23,7 +23,7 @@ public class HelloResource {
 			@PathParameter("pathParam") Long pathParam,
 			@QueryParameter("requestParam") Double requestParam)
 	{
-		return renderTemplate("hello.xhtml")
+		return template("hello.xhtml")
 				.parameters( new Hello(pathParam, requestParam) );
 	}
 
@@ -54,8 +54,18 @@ public class HelloResource {
 	@POST("world")
 	public Response renderWithHandledData(
 			@Data RequestContext requestContext ){
-		return renderTemplate("hello.xhtml")
+		return template("hello.xhtml")
 				.set("pathParam", requestContext.getApplicationRootPath())
 				.set("requestParam", requestContext.getDefaultResource());
+	}
+
+	@GET("json/builder")
+	public Response renderJsonObjectWithBuilder(){
+		return json(new Hello(3336L, 5432.1D));
+	}
+
+	@GET("json/object")
+	public Hello renderJsonObjectWithoutBuilder(){
+		return new Hello(3336L, 5432.1D);
 	}
 }

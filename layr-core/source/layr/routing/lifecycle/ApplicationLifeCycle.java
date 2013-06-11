@@ -1,13 +1,12 @@
 package layr.routing.lifecycle;
 
 import layr.api.RequestContext;
-import layr.api.Response;
 import layr.commons.Listener;
 import layr.exceptions.NotFoundException;
 
 public class ApplicationLifeCycle {
 
-	Listener<Response> onSuccess;
+	Listener<Object> onSuccess;
 	Listener<Exception> onFail;
 	Listener<Exception> exceptionHandler;
 
@@ -66,7 +65,7 @@ public class ApplicationLifeCycle {
 		this.onFail = listener;
 	}
 
-	public void onSuccess(Listener<Response> listener) {
+	public void onSuccess(Listener<Object> listener) {
 		this.onSuccess = listener;
 	}
 

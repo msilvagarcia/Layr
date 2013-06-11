@@ -1,7 +1,6 @@
 package layr.routing.lifecycle;
 
 import layr.api.RequestContext;
-import layr.api.Response;
 import layr.commons.Listener;
 
 /**
@@ -14,7 +13,7 @@ public interface LifeCycle {
 
 	public void run();
 
-	public void onSuccess(Listener<Response> listener);
+	public void onSuccess(Listener<Object> listener);
 
 	public void onFail(Listener<Exception> listener);
 

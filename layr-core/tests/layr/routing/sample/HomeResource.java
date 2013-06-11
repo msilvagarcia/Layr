@@ -8,7 +8,7 @@ public class HomeResource {
 
 	@GET
 	public Response renderHome(){
-		return renderTemplate( "home.xhtml" )
+		return template( "home.xhtml" )
 				.set("user", new User( true ));
 	}
 }

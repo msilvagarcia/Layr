@@ -8,7 +8,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import layr.api.Response;
 import layr.commons.Listener;
 import layr.routing.lifecycle.ApplicationLifeCycle;
 
@@ -55,9 +54,9 @@ class JEELifeCycle extends ApplicationLifeCycle {
 			asyncContext.complete();
 	}
 
-	public Listener<Response> createOnSuccessListener(){
-		return new Listener<Response>() {
-			public void listen(Response result) {
+	public Listener<Object> createOnSuccessListener(){
+		return new Listener<Object>() {
+			public void listen(Object result) {
 				onFinishRequest();
 			}
 		};

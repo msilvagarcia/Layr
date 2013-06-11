@@ -1,7 +1,7 @@
 package layr.api;
 
 public interface TemplateResponse extends Response {
-	TemplateOptionsResponse renderTemplate(String template);
+	TemplateOptionsResponse template(String template);
 
 	public interface TemplateOptionsResponse extends HeaderResponse, StatusCodeResponse {
 	

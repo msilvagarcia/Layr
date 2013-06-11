@@ -3,10 +3,9 @@ package layr.routing.lifecycle;
 import java.util.concurrent.Callable;
 
 import layr.api.RequestContext;
-import layr.api.Response;
 import layr.exceptions.UnhandableException;
 
-public class BusinessRoutingMethodRunner implements Callable<Response> {
+public class BusinessRoutingMethodRunner implements Callable<Object> {
 
     ApplicationContext configuration;
 	RequestContext requestContext;
@@ -24,7 +23,7 @@ public class BusinessRoutingMethodRunner implements Callable<Response> {
 		this.instance = instance;
 	}
 
-	public Response call() throws Exception {
+	public Object call() throws Exception {
 		Request routingRequest = createRoutingRequest( routeMethod );
 		try {
 			return runMethod( routingRequest, routeMethod );
@@ -39,16 +38,7 @@ public class BusinessRoutingMethodRunner implements Callable<Response> {
     	return new Request( configuration, requestContext, routeMethod.getRouteMethodPattern() );
     }
 
-	public Response runMethod(Request routingRequest, HandledMethod routeMethod) throws Throwable {
-		routeMethod.invoke( routingRequest, instance );
-		return createRoutingResponse(instance, routeMethod);
+	public Object runMethod(Request routingRequest, HandledMethod routeMethod) throws Throwable {
+		return routeMethod.invoke( routingRequest, instance );
 	}
-
-	public Response createRoutingResponse(Object instance, HandledMethod routeMethod) {
-		if ( routeMethod.getLastReturnedValue() != null
-		&&   routeMethod.getLastReturnedValue() instanceof Response )
-			return (Response)routeMethod.getLastReturnedValue();
-		return null;
-	}
-
 }

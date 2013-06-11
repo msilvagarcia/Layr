@@ -17,4 +17,6 @@ public interface BuiltResponse {
 	Map<String, Object> parameters();
 
 	Object templateParameterObject();
+
+	Object jsonObject();
 }

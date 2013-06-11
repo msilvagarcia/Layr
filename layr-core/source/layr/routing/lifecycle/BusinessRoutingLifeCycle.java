@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import layr.api.RequestContext;
-import layr.api.Response;
 import layr.commons.ListenableCall;
 import layr.commons.Listener;
 
@@ -16,7 +15,7 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 
     ApplicationContext configuration;
 	RequestContext requestContext;
-	Listener<Response> onSuccess;
+	Listener<Object> onSuccess;
 	List<Listener<Exception>> onFail;
 	HandledMethod matchedRouteMethod;
 
@@ -46,7 +45,7 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 
 	public void runMethod(HandledMethod routeMethod) {
 		try {
-			ListenableCall<Response> listenable = createListenableAsyncRunner(routeMethod);
+			ListenableCall listenable = createListenableAsyncRunner(routeMethod);
 			Future<?> submit = configuration.getMethodExecutionThreadPool().submit(listenable);
 			if ( !requestContext.isAsyncRequest() )
 				submit.get();
@@ -57,18 +56,18 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 		}
 	}
 
-	public ListenableCall<Response> createListenableAsyncRunner(
+	public ListenableCall createListenableAsyncRunner(
 			HandledMethod routeMethod) throws Exception {
 		Object instance = configuration.newInstanceOf(routeMethod.getRouteClass());
 		BusinessRoutingMethodRunner runner = new BusinessRoutingMethodRunner( configuration, requestContext, routeMethod, instance );
-		ListenableCall<Response> listenable = listenable(runner);
+		ListenableCall listenable = listenable(runner);
 		listenable.onSuccess(new RendererListener(configuration, requestContext));
 		listenable.onSuccess(onSuccess);
 		defineOnFail( listenable );
 		return listenable;
 	}
 
-	public void defineOnFail( ListenableCall<Response> listenable ){
+	public void defineOnFail( ListenableCall listenable ){
 		for ( Listener<Exception> onFailListener : onFail )
 			listenable.onFail(onFailListener);
 	}
@@ -86,7 +85,7 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 			onFailListener.listen(cause);
 	}
 
-	public void onSuccess( Listener<Response> listener ){
+	public void onSuccess( Listener<Object> listener ){
 		this.onSuccess = listener;
 	}
 }

@@ -13,4 +13,8 @@ public class Hello {
 	public Double getRequestParam() {
 		return requestParam;
 	}
+	
+	public Long getPathParam() {
+		return pathParam;
+	}
 }

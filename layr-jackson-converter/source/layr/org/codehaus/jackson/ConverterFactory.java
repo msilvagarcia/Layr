@@ -1,7 +1,13 @@
 package layr.org.codehaus.jackson;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 public class ConverterFactory {
 	
@@ -40,7 +46,7 @@ public class ConverterFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T convert( String value, Class<T> clazz ) throws ConversionException {
+	public <T> T decode( String value, Class<T> clazz ) throws ConversionException {
 		try {
 			if ( value == null
 			||   String.class.equals( clazz ) )
@@ -61,5 +67,10 @@ public class ConverterFactory {
 		if ( converterClass == null )
 			return (Converter<T>) new JacksonConverter();
 		return (Converter<T>)converterClass.newInstance();
+	}
+	
+	public void encode( Writer writer, Object object ) throws JsonGenerationException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.writeValue(writer, object);
 	}
 }

@@ -11,7 +11,7 @@ public class UserResource {
 	public Response editUser( @PathParameter("id") Long userId ) {
 		if ( haveUserBillingPendencies() )
 			return redirectTo( "/user/warning/" );
-		return renderTemplate("user/edit.xhtml");
+		return template("user/edit.xhtml");
 	}
 
 	public boolean haveUserBillingPendencies(){

@@ -45,6 +45,8 @@ public interface RequestContext {
 	public abstract Map<String, String> getRequestParameters();
 
 	public abstract Object convert(String value, Class<?> targetClass) throws IOException;
+	
+	public abstract void writeAsJSON( Object object ) throws IOException;
 
 	public abstract void log(String text);
 

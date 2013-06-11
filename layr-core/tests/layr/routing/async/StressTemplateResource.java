@@ -9,7 +9,7 @@ import layr.api.WebResource;
 public class StressTemplateResource {
 
 	@GET public Response render(){
-		return renderTemplate("stress-template.xhtml");
+		return template("stress-template.xhtml");
 	}
 
 }

@@ -27,31 +27,40 @@ public class BusinessRoutingRenderer {
 		this.requestContext = requestContext;
 	}
 
-	public void render( Response response ) throws RoutingException {
+	public void render( Object response ) throws RoutingException {
 		try {
 			if ( response == null )
 				responseNoContent();
+			else if ( Response.class.isInstance(response) )
+				render( (Response) response );
 			else
-				render( response.build() );
+				renderJson( response );
 		} catch ( IOException e ) {
 			throw new RoutingException( e );
 		}
 	}
 
-	public void render( BuiltResponse builtResponse ) throws IOException, RoutingException {
+	public void render( Response response ) throws IOException, RoutingException {
+		BuiltResponse builtResponse = response.build();
+		render(builtResponse);
+	}
+
+	public void render(BuiltResponse builtResponse) throws IOException, RoutingException {
 		if ( builtResponse == null )
 			throw new NullPointerException("Built response returned null. Please check your implementation provider.");
 		else if ( !isEmpty( builtResponse.redirectTo() ) )
 			requestContext.redirectTo( builtResponse.redirectTo() );
 		else if ( !isEmpty( builtResponse.template() ) )
 			renderResponseTemplate( builtResponse );
+		else if ( builtResponse.jsonObject() != null )
+			renderJson( builtResponse );
 		else
 			responseNoContent();
 	}
 
 	public void renderResponseTemplate( BuiltResponse response ) throws RoutingException {
 		try {
-			setContentTypeAndEncoding( response );
+			setDefaultStatusAndCodeContentTypeAndEncoding( response );
 			memorizeParameters( response );
 			TemplateParser parser = new TemplateParser( requestContext );
 			Component compiledTemplate = parser.compile( response.template() );
@@ -63,8 +72,18 @@ public class BusinessRoutingRenderer {
 		}
 	}
 
-	public void setContentTypeAndEncoding( BuiltResponse response ) throws UnsupportedEncodingException {
+	public void setDefaultStatusAndCodeContentTypeAndEncoding( BuiltResponse response ) throws UnsupportedEncodingException {
 		requestContext.setContentType( "text/html" );
+		setDefaultStatusCode();
+		setEncoding(response);
+	}
+
+	public void setDefaultStatusCode() {
+		requestContext.setStatusCode(200);
+	}
+
+	public void setEncoding(BuiltResponse response)
+			throws UnsupportedEncodingException {
 		requestContext.setCharacterEncoding(
 			oneOf( response.encoding(), configuration.getDefaultEncoding() ) );
 	}
@@ -82,5 +101,16 @@ public class BusinessRoutingRenderer {
 
 	public void responseNoContent() {
 		requestContext.setStatusCode( 204 );
+	}
+
+	public void renderJson(BuiltResponse builtResponse) throws IOException{
+		setEncoding(builtResponse);
+		renderJson(builtResponse.jsonObject());
+	}
+
+	public void renderJson(Object response) throws IOException {
+		setDefaultStatusCode();
+		requestContext.setContentType("application/json");
+		requestContext.writeAsJSON(response);
 	}
 }

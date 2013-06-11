@@ -119,10 +119,15 @@ public class JEERequestContext extends AbstractRequestContext {
 	@Override
 	public Object convert(String value, Class<?> targetClass) throws IOException {
 		try {
-			return converter.convert( value, targetClass );
+			return converter.decode( value, targetClass );
 		} catch (ConversionException e) {
 			throw new IOException( e );
 		}
+	}
+
+	@Override
+	public void writeAsJSON(Object object) throws IOException {
+		converter.encode(getWriter(), object);
 	}
 
 	public InputStream openStream(String url) {

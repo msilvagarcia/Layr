@@ -2,6 +2,7 @@ package layr.api;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Map;
@@ -45,7 +46,9 @@ public interface RequestContext {
 	public abstract Map<String, String> getRequestParameters();
 
 	public abstract Object convert(String value, Class<?> targetClass) throws IOException;
-	
+
+	public abstract Object convert(InputStream value, Class<?> targetClass) throws IOException;
+
 	public abstract void writeAsJSON( Object object ) throws IOException;
 
 	public abstract void log(String text);
@@ -57,5 +60,9 @@ public interface RequestContext {
 	public abstract String getDefaultResource();
 
 	public abstract boolean isAsyncRequest();
+	
+	public abstract InputStream getRequestInputStream() throws IOException;
+	
+	public abstract OutputStream getResponseOutputStream() throws IOException;
 
 }

@@ -1,6 +1,7 @@
 package layr.routing.lifecycle;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -58,7 +59,17 @@ public class Request {
 			return createDataHandledObject(parameter);
 		if (parameter instanceof QueryHandledParameters)
 			return createFilterObjectFromParameter(parameter);
-		return null;
+		return createObjectFromBody( parameter );
+	}
+
+	public Object createObjectFromBody(HandledParameter parameter) throws RoutingException {
+		try {
+			InputStream inputStream = requestContext.getRequestInputStream();
+			Object convertedObject = requestContext.convert(inputStream, parameter.getTargetClazz());
+			return convertedObject;
+		} catch (Throwable t) {
+			throw new RoutingException(t);
+		}
 	}
 
 	public Object createFilterObjectFromParameter(HandledParameter parameter)

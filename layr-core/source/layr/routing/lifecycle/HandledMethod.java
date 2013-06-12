@@ -38,7 +38,7 @@ public class HandledMethod {
 
 		short cursor = 0;
 		for (Annotation[] annotations : parameterAnnotations) {
-			Annotation annotation = annotations[0];
+			Annotation annotation = annotations.length > 0 ? annotations[0] : null;
 			Class<?> clazz = parameterTypes[cursor];
 			memorizeParameterFromAnnotation(annotation, clazz);
 			cursor++;

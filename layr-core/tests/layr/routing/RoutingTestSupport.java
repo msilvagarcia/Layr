@@ -1,5 +1,6 @@
 package layr.routing;
 
+import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -62,15 +63,27 @@ public abstract class RoutingTestSupport {
 		if (lifeCycle.canHandleRequest())
 			lifeCycle.run();
 	}
-
+	
 	public void post( String uri ) throws Exception {
+		post( uri, null );
+	}
+
+	public void post( String uri, String body ) throws Exception {
 		setRequestURI( uri );
+		if ( body != null && !body.isEmpty() )
+			getRequestContext().setRequestInputStream(new ByteArrayInputStream(body.getBytes()));
 		setRequestMethod( "POST" );
 		run();
 	}
 	
 	public void put( String uri ) throws Exception {
+		put( uri, null );
+	}
+
+	public void put( String uri, String body ) throws Exception {
 		setRequestURI( uri );
+		if ( body != null && !body.isEmpty() )
+			getRequestContext().setRequestInputStream(new ByteArrayInputStream(body.getBytes()));
 		setRequestMethod( "PUT" );
 		run();
 	}

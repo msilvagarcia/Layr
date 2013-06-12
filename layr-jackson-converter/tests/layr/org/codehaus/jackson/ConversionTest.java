@@ -79,7 +79,7 @@ public class ConversionTest {
 
 	@Test
 	public void grantThatConvertNull() throws ConversionException{
-		Integer converted = factory.decode( null, Integer.class );
+		Integer converted = factory.decode( (String)null, Integer.class );
 		assertNull( converted );
 	}
 

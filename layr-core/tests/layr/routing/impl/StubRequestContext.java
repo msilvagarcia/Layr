@@ -1,6 +1,8 @@
 package layr.routing.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
@@ -24,6 +26,8 @@ public class StubRequestContext extends AbstractRequestContext {
 	int statusCode;
 	ConverterFactory converter;
 	Boolean isAsyncRequest = false;
+	InputStream inputStream;
+	String contentType;
 
 	public StubRequestContext() {
 		writer = new StringWriter();
@@ -52,7 +56,11 @@ public class StubRequestContext extends AbstractRequestContext {
 
 	@Override
 	public void setContentType(String contentType) {
-		
+		this.contentType = contentType;
+	}
+	
+	public String getContentType() {
+		return contentType;
 	}
 
 	@Override
@@ -134,5 +142,29 @@ public class StubRequestContext extends AbstractRequestContext {
 
 	public void setIsAsyncRequest(Boolean isAsyncRequest) {
 		this.isAsyncRequest = isAsyncRequest;
+	}
+
+	@Override
+	public Object convert(InputStream value, Class<?> targetClass)
+			throws IOException {
+		try {
+			return converter.decode( value, targetClass );
+		} catch (ConversionException e) {
+			throw new IOException( e );
+		}
+	}
+
+	@Override
+	public InputStream getRequestInputStream() throws IOException {
+		return inputStream;
+	}
+	
+	public void setRequestInputStream(InputStream inputStream) {
+		this.inputStream = inputStream;
+	}
+
+	@Override
+	public OutputStream getResponseOutputStream() throws IOException {
+		return null;
 	}
 }

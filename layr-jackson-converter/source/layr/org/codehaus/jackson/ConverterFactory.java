@@ -1,6 +1,7 @@
 package layr.org.codehaus.jackson;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
@@ -52,6 +53,20 @@ public class ConverterFactory {
 			||   String.class.equals( clazz ) )
 				return (T) value;
 			Converter<T> converter = getConverterFor( clazz );
+			return converter.convert( value, clazz );
+		} catch (Exception e) {
+			throw new ConversionException( String.format(
+					"Can't convert '%s' to '%s'", value, clazz.getCanonicalName()), e );
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T decode( InputStream value, Class<T> clazz ) throws ConversionException {
+		try {
+			if ( value == null
+			||   String.class.equals( clazz ) )
+				return (T) value;
+			Converter<T> converter = (Converter<T>) new JacksonConverter();
 			return converter.convert( value, clazz );
 		} catch (Exception e) {
 			throw new ConversionException( String.format(

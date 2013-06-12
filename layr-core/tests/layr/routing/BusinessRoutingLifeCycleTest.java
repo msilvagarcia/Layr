@@ -35,6 +35,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public void grantThatRenderHome() throws Exception {
 		get( "/" );
 		assertEquals( 200, getRequestContext().getStatusCode() );
+		assertEquals( "text/html", getRequestContext().getContentType() );
 		assertEquals( "<p><button class=\"btn\">Premium Panel</button><p>:</p></p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
@@ -42,6 +43,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public void grantThatSendGetAndRenderTemplateAsExpected() throws Exception {
 		get( "/hello/world/1234?requestParam=12.5" );
 		assertEquals( 200, getRequestContext().getStatusCode() );
+		assertEquals( "text/html", getRequestContext().getContentType() );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
@@ -49,6 +51,15 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public void grantThatSendGetAndRenderTemplateThroughFilterObjectAsExpected() throws Exception {
 		get( "/hello/world/filter/object?requestParam=12.5&pathParam=1234" );
 		assertEquals( 200, getRequestContext().getStatusCode() );
+		assertEquals( "text/html", getRequestContext().getContentType() );
+		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
+	}
+
+	@Test
+	public void grantThatSendPostAndRenderTemplateThroughBodyObjectAsExpected() throws Exception {
+		put( "/hello/world/body/object", "{ \"requestParam\":12.5, \"pathParam\":1234}" );
+		assertEquals( 200, getRequestContext().getStatusCode() );
+		assertEquals( "text/html", getRequestContext().getContentType() );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
@@ -69,6 +80,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public void grantThatSendPostAndRenderTemplateAsExpected() throws Exception{
 		post( "/hello/world" );
 		assertEquals( 200, getRequestContext().getStatusCode() );
+		assertEquals( "text/html", getRequestContext().getContentType() );
 		assertEquals( "<p>/:/home/</p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
@@ -87,6 +99,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	@Test
 	public void grantThatRenderJSonWithResponseBuilderAsExpected() throws Exception {
 		get( "/hello/json/builder" );
+		assertEquals( "application/json", getRequestContext().getContentType() );
 		assertEquals( 200, getRequestContext().getStatusCode() );
 		assertEquals( "{\"pathParam\":3336,\"requestParam\":5432.1}", getRequestContext().getBufferedWroteContentToOutput() );
 	}
@@ -95,6 +108,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public void grantThatRenderJSonWithoutResponseBuilderAsExpected() throws Exception {
 		get( "/hello/json/object" );
 		assertEquals( 200, getRequestContext().getStatusCode() );
+		assertEquals( "application/json", getRequestContext().getContentType() );
 		assertEquals( "{\"pathParam\":3336,\"requestParam\":5432.1}", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 

@@ -18,7 +18,7 @@ public final class HandledParameterFactory {
 			return new DataHandledParameter( targetClazz );
 		if ( QueryParameters.class.isInstance(annotation) )
 			return new QueryHandledParameters( targetClazz );
-		return null;
+		return new HandledParameter(null, targetClazz);
 	}
 
 }

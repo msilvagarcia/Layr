@@ -19,6 +19,7 @@ import static layr.commons.StringUtil.isEmpty;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
@@ -126,6 +127,16 @@ public class JEERequestContext extends AbstractRequestContext {
 	}
 
 	@Override
+	public Object convert(InputStream value, Class<?> targetClass)
+			throws IOException {
+		try {
+			return converter.decode( value, targetClass );
+		} catch (ConversionException e) {
+			throw new IOException( e );
+		}
+	}
+
+	@Override
 	public void writeAsJSON(Object object) throws IOException {
 		converter.encode(getWriter(), object);
 	}
@@ -152,5 +163,15 @@ public class JEERequestContext extends AbstractRequestContext {
 	
 	public HttpServletResponse getResponse() {
 		return response;
+	}
+	
+	@Override
+	public InputStream getRequestInputStream() throws IOException {
+		return request.getInputStream();
+	}
+	
+	@Override
+	public OutputStream getResponseOutputStream() throws IOException {
+		return response.getOutputStream();
 	}
 }

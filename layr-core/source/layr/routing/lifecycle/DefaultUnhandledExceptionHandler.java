@@ -13,6 +13,7 @@ public class DefaultUnhandledExceptionHandler implements ExceptionHandler<Throwa
 
 	@Override
 	public Response render(Throwable exception, RequestContext requestContext) {
+		exception.printStackTrace();
 		List<StackTraceElement> list = extractStackTraceAsList(exception);
 		return template("layr/routing/lifecycle/DefaultUnhandledExceptionTemplate.xhtml")
 				.set("stack", list)

@@ -46,6 +46,13 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	}
 
 	@Test
+	public void grantThatSendGetAndRenderTemplateThroughFilterObjectAsExpected() throws Exception {
+		get( "/hello/world/filter/object?requestParam=12.5&pathParam=1234" );
+		assertEquals( 200, getRequestContext().getStatusCode() );
+		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );
+	}
+
+	@Test
 	public void grantThatHandleNullPointerExceptionAsExpected() throws Exception {
 		get( "/hello/handled/error" );
 		assertEquals( "/fail/", getRequestContext().getRedirectedURL() );

@@ -5,6 +5,7 @@ import java.lang.annotation.Annotation;
 import layr.api.Data;
 import layr.api.PathParameter;
 import layr.api.QueryParameter;
+import layr.api.QueryParameters;
 
 public final class HandledParameterFactory {
 
@@ -15,6 +16,8 @@ public final class HandledParameterFactory {
 			return new QueryHandledParameter( ((QueryParameter)annotation).value(), targetClazz );
 		if ( Data.class.isInstance( annotation ) )
 			return new DataHandledParameter( targetClazz );
+		if ( QueryParameters.class.isInstance(annotation) )
+			return new QueryHandledParameters( targetClazz );
 		return null;
 	}
 

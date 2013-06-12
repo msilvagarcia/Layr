@@ -65,7 +65,6 @@ class JEELifeCycle extends ApplicationLifeCycle {
 	public Listener<Exception> createOnFailListener(){
 		return new Listener<Exception>() {
 			public void listen(Exception result) {
-				result.printStackTrace();
 				onFinishRequest();
 			}
 		};

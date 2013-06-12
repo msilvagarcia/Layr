@@ -68,4 +68,12 @@ public class HelloResource {
 	public Hello renderJsonObjectWithoutBuilder(){
 		return new Hello(3336L, 5432.1D);
 	}
+	
+	@GET("world/filter/object")
+	public Response renderWithFilterObject(
+			@QueryParameters Hello helloFilterObject){
+		return template("hello.xhtml")
+			.set("pathParam", helloFilterObject.getPathParam())
+			.set("requestParam", helloFilterObject.getRequestParam());
+	}
 }

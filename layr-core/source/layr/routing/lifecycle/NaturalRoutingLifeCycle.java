@@ -5,6 +5,7 @@ import static layr.commons.StringUtil.isEmpty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import layr.api.Component;
 import layr.api.RequestContext;
@@ -42,7 +43,9 @@ public class NaturalRoutingLifeCycle implements LifeCycle {
 			ListenableCall listenableRenderer = listenable(renderer);
 			listenableRenderer.onSuccess(onSuccess);
 			defineOnFail(listenableRenderer);
-			configuration.getRenderingThreadPool().submit(listenableRenderer);
+			Future<?> submit = configuration.getRenderingThreadPool().submit(listenableRenderer);
+			if ( !requestContext.isAsyncRequest() )
+				submit.get();
 		} catch ( Exception e ){
 			onFail( e );
 		}

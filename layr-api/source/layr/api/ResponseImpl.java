@@ -3,35 +3,32 @@ package layr.api;
 import java.util.HashMap;
 import java.util.Map;
 
-import layr.api.TemplateResponse.TemplateOptionsResponse;
-
-class ResponseImpl
+public class ResponseImpl
 implements 
-	TemplateResponse, TemplateOptionsResponse, RedirectResponse,
-	HeaderResponse, StatusCodeResponse, BuiltResponse,
-	JSONResponse {
+	OptionsResponse, RedirectResponse,
+	HeaderResponse, StatusCodeResponse, BuiltResponse {
 
-	String template;
+	String contentType;
 	String redirectTo;
 	Integer statusCode;
 	String encoding;
 	Map<String, String> headers;
 	Map<String, Object> parameters;
 	Object parameterObject;
-	Object jsonObject;
+	Object object;
 
 	public ResponseImpl() {
 		headers = new HashMap<String, String>();
 		parameters = new HashMap<String, Object>();
 	}
 
-	public ResponseImpl template(String template) {
-		this.template = template;
+	public OptionsResponse object(Object object) {
+		this.object = object;
 		return this;
 	}
 
-	public String template() {
-		return template;
+	public Object object(){
+		return object;
 	}
 
 	public ResponseImpl redirectTo(String url) {
@@ -87,19 +84,19 @@ implements
 	public Object templateParameterObject() {
 		return parameterObject;
 	}
+	
+	public ResponseImpl contentType(String contentType) {
+		this.contentType = contentType;
+		return this;
+	}
+	
+	@Override
+	public String contentType() {
+		return contentType;
+	}
 
 	@Override
 	public ResponseImpl build() {
 		return this;
-	}
-
-	@Override
-	public JSONResponse json( Object jsonObject ) {
-		this.jsonObject = jsonObject;
-		return this;
-	}
-	
-	public Object jsonObject(){
-		return jsonObject;
 	}
 }

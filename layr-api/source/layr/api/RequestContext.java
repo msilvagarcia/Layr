@@ -49,8 +49,6 @@ public interface RequestContext {
 
 	public abstract Object convert(InputStream value, Class<?> targetClass) throws IOException;
 
-	public abstract void writeAsJSON( Object object ) throws IOException;
-
 	public abstract void log(String text);
 
 	public abstract void cacheCompiledResource(String templateName, Component application);

@@ -13,6 +13,7 @@ public class StubRoutingBootstrap extends RoutingBootstrap {
 		configuration.setRegisteredWebResources( getRegisteredWebResources() );
 		configuration.setRegisteredDataProviders(getRegisteredDataProviders());
 		configuration.setRegisteredExceptionHandlers( getRegisteredExceptionHandlers() );
+		configuration.setRegisteredOutputRenderes(getRegisteredOutputRenderers());
 		configuration.setCache( new Cache() );
 		return configuration;
 	}

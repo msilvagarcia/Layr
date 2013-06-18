@@ -136,11 +136,6 @@ public class JEERequestContext extends AbstractRequestContext {
 		}
 	}
 
-	@Override
-	public void writeAsJSON(Object object) throws IOException {
-		converter.encode(getWriter(), object);
-	}
-
 	public InputStream openStream(String url) {
 		InputStream stream = getClassLoader().getResourceAsStream(url);
 		if (stream == null && getServletContext() != null)

@@ -8,6 +8,7 @@ import layr.api.Cache;
 import layr.api.ComponentFactory;
 import layr.api.DataProvider;
 import layr.api.ExceptionHandler;
+import layr.api.OutputRenderer;
 
 /**
  * Default implementation of ApplicationContext interface. Developers
@@ -23,6 +24,7 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	List<HandledClass> registeredWebResources;
 	List<HandledClass> registeredTemplateParameterObject;
 	Map<String, ComponentFactory> registeredTagLibs;
+	Map<String, Class<? extends OutputRenderer>> registeredOutputRenderes;
 
 	@SuppressWarnings("rawtypes")
 	Map<String, Class<? extends ExceptionHandler>> registeredExceptionHandlers;
@@ -116,5 +118,15 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	
 	public void setRenderingThreadPool(ExecutorService renderingThreadPool) {
 		this.renderingThreadPool = renderingThreadPool;
+	}
+
+	@Override
+	public Map<String, Class<? extends OutputRenderer>> getRegisteredOutputRenderers() {
+		return registeredOutputRenderes;
+	}
+	
+	public void setRegisteredOutputRenderes(
+			Map<String, Class<? extends OutputRenderer>> registeredOutputRenderes) {
+		this.registeredOutputRenderes = registeredOutputRenderes;
 	}
 }

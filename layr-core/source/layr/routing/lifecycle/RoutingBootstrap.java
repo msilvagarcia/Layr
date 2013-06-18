@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.Set;
 
 import layr.api.ComponentFactory;
+import layr.api.ContentType;
 import layr.api.DataProvider;
 import layr.api.ExceptionHandler;
+import layr.api.OutputRenderer;
 import layr.api.TagLib;
 import layr.api.WebResource;
 import layr.engine.components.DefaultComponentFactory;
@@ -26,6 +28,7 @@ public abstract class RoutingBootstrap {
 	Map<String, Class<? extends ExceptionHandler>> registeredExceptionHandlers;
 	@SuppressWarnings("rawtypes")
 	Map<String, Class<? extends DataProvider>> registeredDataProviders;
+	Map<String, Class<? extends OutputRenderer>> registeredOutputRenderers;
 	
 	@SuppressWarnings("rawtypes")
 	HandlerClassExtractor<ExceptionHandler> exceptionHandlerClassExtractor;
@@ -35,10 +38,11 @@ public abstract class RoutingBootstrap {
 	public RoutingBootstrap() {
 		registeredWebResources = new ArrayList<HandledClass>();
 		registeredTagLibs = new HashMap<String, ComponentFactory>();
+		registeredOutputRenderers = new HashMap<String, Class<? extends OutputRenderer>>();
 		exceptionHandlerClassExtractor = HandlerClassExtractor.newInstance(ExceptionHandler.class);
 		dataProviderClassExtractor = HandlerClassExtractor.newInstance(DataProvider.class);
-
 		populateWithDefaultTagLibs( registeredTagLibs );
+		populateWithDefaultOutputRenderers( registeredOutputRenderers );
 	}
 
 	/**
@@ -49,6 +53,11 @@ public abstract class RoutingBootstrap {
 		registeredTagLibs.put("", xHtmlComponentFactory);
 		registeredTagLibs.put("http://www.w3.org/1999/xhtml", xHtmlComponentFactory);
 		registeredTagLibs.put("urn:layr:template", new TemplateComponentFactory());
+	}
+
+	public void populateWithDefaultOutputRenderers(
+			Map<String, Class<? extends OutputRenderer>> outputRenderers) {
+		outputRenderers.put("text/html", XHTMLOutputRenderer.class);
 	}
 
 	public ApplicationContext configure(Set<Class<?>> classes) throws RoutingInitializationException {
@@ -81,6 +90,7 @@ public abstract class RoutingBootstrap {
 		tryToRegisterATag(clazz);
 		tryToRegisterAnExceptionHandler(clazz);
 		tryToRegisterAnDataProvider(clazz);
+		tryToRegisterAContentTypeRenderer(clazz);
 	}
 
 	public void tryToRegisterAWebResource(Class<?> clazz) {
@@ -129,5 +139,17 @@ public abstract class RoutingBootstrap {
 	@SuppressWarnings("rawtypes")
 	public Map<String, Class<? extends DataProvider>> getRegisteredDataProviders() {
 		return registeredDataProviders;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void tryToRegisterAContentTypeRenderer(Class<?> clazz) {
+		ContentType contentTypeAnn = clazz.getAnnotation(ContentType.class);
+		if ( contentTypeAnn != null )
+			for ( String contentType : contentTypeAnn.value() )
+				registeredOutputRenderers.put(contentType, (Class<? extends OutputRenderer>) clazz);
+	}
+
+	public Map<String, Class<? extends OutputRenderer>> getRegisteredOutputRenderers() {
+		return registeredOutputRenderers;
 	}
 }

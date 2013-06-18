@@ -66,6 +66,7 @@ public class JEERoutingBootstrap extends RoutingBootstrap implements javax.servl
 			configuration.setRegisteredDataProviders(getRegisteredDataProviders());
 			configuration.setMethodExecutionThreadPool(getMethodExecutionThreadPool());
 			configuration.setRenderingThreadPool(getRenderingThreadPool());
+			configuration.setRegisteredOutputRenderes(getRegisteredOutputRenderers());
 			return configuration;
 		} catch ( Throwable e ){
 			throw new RoutingInitializationException(e);

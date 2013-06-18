@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
+import layr.org.codehaus.jackson.JSONOutputRenderer;
 import layr.routing.impl.NullPointerExceptionHandler;
 import layr.routing.impl.RequestContextDataProvider;
 import layr.routing.lifecycle.BusinessRoutingLifeCycle;
@@ -28,6 +29,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 		classes.add( HomeResource.class );
 		classes.add( NullPointerExceptionHandler.class );
 		classes.add( RequestContextDataProvider.class );
+		classes.add( JSONOutputRenderer.class );
 		return classes;
 	}
 

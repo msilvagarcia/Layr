@@ -4,8 +4,6 @@ import java.util.Map;
 
 public interface BuiltResponse {
 
-	String template();
-
 	String redirectTo();
 
 	Map<String, String> headers();
@@ -18,5 +16,7 @@ public interface BuiltResponse {
 
 	Object templateParameterObject();
 
-	Object jsonObject();
+	Object object();
+
+	String contentType();
 }

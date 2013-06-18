@@ -24,6 +24,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface WebResource {
-	String value();
+public @interface ContentType {
+	String[] value();
 }

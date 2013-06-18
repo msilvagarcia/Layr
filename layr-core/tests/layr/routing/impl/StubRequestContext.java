@@ -97,11 +97,6 @@ public class StubRequestContext extends AbstractRequestContext {
 			throw new IOException( e );
 		}
 	}
-	
-	@Override
-	public void writeAsJSON(Object object) throws IOException {
-		converter.encode(getWriter(), object);
-	}
 
 	@Override
 	public String getApplicationRootPath() {

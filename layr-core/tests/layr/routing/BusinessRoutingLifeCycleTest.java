@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import layr.org.codehaus.jackson.JSONOutputRenderer;
+import layr.org.codehaus.jackson.JSONWrapper;
 import layr.routing.impl.NullPointerExceptionHandler;
 import layr.routing.impl.RequestContextDataProvider;
 import layr.routing.lifecycle.BusinessRoutingLifeCycle;
@@ -29,7 +29,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 		classes.add( HomeResource.class );
 		classes.add( NullPointerExceptionHandler.class );
 		classes.add( RequestContextDataProvider.class );
-		classes.add( JSONOutputRenderer.class );
+		classes.add( JSONWrapper.class );
 		return classes;
 	}
 
@@ -59,7 +59,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 
 	@Test
 	public void grantThatSendPostAndRenderTemplateThroughBodyObjectAsExpected() throws Exception {
-		put( "/hello/world/body/object", "{ \"requestParam\":12.5, \"pathParam\":1234}" );
+		put( "/hello/world/body/object", "{ \"requestParam\":12.5, \"pathParam\":1234}", "application/json" );
 		assertEquals( 200, getRequestContext().getStatusCode() );
 		assertEquals( "text/html", getRequestContext().getContentType() );
 		assertEquals( "<p>1234:12.5</p>", getRequestContext().getBufferedWroteContentToOutput() );

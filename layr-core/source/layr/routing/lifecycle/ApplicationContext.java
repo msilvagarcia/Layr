@@ -8,6 +8,7 @@ import layr.api.Cache;
 import layr.api.ComponentFactory;
 import layr.api.DataProvider;
 import layr.api.ExceptionHandler;
+import layr.api.InputConverter;
 import layr.api.OutputRenderer;
 import layr.exceptions.RoutingException;
 
@@ -42,6 +43,11 @@ public interface ApplicationContext {
 	 * @return a map with all output renderer's found during deploy
 	 */
 	public Map<String, Class<? extends OutputRenderer>> getRegisteredOutputRenderers();
+
+	/**
+	 * @return a with all input converter's found during deploy
+	 */
+	public abstract Map<String,Class<? extends InputConverter>> getRegisteredInputConverters();
 
 	/**
 	 * @return the cache defined during deploy

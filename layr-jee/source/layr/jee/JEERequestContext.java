@@ -30,15 +30,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import layr.engine.AbstractRequestContext;
-import layr.org.codehaus.jackson.ConversionException;
-import layr.org.codehaus.jackson.ConverterFactory;
 
 public class JEERequestContext extends AbstractRequestContext {
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
 	private Map<String,String> requestParameter;
-	private ConverterFactory converter;
 	private String applicationRootPath;
 	private String requestURI;
 	private Boolean asyncSupported;
@@ -50,7 +47,6 @@ public class JEERequestContext extends AbstractRequestContext {
 		super();
 		this.request = request;
 		this.response = response;
-		this.converter = new ConverterFactory();
 		prePopulateContext();
 	}
 
@@ -117,25 +113,6 @@ public class JEERequestContext extends AbstractRequestContext {
 		return requestParameter;
 	}
 
-	@Override
-	public Object convert(String value, Class<?> targetClass) throws IOException {
-		try {
-			return converter.decode( value, targetClass );
-		} catch (ConversionException e) {
-			throw new IOException( e );
-		}
-	}
-
-	@Override
-	public Object convert(InputStream value, Class<?> targetClass)
-			throws IOException {
-		try {
-			return converter.decode( value, targetClass );
-		} catch (ConversionException e) {
-			throw new IOException( e );
-		}
-	}
-
 	public InputStream openStream(String url) {
 		InputStream stream = getClassLoader().getResourceAsStream(url);
 		if (stream == null && getServletContext() != null)
@@ -168,5 +145,10 @@ public class JEERequestContext extends AbstractRequestContext {
 	@Override
 	public OutputStream getResponseOutputStream() throws IOException {
 		return response.getOutputStream();
+	}
+
+	@Override
+	public String getContentType() {
+		return request.getContentType();
 	}
 }

@@ -14,6 +14,8 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
 
 import layr.api.Cache;
+import layr.api.ContentType;
+import layr.api.Handler;
 import layr.api.TagLib;
 import layr.api.ThreadPoolFactory;
 import layr.api.WebResource;
@@ -22,11 +24,9 @@ import layr.routing.lifecycle.ApplicationContext;
 import layr.routing.lifecycle.RoutingBootstrap;
 
 @HandlesTypes({
-	TagLib.class,
-	WebResource.class,
-	Stateless.class,
-	Stateful.class,
-	Singleton.class})
+	TagLib.class, WebResource.class,
+	ContentType.class, Handler.class,
+	Stateless.class, Stateful.class, Singleton.class})
 public class JEERoutingBootstrap extends RoutingBootstrap implements javax.servlet.ServletContainerInitializer {
 
 	EnterpriseJavaBeansContext ejbContext;
@@ -67,6 +67,7 @@ public class JEERoutingBootstrap extends RoutingBootstrap implements javax.servl
 			configuration.setMethodExecutionThreadPool(getMethodExecutionThreadPool());
 			configuration.setRenderingThreadPool(getRenderingThreadPool());
 			configuration.setRegisteredOutputRenderes(getRegisteredOutputRenderers());
+			configuration.setRegisteredInputConverter(getRegisteredInputConverter());
 			return configuration;
 		} catch ( Throwable e ){
 			throw new RoutingInitializationException(e);

@@ -45,10 +45,6 @@ public interface RequestContext {
 
 	public abstract Map<String, String> getRequestParameters();
 
-	public abstract Object convert(String value, Class<?> targetClass) throws IOException;
-
-	public abstract Object convert(InputStream value, Class<?> targetClass) throws IOException;
-
 	public abstract void log(String text);
 
 	public abstract void cacheCompiledResource(String templateName, Component application);
@@ -62,5 +58,7 @@ public interface RequestContext {
 	public abstract InputStream getRequestInputStream() throws IOException;
 	
 	public abstract OutputStream getResponseOutputStream() throws IOException;
+
+	public abstract String getContentType();
 
 }

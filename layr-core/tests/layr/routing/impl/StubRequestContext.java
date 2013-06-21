@@ -13,8 +13,7 @@ import layr.api.ComponentFactory;
 import layr.engine.AbstractRequestContext;
 import layr.engine.components.template.TemplateComponentFactory;
 import layr.engine.components.xhtml.XHtmlComponentFactory;
-import layr.org.codehaus.jackson.ConversionException;
-import layr.org.codehaus.jackson.ConverterFactory;
+import layr.routing.converter.ConverterFactory;
 
 public class StubRequestContext extends AbstractRequestContext {
 	
@@ -90,15 +89,6 @@ public class StubRequestContext extends AbstractRequestContext {
 	}
 
 	@Override
-	public Object convert(String value, Class<?> targetClass) throws IOException {
-		try {
-			return converter.decode( value, targetClass );
-		} catch (ConversionException e) {
-			throw new IOException( e );
-		}
-	}
-
-	@Override
 	public String getApplicationRootPath() {
 		return "/";
 	}
@@ -137,16 +127,6 @@ public class StubRequestContext extends AbstractRequestContext {
 
 	public void setIsAsyncRequest(Boolean isAsyncRequest) {
 		this.isAsyncRequest = isAsyncRequest;
-	}
-
-	@Override
-	public Object convert(InputStream value, Class<?> targetClass)
-			throws IOException {
-		try {
-			return converter.decode( value, targetClass );
-		} catch (ConversionException e) {
-			throw new IOException( e );
-		}
 	}
 
 	@Override

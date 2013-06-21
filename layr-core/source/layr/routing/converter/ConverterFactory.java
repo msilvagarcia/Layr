@@ -1,14 +1,9 @@
-package layr.org.codehaus.jackson;
+package layr.routing.converter;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import layr.exceptions.ConversionException;
 
 public class ConverterFactory {
 	
@@ -61,31 +56,11 @@ public class ConverterFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T decode( InputStream value, Class<T> clazz ) throws ConversionException {
-		try {
-			if ( value == null
-			||   String.class.equals( clazz ) )
-				return (T) value;
-			Converter<T> converter = (Converter<T>) new JacksonConverter();
-			return converter.convert( value, clazz );
-		} catch (Exception e) {
-			throw new ConversionException( String.format(
-					"Can't convert '%s' to '%s'", value, clazz.getCanonicalName()), e );
-		}
-	}
-
-	@SuppressWarnings("unchecked")
 	public <T> Converter<T> getConverterFor( Class<T> clazz )
 			throws InstantiationException, IllegalAccessException {
 		Class<? extends Converter<T>> converterClass = 
 			(Class<? extends Converter<T>>) converters.get( clazz.getCanonicalName() );
-		if ( converterClass == null )
-			return (Converter<T>) new JacksonConverter();
 		return (Converter<T>)converterClass.newInstance();
 	}
-	
-	public void encode( Writer writer, Object object ) throws JsonGenerationException, JsonMappingException, IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.writeValue(writer, object);
-	}
+
 }

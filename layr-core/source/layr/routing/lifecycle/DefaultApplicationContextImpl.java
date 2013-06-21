@@ -8,6 +8,7 @@ import layr.api.Cache;
 import layr.api.ComponentFactory;
 import layr.api.DataProvider;
 import layr.api.ExceptionHandler;
+import layr.api.InputConverter;
 import layr.api.OutputRenderer;
 
 /**
@@ -25,6 +26,7 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	List<HandledClass> registeredTemplateParameterObject;
 	Map<String, ComponentFactory> registeredTagLibs;
 	Map<String, Class<? extends OutputRenderer>> registeredOutputRenderes;
+	Map<String, Class<? extends InputConverter>> registeredInputConverter;
 
 	@SuppressWarnings("rawtypes")
 	Map<String, Class<? extends ExceptionHandler>> registeredExceptionHandlers;
@@ -128,5 +130,15 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	public void setRegisteredOutputRenderes(
 			Map<String, Class<? extends OutputRenderer>> registeredOutputRenderes) {
 		this.registeredOutputRenderes = registeredOutputRenderes;
+	}
+
+	@Override
+	public Map<String, Class<? extends InputConverter>> getRegisteredInputConverters() {
+		return registeredInputConverter;
+	}
+	
+	public void setRegisteredInputConverter(
+			Map<String, Class<? extends InputConverter>> registeredInputConverter) {
+		this.registeredInputConverter = registeredInputConverter;
 	}
 }

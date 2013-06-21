@@ -1,5 +1,6 @@
 package layr.routing.lifecycle;
 
+import java.io.IOException;
 import java.util.concurrent.Callable;
 
 import layr.api.RequestContext;
@@ -34,7 +35,7 @@ public class BusinessRoutingMethodRunner implements Callable<Object> {
 		}
 	}
 
-	public Request createRoutingRequest(HandledMethod routeMethod) {
+	public Request createRoutingRequest(HandledMethod routeMethod) throws IOException {
     	return new Request( configuration, requestContext, routeMethod.getRouteMethodPattern() );
     }
 

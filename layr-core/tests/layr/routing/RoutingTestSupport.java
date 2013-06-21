@@ -77,13 +77,15 @@ public abstract class RoutingTestSupport {
 	}
 	
 	public void put( String uri ) throws Exception {
-		put( uri, null );
+		put( uri, null, null );
 	}
 
-	public void put( String uri, String body ) throws Exception {
+	public void put( String uri, String body, String contentType ) throws Exception {
 		setRequestURI( uri );
 		if ( body != null && !body.isEmpty() )
 			getRequestContext().setRequestInputStream(new ByteArrayInputStream(body.getBytes()));
+		if ( contentType != null && !contentType.isEmpty() )
+			getRequestContext().setContentType(contentType);
 		setRequestMethod( "PUT" );
 		run();
 	}

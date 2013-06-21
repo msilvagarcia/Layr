@@ -7,10 +7,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import layr.api.DataProvider;
+import layr.api.InputConverter;
 import layr.api.RequestContext;
 import layr.commons.Reflection;
 import layr.engine.expressions.URLPattern;
 import layr.exceptions.RoutingException;
+import layr.routing.converter.DefaultInputConverter;
 
 public class Request {
 
@@ -20,18 +22,34 @@ public class Request {
 
 	Map<String, String> pathParameters;
 	Map<String, String> requestParameters;
+	InputConverter inputConverter;
 
 	public Request(ApplicationContext applicationContext,
-			RequestContext requestContext, String routePattern) {
+			RequestContext requestContext, String routePattern) throws IOException {
 		this.applicationContext = applicationContext;
 		this.requestContext = requestContext;
 		this.routePattern = routePattern;
 		memorizeParameters();
+		memorizeInputConverter();
 	}
 
 	void memorizeParameters() {
 		pathParameters = extractPathParameters();
 		requestParameters = requestContext.getRequestParameters();
+	}
+
+	void memorizeInputConverter() throws IOException {
+		try {
+			Class<? extends InputConverter> clazz = null;
+			String contentType = requestContext.getContentType();
+			if (contentType != null)
+				clazz = applicationContext.getRegisteredInputConverters().get(contentType);
+			if (clazz == null)
+				clazz = DefaultInputConverter.class;
+			inputConverter = clazz.newInstance();
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
 	}
 
 	public Map<String, String> extractPathParameters() {
@@ -44,7 +62,7 @@ public class Request {
 		if (value == null)
 			return null;
 		if (value instanceof String)
-			return requestContext.convert((String) value,
+			return inputConverter.convert((String) value,
 					parameter.getTargetClazz());
 		return value;
 	}
@@ -59,13 +77,14 @@ public class Request {
 			return createDataHandledObject(parameter);
 		if (parameter instanceof QueryHandledParameters)
 			return createFilterObjectFromParameter(parameter);
-		return createObjectFromBody( parameter );
+		return createObjectFromBody(parameter);
 	}
 
-	public Object createObjectFromBody(HandledParameter parameter) throws RoutingException {
+	public Object createObjectFromBody(HandledParameter parameter)
+			throws RoutingException {
 		try {
 			InputStream inputStream = requestContext.getRequestInputStream();
-			Object convertedObject = requestContext.convert(inputStream, parameter.getTargetClazz());
+			Object convertedObject = inputConverter.convert(inputStream, parameter.getTargetClazz());
 			return convertedObject;
 		} catch (Throwable t) {
 			throw new RoutingException(t);
@@ -91,15 +110,14 @@ public class Request {
 			InvocationTargetException, NoSuchFieldException,
 			InstantiationException, IOException {
 		Class<? extends Object> clazz = target.getClass();
-		Field field = Reflection.extractFieldFor(clazz,
-				parameterName);
+		Field field = Reflection.extractFieldFor(clazz, parameterName);
 		if (field == null) {
-			requestContext.log(String.format(
-				"[WARN] Class %s doesn't have field with name '%s'.",
-				clazz.getCanonicalName(), parameterName));
+			requestContext.log(
+				String.format("[WARN] Class %s doesn't have field with name '%s'.",
+					clazz.getCanonicalName(), parameterName));
 			return;
 		}
-		Object value = requestContext.convert(valueAsString, field.getType());
+		Object value = inputConverter.convert(valueAsString, field.getType());
 		Reflection.setAttribute(target, parameterName, value);
 	}
 

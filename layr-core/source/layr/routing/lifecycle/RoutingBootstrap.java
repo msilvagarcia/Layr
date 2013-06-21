@@ -10,6 +10,7 @@ import layr.api.ComponentFactory;
 import layr.api.ContentType;
 import layr.api.DataProvider;
 import layr.api.ExceptionHandler;
+import layr.api.InputConverter;
 import layr.api.OutputRenderer;
 import layr.api.TagLib;
 import layr.api.WebResource;
@@ -29,6 +30,7 @@ public abstract class RoutingBootstrap {
 	@SuppressWarnings("rawtypes")
 	Map<String, Class<? extends DataProvider>> registeredDataProviders;
 	Map<String, Class<? extends OutputRenderer>> registeredOutputRenderers;
+	Map<String, Class<? extends InputConverter>> registeredInputConverter;
 	
 	@SuppressWarnings("rawtypes")
 	HandlerClassExtractor<ExceptionHandler> exceptionHandlerClassExtractor;
@@ -39,6 +41,7 @@ public abstract class RoutingBootstrap {
 		registeredWebResources = new ArrayList<HandledClass>();
 		registeredTagLibs = new HashMap<String, ComponentFactory>();
 		registeredOutputRenderers = new HashMap<String, Class<? extends OutputRenderer>>();
+		registeredInputConverter = new HashMap<String, Class<? extends InputConverter>>();
 		exceptionHandlerClassExtractor = HandlerClassExtractor.newInstance(ExceptionHandler.class);
 		dataProviderClassExtractor = HandlerClassExtractor.newInstance(DataProvider.class);
 		populateWithDefaultTagLibs( registeredTagLibs );
@@ -91,6 +94,7 @@ public abstract class RoutingBootstrap {
 		tryToRegisterAnExceptionHandler(clazz);
 		tryToRegisterAnDataProvider(clazz);
 		tryToRegisterAContentTypeRenderer(clazz);
+		tryToRegisterAContentTypeInputConverter(clazz);
 	}
 
 	public void tryToRegisterAWebResource(Class<?> clazz) {
@@ -149,7 +153,19 @@ public abstract class RoutingBootstrap {
 				registeredOutputRenderers.put(contentType, (Class<? extends OutputRenderer>) clazz);
 	}
 
+	@SuppressWarnings("unchecked")
+	public void tryToRegisterAContentTypeInputConverter(Class<?> clazz) {
+		ContentType contentTypeAnn = clazz.getAnnotation(ContentType.class);
+		if ( contentTypeAnn != null )
+			for ( String contentType : contentTypeAnn.value() )
+				registeredInputConverter.put(contentType, (Class<? extends InputConverter>) clazz);
+	}
+
 	public Map<String, Class<? extends OutputRenderer>> getRegisteredOutputRenderers() {
 		return registeredOutputRenderers;
+	}
+	
+	public Map<String, Class<? extends InputConverter>> getRegisteredInputConverter() {
+		return registeredInputConverter;
 	}
 }

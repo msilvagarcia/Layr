@@ -14,6 +14,7 @@ public class StubRoutingBootstrap extends RoutingBootstrap {
 		configuration.setRegisteredDataProviders(getRegisteredDataProviders());
 		configuration.setRegisteredExceptionHandlers( getRegisteredExceptionHandlers() );
 		configuration.setRegisteredOutputRenderes(getRegisteredOutputRenderers());
+		configuration.setRegisteredInputConverter(getRegisteredInputConverter());
 		configuration.setCache( new Cache() );
 		return configuration;
 	}

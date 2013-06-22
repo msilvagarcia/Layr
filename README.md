@@ -14,6 +14,22 @@ cd Layr/layr-parent
 mvn clean install
 ```
 
+## Configure Layr for JEE Environment
+Include the following snippet on your ```pom.xml``` file:
+```xml
+<dependency>
+    <groupId>org.layr</groupId>
+    <artifactId>layr-jee</artifactId>
+    <version>3.0</version>
+</dependency>
+```
+Include the following snippet on your ```web.xml``` file:
+```xml
+<filter-mapping>
+    <filter-name>layr.jee.Application</filter-name>
+    <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
 ## Documentation
 Documentation still on earlier development. For now, you can follow some examples on:
 - [This Routing Implementation](https://github.com/miere/Layr/blob/3.0/layr-core/tests/layr/routing/sample/HelloResource.java)

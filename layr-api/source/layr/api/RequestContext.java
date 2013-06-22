@@ -61,4 +61,11 @@ public interface RequestContext {
 
 	public abstract String getContentType();
 
+	/**
+	 * @return all attributes set in context. It's usually filled with 
+	 * all set parameters with {@link OptionsResponse#set(String, Object)} and
+	 * all field values from {@link ResponseBuilder#render(Object, String)}.
+	 */
+	public abstract Map<String, Object> getAttributes();
+
 }

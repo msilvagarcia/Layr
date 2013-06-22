@@ -24,7 +24,7 @@ public class HelloResource {
 			@QueryParameter("requestParam") Double requestParam)
 	{
 		return template("hello.xhtml")
-				.parameters( new Hello(pathParam, requestParam) );
+				.parameterObject( new Hello(pathParam, requestParam) );
 	}
 
 	@POST("world/{param1}/{param2}")

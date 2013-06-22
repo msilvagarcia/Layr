@@ -33,6 +33,11 @@
 			<artifactId>layr-jee</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>me.msilvagarcia.layr</groupId>
+			<version>1.0-SNAPSHOT</version>
+			<artifactId>layr-mustache</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

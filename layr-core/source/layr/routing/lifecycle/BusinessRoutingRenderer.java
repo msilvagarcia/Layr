@@ -82,7 +82,7 @@ public class BusinessRoutingRenderer {
 	
 	public void memorizeParameters( BuiltResponse response ) {
 		TemplateParameterObjectHandler parameterHandler = new TemplateParameterObjectHandler( requestContext );
-		parameterHandler.memorizeParameters(response.templateParameterObject());
+		parameterHandler.memorizeParameters(response.parameterObject());
 		memorizeParameters( response.parameters() );
 	}
 
@@ -99,7 +99,7 @@ public class BusinessRoutingRenderer {
 		renderFromContentType(
 			new ResponseImpl()
 				.contentType("application/json")
-				.object( response )
+				.parameterObject( response )
 				.build());
 	}
 }

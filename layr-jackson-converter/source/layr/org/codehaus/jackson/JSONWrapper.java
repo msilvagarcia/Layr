@@ -26,7 +26,7 @@ public class JSONWrapper implements OutputRenderer, InputConverter {
 	public void render(RequestContext requestContext, BuiltResponse response)
 			throws ConversionException {
 		try {
-			mapper.writeValue(requestContext.getWriter(), response.object());
+			mapper.writeValue(requestContext.getWriter(), response.parameterObject());
 			requestContext.setContentType(APPLICATION_JSON);
 		} catch (IOException e) {
 			throw new ConversionException(e);

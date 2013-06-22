@@ -14,14 +14,14 @@ import layr.api.RequestContext;
 
 public abstract class AbstractRequestContext implements RequestContext {
 
-	Map<String, Object> properties;
+	Map<String, Object> attributes;
 	Map<String, ComponentFactory> registeredTagLibs;
 	Cache cache;
 	String defaultResource;
 	Boolean isAsyncRequest;
 
 	public AbstractRequestContext() {
-		properties = new HashMap<String, Object>();
+		attributes = new HashMap<String, Object>();
 	}
 
 	/* (non-Javadoc)
@@ -30,9 +30,9 @@ public abstract class AbstractRequestContext implements RequestContext {
 	@Override
 	public void put(String name, Object property) {
 		if ( property == null )
-			properties.remove(name);
+			attributes.remove(name);
 		else
-			properties.put(name, property);
+			attributes.put(name, property);
 	}
 
 	/* (non-Javadoc)
@@ -40,7 +40,14 @@ public abstract class AbstractRequestContext implements RequestContext {
 	 */
 	@Override
 	public Object get(String name) {
-		return properties.get(name);
+		return attributes.get(name);
+	}
+	
+	/* (non-Javadoc)
+	 * @see layr.api.RequestContext#getAttributes()
+	 */
+	public Map<String, Object> getAttributes() {
+		return attributes;
 	}
 
 	/* (non-Javadoc)
@@ -159,6 +166,9 @@ public abstract class AbstractRequestContext implements RequestContext {
 		return requestURI;
 	}
 	
+	/* (non-Javadoc)
+	 * @see layr.api.RequestContext#getDefaultResource()
+	 */
 	public String getDefaultResource() {
 		return defaultResource;
 	}
@@ -168,6 +178,9 @@ public abstract class AbstractRequestContext implements RequestContext {
 		this.defaultResource = defaultResource;
 	}
 	
+	/* (non-Javadoc)
+	 * @see layr.api.RequestContext#isAsyncRequest()
+	 */
 	@Override
 	public boolean isAsyncRequest() {
 		return isAsyncRequest;

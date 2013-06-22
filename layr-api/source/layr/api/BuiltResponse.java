@@ -14,9 +14,17 @@ public interface BuiltResponse {
 
 	Map<String, Object> parameters();
 
-	Object templateParameterObject();
+	Object parameterObject();
 
-	Object object();
+	/**
+	 * @return a template name when needed by its respective {@link OutputRenderer}. It's
+	 * optional.
+	 */
+	String templateName();
 
+	/**
+	 * @return the response Content-Type. It is used to define which {@link OutputRenderer}
+	 * will be used to render the response.
+	 */
 	String contentType();
 }

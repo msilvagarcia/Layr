@@ -9,7 +9,19 @@ final public class ResponseBuilder {
 	public static OptionsResponse template( String template ){
 		return new ResponseImpl()
 			.contentType("text/html")
-			.object( template );
+			.templateName( template );
+	}
+
+	public static OptionsResponse template( String template, String contentType ){
+		return new ResponseImpl()
+			.contentType(contentType)
+			.templateName( template );
+	}
+
+	public static OptionsResponse render( Object object, String contentType ){
+		return new ResponseImpl()
+			.contentType(contentType)
+			.parameterObject( object );
 	}
 
 	public static HeaderResponse header( String name, String value ){
@@ -23,6 +35,6 @@ final public class ResponseBuilder {
 	public static OptionsResponse json(Object object) {
 		return new ResponseImpl()
 				.contentType("application/json")
-				.object( object );
+				.parameterObject( object );
 	}
 }

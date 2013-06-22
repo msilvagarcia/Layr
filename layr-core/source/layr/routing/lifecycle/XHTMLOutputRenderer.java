@@ -27,7 +27,7 @@ public class XHTMLOutputRenderer implements OutputRenderer {
 	}
 
 	public void render() throws RoutingException {
-		String template = (String)response.object();
+		String template = (String)response.templateName();
 		try {
 			renderResponseTemplate(template);
 		} catch (TemplateParsingException e) {

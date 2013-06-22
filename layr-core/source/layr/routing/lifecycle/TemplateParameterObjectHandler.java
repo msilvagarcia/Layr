@@ -1,12 +1,11 @@
 package layr.routing.lifecycle;
 
-import static layr.commons.Reflection.extractGetterFor;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 import layr.api.RequestContext;
+
 
 public class TemplateParameterObjectHandler {
 
@@ -60,7 +59,18 @@ public class TemplateParameterObjectHandler {
 			return null;
 		}
 	}
-	
+
+	public static Method extractGetterFor(Object target, String attribute)
+			throws SecurityException {
+		String getter = String.format("get%s%s", attribute.substring(0, 1)
+				.toUpperCase(), attribute.substring(1));
+		try {
+			return target.getClass().getMethod(getter);
+		} catch (NoSuchMethodException e) {
+			return null;
+		}
+	}
+
 	public boolean isPublic( Method method ) {
 		return isPublic( method.getModifiers() );
 	}

@@ -13,7 +13,6 @@ import layr.api.ComponentFactory;
 import layr.engine.AbstractRequestContext;
 import layr.engine.components.template.TemplateComponentFactory;
 import layr.engine.components.xhtml.XHtmlComponentFactory;
-import layr.routing.converter.ConverterFactory;
 
 public class StubRequestContext extends AbstractRequestContext {
 	
@@ -23,14 +22,12 @@ public class StubRequestContext extends AbstractRequestContext {
 	String requestHttpMethod;
 	String redirectedURL;
 	int statusCode;
-	ConverterFactory converter;
 	Boolean isAsyncRequest = false;
 	InputStream inputStream;
 	String contentType;
 
 	public StubRequestContext() {
 		writer = new StringWriter();
-		converter = new ConverterFactory();
 		populateWithDefaultTagLibs();
 		createCache();
 	}

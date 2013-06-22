@@ -15,20 +15,20 @@ implements
 	Map<String, String> headers;
 	Map<String, Object> parameters;
 	Object parameterObject;
-	Object object;
+	String templateName;
 
 	public ResponseImpl() {
 		headers = new HashMap<String, String>();
 		parameters = new HashMap<String, Object>();
 	}
 
-	public OptionsResponse object(Object object) {
-		this.object = object;
+	public OptionsResponse templateName(String object) {
+		this.templateName = object;
 		return this;
 	}
 
-	public Object object(){
-		return object;
+	public String templateName(){
+		return templateName;
 	}
 
 	public ResponseImpl redirectTo(String url) {
@@ -67,7 +67,7 @@ implements
 		return statusCode;
 	}
 
-	public ResponseImpl parameters(Object parameters) {
+	public ResponseImpl parameterObject(Object parameters) {
 		this.parameterObject = parameters;
 		return this;
 	}
@@ -81,7 +81,7 @@ implements
 		return parameters;
 	}
 
-	public Object templateParameterObject() {
+	public Object parameterObject() {
 		return parameterObject;
 	}
 	

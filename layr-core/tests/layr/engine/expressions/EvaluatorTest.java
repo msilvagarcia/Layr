@@ -47,13 +47,10 @@ public class EvaluatorTest {
 		Assert.assertEquals( "Is Poppins between 2 and 45?", evaluator.eval().toString() );
 	}
 	
-	@Test
+	@Test( timeout = 500 )
 	public void measureTimeForStringOnlyExpressionEvaluation(){
-		long start = System.currentTimeMillis();
 		for ( int i=0; i<STRESS_LOOPS; i++ )
 			grantThatWhenEvaluateStringOnlyExpressionReturnsItSelf();
-		long elapsed = System.currentTimeMillis() - start;
-		Assert.assertTrue( elapsed < 100 );
 	}
 
 	@Test

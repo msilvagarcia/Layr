@@ -36,3 +36,6 @@ Documentation still on earlier development. For now, you can follow some example
 - [This Routing Implementation](https://github.com/miere/Layr/blob/3.0/layr-core/tests/layr/routing/sample/HelloResource.java)
 - [Another Routing Implementation](https://github.com/miere/Layr/blob/3.0/layr-core/tests/layr/routing/sample/HomeResource.java)
 - [Full JEE Sample](https://github.com/miere/Layr/tree/3.0/samples/layr-jee-sample)
+
+## Licence
+Play framework is distributed under [Apache 2 licence](http://www.apache.org/licenses/LICENSE-2.0.html).

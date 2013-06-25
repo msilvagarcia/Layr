@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -21,6 +22,7 @@ public class Application implements Filter {
 		try {
 			runLifeCycle( request, response );
 		} catch ( NotFoundException e ) {
+			request.getServletContext().log("Not found");
 			chain.doFilter( request, response );
 		} catch (Exception e) {
 			throw new IOException( e );
@@ -33,7 +35,11 @@ public class Application implements Filter {
 	}
 
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {}
+	public void init(FilterConfig filterConfig) throws ServletException {
+		FilterRegistration filterRegistration = filterConfig.getServletContext().getFilterRegistration(filterConfig.getFilterName());
+		for ( String urlPatternMapping : filterRegistration.getUrlPatternMappings() )
+			filterConfig.getServletContext().log("Found Layr filter configured to pattern: " + urlPatternMapping );
+	}
 
 	@Override
 	public void destroy() {}

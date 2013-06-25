@@ -32,6 +32,7 @@ Include the following snippet on your ```web.xml``` file:
 ```
 ## Documentation
 Documentation still on earlier development. For now, you can follow some examples on:
+- [Understanding Layr Routing](https://github.com/miere/Layr/wiki/Understanding-Layr-Routing)
 - [This Routing Implementation](https://github.com/miere/Layr/blob/3.0/layr-core/tests/layr/routing/sample/HelloResource.java)
 - [Another Routing Implementation](https://github.com/miere/Layr/blob/3.0/layr-core/tests/layr/routing/sample/HomeResource.java)
 - [Full JEE Sample](https://github.com/miere/Layr/tree/3.0/samples/layr-jee-sample)

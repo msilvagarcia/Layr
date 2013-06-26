@@ -49,15 +49,29 @@ public class BusinessRoutingRenderer {
 	public void render(BuiltResponse builtResponse) throws IOException, RoutingException, InstantiationException, IllegalAccessException {
 		if ( builtResponse == null )
 			throw new NullPointerException("Built response returned null. Please check your implementation provider.");
-		else if ( !isEmpty( builtResponse.redirectTo() ) )
+
+		memorizeHeaders( builtResponse );
+
+		if ( !isEmpty( builtResponse.redirectTo() ) )
 			requestContext.redirectTo( builtResponse.redirectTo() );
-		else 
+		else if ( isEmpty( builtResponse.contentType() )
+			&&    builtResponse.statusCode() != null )
+			requestContext.setStatusCode(builtResponse.statusCode());
+		else if ( !isEmpty( builtResponse.contentType() ) )
 			renderFromContentType( builtResponse );
+		else
+			responseNoContent();
+	}
+
+	public void memorizeHeaders(BuiltResponse builtResponse) {
+		if ( builtResponse.headers() != null )
+			for ( String name : builtResponse.headers().keySet() )
+				requestContext.setResponseHeader( name, builtResponse.headers().get(name) );
 	}
 
 	public void renderFromContentType(BuiltResponse builtResponse) throws InstantiationException, IllegalAccessException, IOException {
 		String contentType = builtResponse.contentType();
-		setDefaultStatusAndCodeContentTypeAndEncoding(builtResponse);
+		setEncoding(builtResponse);
 		memorizeParameters(builtResponse);
 		Map<String, Class<? extends OutputRenderer>> outputRenderers = configuration.getRegisteredOutputRenderers();
 		Class<? extends OutputRenderer> rendererClass = outputRenderers.get(contentType);
@@ -65,21 +79,12 @@ public class BusinessRoutingRenderer {
 		outputRenderer.render(requestContext, builtResponse);
 	}
 
-	public void setDefaultStatusAndCodeContentTypeAndEncoding( BuiltResponse response ) throws UnsupportedEncodingException {
-		setDefaultStatusCode();
-		setEncoding(response);
-	}
-
-	public void setDefaultStatusCode() {
-		requestContext.setStatusCode(200);
-	}
-
 	public void setEncoding(BuiltResponse response)
 			throws UnsupportedEncodingException {
 		requestContext.setCharacterEncoding(
 			oneOf( response.encoding(), configuration.getDefaultEncoding() ) );
 	}
-	
+
 	public void memorizeParameters( BuiltResponse response ) {
 		TemplateParameterObjectHandler parameterHandler = new TemplateParameterObjectHandler( requestContext );
 		parameterHandler.memorizeParameters(response.parameterObject());

@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +42,7 @@ public class JEERequestContext extends AbstractRequestContext {
 	private Boolean asyncSupported;
 	private ServletContext servletContext;
 	private String httpMethod;
+	private Map<String, String> requestHeaders;
 
 	public JEERequestContext(
 			HttpServletRequest request, HttpServletResponse response  ) throws IOException {
@@ -53,8 +55,9 @@ public class JEERequestContext extends AbstractRequestContext {
 	private void prePopulateContext() throws IOException {
 		this.servletContext = this.request.getServletContext();
 		this.httpMethod = request.getMethod();
-		this.requestParameter = getRequestParameters();
+		this.requestParameter = extractRequestParameters();
 		this.asyncSupported = request.isAsyncSupported();
+		this.requestHeaders = extractRequestHeaders();
 	}
 
 	@Override
@@ -105,12 +108,14 @@ public class JEERequestContext extends AbstractRequestContext {
 
 	@Override
 	public Map<String, String> getRequestParameters() {
-		if ( requestParameter == null ) {
-			requestParameter = new HashMap<String, String>();
-			for ( String param : request.getParameterMap().keySet() )
-				requestParameter.put( param, request.getParameter( param ) );
-		}
 		return requestParameter;
+	}
+
+	private Map<String, String> extractRequestParameters(){
+		HashMap<String, String> requestParameters = new HashMap<String, String>();
+		for ( String param : request.getParameterMap().keySet() )
+			requestParameters.put( param, request.getParameter( param ) );
+		return requestParameters;
 	}
 
 	public InputStream openStream(String url) {
@@ -150,5 +155,26 @@ public class JEERequestContext extends AbstractRequestContext {
 	@Override
 	public String getContentType() {
 		return request.getContentType();
+	}
+
+	@Override
+	public Map<String, String> getRequestHeaders() {
+		return requestHeaders;
+	}
+
+	private Map<String, String> extractRequestHeaders() {
+		Map<String, String> headers = new HashMap<String, String>();
+		Enumeration<String> headerNames = request.getHeaderNames();
+		
+		while ( headerNames.hasMoreElements() ){
+			String name = headerNames.nextElement();
+			headers.put(name, request.getHeader(name));
+		}
+		return headers;
+	}
+
+	@Override
+	public void setResponseHeader(String name, String value) {
+		response.setHeader(name, value);
 	}
 }

@@ -43,10 +43,20 @@ public class XHTMLOutputRenderer implements OutputRenderer {
 		setDefaultStatusAndCodeContentTypeAndEncoding();
 		TemplateParser parser = new TemplateParser( requestContext );
 		Component compiledTemplate = parser.compile( template );
+		if ( compiledTemplate == null )
+			throw new TemplateParsingException("Template not found: " + template);
 		compiledTemplate.render();
 	}
 
 	public void setDefaultStatusAndCodeContentTypeAndEncoding() throws UnsupportedEncodingException {
 		requestContext.setContentType( TEXT_HTML );
+		setStatusCode();
+	}
+
+	private void setStatusCode() {
+		Integer statusCode = response.statusCode();
+		if ( statusCode == null )
+			statusCode = 200;
+		requestContext.setStatusCode(statusCode);
 	}
 }

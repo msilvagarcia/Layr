@@ -110,4 +110,8 @@ public class HandledMethod {
 	public Object getLastReturnedValue() {
 		return lastReturnedValue;
 	}
+	
+	public String getHttpMethod() {
+		return httpMethod;
+	}
 }

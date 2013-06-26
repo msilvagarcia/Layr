@@ -57,10 +57,9 @@
 		<directory>${project.basedir}/output</directory>
 		<outputDirectory>${project.basedir}/output/classes</outputDirectory>
 		<testOutputDirectory>${project.basedir}/output/test-classes</testOutputDirectory>
-		<!-- JAR Only -->
 		<resources>
 			<resource>
-				<directory>${project.basedir}/configurations</directory>
+				<directory>${project.basedir}/source</directory>
 				<includes>
 					<include>**/*.*</include>
 				</includes>

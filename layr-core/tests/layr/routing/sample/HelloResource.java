@@ -84,4 +84,10 @@ public class HelloResource {
 				.set("pathParam", helloFilterObject.getPathParam())
 				.set("requestParam", helloFilterObject.getRequestParam());
 	}
+	
+	@DELETE("world/status/code")
+	public Response renderDifferentStatusCode(){
+		return statusCode(201)
+				.header("Location", "/blah");
+	}
 }

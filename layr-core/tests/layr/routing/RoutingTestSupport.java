@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import layr.api.RequestContext;
+import layr.exceptions.NotFoundException;
 import layr.exceptions.RoutingInitializationException;
 import layr.routing.impl.StubRequestContext;
 import layr.routing.impl.StubRoutingBootstrap;
@@ -62,6 +63,8 @@ public abstract class RoutingTestSupport {
 	private void run() throws Exception {
 		if (lifeCycle.canHandleRequest())
 			lifeCycle.run();
+		else
+			throw new NotFoundException("not found");
 	}
 	
 	public void post( String uri ) throws Exception {

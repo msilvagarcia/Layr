@@ -114,6 +114,14 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 		assertEquals( "{\"pathParam\":3336,\"requestParam\":5432.1}", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
+	@Test
+	public void grantThatRenderDifferentStatusCodeAsExpected() throws Exception{
+		delete( "/hello/world/status/code" );
+		assertEquals("", getRequestContext().getBufferedWroteContentToOutput());
+		assertEquals( 201, getRequestContext().getStatusCode() );
+		assertEquals( "/blah", getRequestContext().getResponseHeaders().get("Location"));
+	}
+
 	@Test//( timeout=2500 )
 	public void stressTestFiveTimes() throws Exception{
 		for ( int i=0; i<5; i++ )

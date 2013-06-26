@@ -28,6 +28,7 @@ public class JSONWrapper implements OutputRenderer, InputConverter {
 		try {
 			mapper.writeValue(requestContext.getWriter(), response.parameterObject());
 			requestContext.setContentType(APPLICATION_JSON);
+			setStatusCode( requestContext, response );
 		} catch (IOException e) {
 			throw new ConversionException(e);
 		}
@@ -55,6 +56,13 @@ public class JSONWrapper implements OutputRenderer, InputConverter {
 		} catch (IOException e) {
 			throw new ConversionException(e);
 		}
+	}
+
+	private void setStatusCode(RequestContext requestContext, BuiltResponse response) {
+		Integer statusCode = response.statusCode();
+		if ( statusCode == null )
+			statusCode = 200;
+		requestContext.setStatusCode(statusCode);
 	}
 
 }

@@ -9,6 +9,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
 
+import layr.api.ContentType;
 import layr.api.Handler;
 import layr.api.TagLib;
 import layr.api.WebResource;
@@ -19,10 +20,11 @@ import layr.routing.lifecycle.HandledMethod;
 @HandlesTypes({
 	TagLib.class,
 	WebResource.class,
+	Handler.class,
+	ContentType.class,
 	Stateless.class,
 	Stateful.class,
-	Singleton.class,
-	Handler.class
+	Singleton.class
 })
 public class Initialization implements javax.servlet.ServletContainerInitializer {
 
@@ -44,7 +46,7 @@ public class Initialization implements javax.servlet.ServletContainerInitializer
 		for ( HandledClass clazz : bootstrap.getRegisteredWebResources() ){
 			servletContext.log("WebResource: " + clazz.getTargetClass());
 			for ( HandledMethod method : clazz.getRouteMethods() )
-				servletContext.log(" - route: " + method.getRouteMethodPattern());
+				servletContext.log(" - " + method.getHttpMethod() + " " + method.getRouteMethodPattern());
 			servletContext.log("");
 		}
 	}

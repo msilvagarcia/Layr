@@ -19,6 +19,8 @@ public class StubRequestContext extends AbstractRequestContext {
 	StringWriter writer;
 	String requestURI;
 	Map<String, String> requestParameters;
+	Map<String, String> requestHeaders;
+	Map<String, String> responseHeaders;
 	String requestHttpMethod;
 	String redirectedURL;
 	int statusCode;
@@ -28,6 +30,8 @@ public class StubRequestContext extends AbstractRequestContext {
 
 	public StubRequestContext() {
 		writer = new StringWriter();
+		requestHeaders = new HashMap<String, String>();
+		responseHeaders = new HashMap<String, String>();
 		populateWithDefaultTagLibs();
 		createCache();
 	}
@@ -138,5 +142,19 @@ public class StubRequestContext extends AbstractRequestContext {
 	@Override
 	public OutputStream getResponseOutputStream() throws IOException {
 		return null;
+	}
+
+	@Override
+	public Map<String, String> getRequestHeaders() {
+		return requestHeaders;
+	}
+
+	@Override
+	public void setResponseHeader(String name, String string) {
+		responseHeaders.put(name, string);
+	}
+	
+	public Map<String, String> getResponseHeaders() {
+		return responseHeaders;
 	}
 }

@@ -68,4 +68,8 @@ public interface RequestContext {
 	 */
 	public abstract Map<String, Object> getAttributes();
 
+	public abstract Map<String, String> getRequestHeaders();
+
+	public abstract void setResponseHeader(String name, String value);
+
 }

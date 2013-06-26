@@ -17,8 +17,6 @@ public class BusinessRoutingMethodMatching {
 			if (resource.matchesTheRequestURI( requestContext ))
 				for (HandledMethod routeMethod : resource.getRouteMethods())
 					if (routeMethod.matchesTheRequest( requestContext )) {
-						// TODO: Colocar metodo na cache para evitar que URL's
-						// já visitados precisem passar por esta rotina
 						return routeMethod;
 					}
 		return null;

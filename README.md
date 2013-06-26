@@ -18,7 +18,7 @@ mvn clean install
 Documentation still on earlier development. For now, you can follow some examples on:
 - [Configuring Layr on JEE environment](https://github.com/miere/Layr/wiki/Configuring-Layr-on-JEE-environment)
 - **Configuring Layr on Play-Framework environment** - Comming Soon
-- [Understanding Layr Routing](https://github.com/miere/Layr/wiki/Understanding-Layr-Routing)
+- [Introduction to Layr Routing](https://github.com/miere/Layr/wiki/Introduction-to-Layr-Routing)
 - [This Routing Implementation](https://github.com/miere/Layr/blob/3.0/layr-core/tests/layr/routing/sample/HelloResource.java)
 - [Another Routing Implementation](https://github.com/miere/Layr/blob/3.0/layr-core/tests/layr/routing/sample/HomeResource.java)
 - [Full JEE Sample](https://github.com/miere/Layr/tree/3.0/samples/layr-jee-sample)

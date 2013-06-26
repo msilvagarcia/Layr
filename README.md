@@ -24,4 +24,4 @@ Documentation still on earlier development. For now, you can follow some example
 - [Full JEE Sample](https://github.com/miere/Layr/tree/3.0/samples/layr-jee-sample)
 
 ## Licence
-Play framework is distributed under [Apache 2 licence](http://www.apache.org/licenses/LICENSE-2.0.html).
+Layr framework is distributed under [Apache 2 licence](http://www.apache.org/licenses/LICENSE-2.0.html).

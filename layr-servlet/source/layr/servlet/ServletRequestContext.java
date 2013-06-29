@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package layr.jee;
+package layr.servlet;
 
 import static layr.commons.StringUtil.isEmpty;
 
@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import layr.engine.AbstractRequestContext;
 
-public class JEERequestContext extends AbstractRequestContext {
+public class ServletRequestContext extends AbstractRequestContext {
 
 	private HttpServletRequest request;
 	private HttpServletResponse response;
@@ -44,7 +44,7 @@ public class JEERequestContext extends AbstractRequestContext {
 	private String httpMethod;
 	private Map<String, String> requestHeaders;
 
-	public JEERequestContext(
+	public ServletRequestContext(
 			HttpServletRequest request, HttpServletResponse response  ) throws IOException {
 		super();
 		this.request = request;

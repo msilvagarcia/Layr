@@ -1,4 +1,4 @@
-package layr.jee;
+package layr.servlet;
 
 import java.io.IOException;
 
@@ -9,16 +9,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import layr.commons.Listener;
+import layr.routing.lifecycle.ApplicationContext;
 import layr.routing.lifecycle.ApplicationLifeCycle;
 
-class JEELifeCycle extends ApplicationLifeCycle {
+class ServletApplicationLifeCycle extends ApplicationLifeCycle {
 
 	HttpServletRequest request;
 	HttpServletResponse response;
 	AsyncContext asyncContext;
-	JEERequestContext requestContext;
+	ServletRequestContext requestContext;
 
-	public JEELifeCycle(ServletRequest request, ServletResponse response) {
+	public ServletApplicationLifeCycle(ServletRequest request, ServletResponse response) {
 		this.request = (HttpServletRequest) request;
 		this.response = (HttpServletResponse) response;
 		onSuccess(createOnSuccessListener());
@@ -26,7 +27,7 @@ class JEELifeCycle extends ApplicationLifeCycle {
 	}
 
 	public void run() throws Exception {
-		JEEConfiguration configuration = retrieveConfiguration( request );
+		ApplicationContext configuration = retrieveConfiguration( request );
 		requestContext = createContext( configuration );
 		run( configuration, requestContext );
 	}
@@ -37,13 +38,13 @@ class JEELifeCycle extends ApplicationLifeCycle {
 			asyncContext = request.startAsync(request, response);
 	}
 
-	public JEEConfiguration retrieveConfiguration(HttpServletRequest request) {
-		return (JEEConfiguration) request.getServletContext().getAttribute(
-				JEEConfiguration.class.getCanonicalName() );
+	public ApplicationContext retrieveConfiguration(HttpServletRequest request) {
+		return (ApplicationContext) request.getServletContext().getAttribute(
+				ApplicationContext.class.getCanonicalName() );
 	}
 
-	public JEERequestContext createContext(JEEConfiguration configuration) throws IOException{
-		JEERequestContext requestContext = new JEERequestContext(request, response);
+	public ServletRequestContext createContext(ApplicationContext configuration) throws IOException{
+		ServletRequestContext requestContext = new ServletRequestContext(request, response);
 		requestContext.setRegisteredTagLibs(configuration.getRegisteredTagLibs());
 		requestContext.setDefaultResource(configuration.getDefaultResource());
 		return requestContext;

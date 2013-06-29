@@ -17,6 +17,20 @@
 		</license>
 	</licenses>
 
+	<scm>
+		<connection>scm:git:git@github.com:miere/Layr.git</connection>
+		<url>scm:git:git@github.com:miere/Layr.git</url>
+		<developerConnection>scm:git:git@github.com:miere/Layr.git</developerConnection>
+	</scm>
+	
+	<developers>
+		<developer>
+			<id>miere</id>
+			<email>miere00@gmail.com</email>
+			<name>Miere Liniel Teixeira</name>
+		</developer>
+	</developers>
+
 	<properties>
 		<javaee.version>6.0</javaee.version>
 		<junit.version>4.10</junit.version>
@@ -24,10 +38,10 @@
 	</properties>
 
 	<build>
-		<plugins>			
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>				
+				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>${eclipse.plugin.version}</version>
 				<configuration>
 					<projectNameTemplate>[artifactId]</projectNameTemplate>
@@ -40,6 +54,6 @@
 		<module>../layr-jackson-converter</module>
 		<module>../layr-api</module>
 		<module>../layr-core</module>
-		<module>../layr-jee</module>
+		<module>../layr-servlet</module>
 	</modules>
 </project>

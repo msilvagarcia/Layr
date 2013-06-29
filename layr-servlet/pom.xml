@@ -9,8 +9,8 @@
         <relativePath>../layr-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>layr-jee</artifactId>
-    <name>Layr: JEE Wrapper</name>
+    <artifactId>layr-servlet</artifactId>
+    <name>Layr: Servlet 3.0 Wrapper</name>
     <packaging>jar</packaging>
 
 	<dependencies>

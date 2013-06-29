@@ -1,4 +1,4 @@
-package layr.jee;
+package layr.servlet;
 
 import java.util.HashMap;
 import java.util.Map;

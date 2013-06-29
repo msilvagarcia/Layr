@@ -1,4 +1,4 @@
-package layr.jee.data;
+package layr.servlet.data;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -6,7 +6,7 @@ import layr.api.DataProvider;
 import layr.api.Handler;
 import layr.api.RequestContext;
 import layr.exceptions.DataProviderException;
-import layr.jee.JEERequestContext;
+import layr.servlet.ServletRequestContext;
 
 @Handler
 public class HttpServletRequestDataProvider implements DataProvider<HttpServletRequest> {
@@ -14,7 +14,7 @@ public class HttpServletRequestDataProvider implements DataProvider<HttpServletR
 	@Override
 	public HttpServletRequest newDataInstance(RequestContext requestContext)
 			throws DataProviderException {
-		return ((JEERequestContext)requestContext).getRequest();
+		return ((ServletRequestContext)requestContext).getRequest();
 	}
 
 }

@@ -1,4 +1,4 @@
-package layr.jee;
+package layr.servlet;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import javax.servlet.annotation.WebFilter;
 
 import layr.exceptions.NotFoundException;
 
-@WebFilter(filterName="layr.jee.Application", asyncSupported=true)
+@WebFilter(filterName="layr.servlet.Application", asyncSupported=true)
 public class Application implements Filter {
 
 	@Override
@@ -30,7 +30,7 @@ public class Application implements Filter {
 	}
 
 	public void runLifeCycle(ServletRequest request, ServletResponse response) throws Exception {
-		JEELifeCycle lifeCycle = new JEELifeCycle( request, response );
+		ServletApplicationLifeCycle lifeCycle = new ServletApplicationLifeCycle( request, response );
 		lifeCycle.run();
 	}
 

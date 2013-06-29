@@ -1,10 +1,7 @@
-package layr.jee;
+package layr.servlet;
 
 import java.util.Set;
 
-import javax.ejb.Singleton;
-import javax.ejb.Stateful;
-import javax.ejb.Stateless;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
@@ -21,10 +18,7 @@ import layr.routing.lifecycle.HandledMethod;
 	TagLib.class,
 	WebResource.class,
 	Handler.class,
-	ContentType.class,
-	Stateless.class,
-	Stateful.class,
-	Singleton.class
+	ContentType.class
 })
 public class Initialization implements javax.servlet.ServletContainerInitializer {
 
@@ -32,9 +26,9 @@ public class Initialization implements javax.servlet.ServletContainerInitializer
 	public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
 		try {
 			servletContext.log("Starting Layr initialization.");
-			JEERoutingBootstrap bootstrap = new JEERoutingBootstrap();
+			ServletRoutingBootstrap bootstrap = new ServletRoutingBootstrap();
 			ApplicationContext applicationContext = bootstrap.configure(classes);
-			servletContext.setAttribute(JEEConfiguration.class.getCanonicalName(), applicationContext);
+			servletContext.setAttribute(ApplicationContext.class.getCanonicalName(), applicationContext);
 			logFoundResources(servletContext, bootstrap);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -42,7 +36,7 @@ public class Initialization implements javax.servlet.ServletContainerInitializer
 		}
 	}
 
-	private void logFoundResources(ServletContext servletContext, JEERoutingBootstrap bootstrap) {
+	private void logFoundResources(ServletContext servletContext, ServletRoutingBootstrap bootstrap) {
 		for ( HandledClass clazz : bootstrap.getRegisteredWebResources() ){
 			servletContext.log("WebResource: " + clazz.getTargetClass());
 			for ( HandledMethod method : clazz.getRouteMethods() )

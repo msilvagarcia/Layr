@@ -55,5 +55,6 @@
 		<module>../layr-api</module>
 		<module>../layr-core</module>
 		<module>../layr-servlet</module>
+		<module>../layr-ejb-support</module>
 	</modules>
 </project>

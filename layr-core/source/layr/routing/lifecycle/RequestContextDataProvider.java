@@ -1,5 +1,6 @@
 package layr.routing.lifecycle;
 
+import layr.api.ApplicationContext;
 import layr.api.DataProvider;
 import layr.api.Handler;
 import layr.api.RequestContext;
@@ -9,9 +10,9 @@ import layr.exceptions.DataProviderException;
 public class RequestContextDataProvider implements DataProvider<RequestContext> {
 
 	@Override
-	public RequestContext newDataInstance(RequestContext requestContext)
-			throws DataProviderException {
+	public RequestContext newDataInstance(
+			ApplicationContext applicationContext,
+			RequestContext requestContext) throws DataProviderException {
 		return requestContext;
 	}
-
 }

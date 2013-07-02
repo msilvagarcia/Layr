@@ -1,10 +1,13 @@
 package layr.routing.lifecycle;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import layr.api.ApplicationContext;
 import layr.api.Cache;
+import layr.api.ClassFactory;
 import layr.api.ComponentFactory;
 import layr.api.DataProvider;
 import layr.api.ExceptionHandler;
@@ -12,8 +15,8 @@ import layr.api.InputConverter;
 import layr.api.OutputRenderer;
 
 /**
- * Default implementation of ApplicationContext interface. Developers
- * are encouraged to extends this class in order to avoid rework.
+ * Default implementation of ApplicationContext interface. Developers are
+ * encouraged to extends this class in order to avoid rework.
  */
 public class DefaultApplicationContextImpl implements ApplicationContext {
 
@@ -22,8 +25,8 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	String defaultEncoding;
 	ExecutorService renderingThreadPool;
 	ExecutorService methodExecutionThreadPool;
-	List<HandledClass> registeredWebResources;
 	List<HandledClass> registeredTemplateParameterObject;
+
 	Map<String, ComponentFactory> registeredTagLibs;
 	Map<String, Class<? extends OutputRenderer>> registeredOutputRenderes;
 	Map<String, Class<? extends InputConverter>> registeredInputConverter;
@@ -32,6 +35,14 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	Map<String, Class<? extends ExceptionHandler>> registeredExceptionHandlers;
 	@SuppressWarnings("rawtypes")
 	Map<String, Class<? extends DataProvider>> registeredDataProviders;
+	@SuppressWarnings("rawtypes")
+	Map<String, Class<? extends ClassFactory>> registeredClassFactories;
+
+	Map<String, Object> attributes;
+
+	public DefaultApplicationContextImpl() {
+		attributes = new HashMap<String, Object>();
+	}
 
 	@Override
 	public String getDefaultResource() {
@@ -47,7 +58,8 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 		return registeredTagLibs;
 	}
 
-	public void setRegisteredTagLibs(Map<String, ComponentFactory> registeredTagLibs) {
+	public void setRegisteredTagLibs(
+			Map<String, ComponentFactory> registeredTagLibs) {
 		this.registeredTagLibs = registeredTagLibs;
 	}
 
@@ -60,13 +72,8 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 		this.cache = cache;
 	}
 
-	@Override
-	public List<HandledClass> getRegisteredWebResources() {
-		return registeredWebResources;
-	}
-
 	public void setRegisteredWebResources(List<HandledClass> exposedMethods) {
-		this.registeredWebResources = exposedMethods;
+		this.setAttribute(HandledClass.class.getCanonicalName(), exposedMethods);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -75,33 +82,29 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void setRegisteredExceptionHandlers(Map<String, Class<? extends ExceptionHandler>> registeredExceptionHandlers) {
+	public void setRegisteredExceptionHandlers(
+			Map<String, Class<? extends ExceptionHandler>> registeredExceptionHandlers) {
 		this.registeredExceptionHandlers = registeredExceptionHandlers;
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@Override
 	public Map<String, Class<? extends DataProvider>> getRegisteredDataProviders() {
 		return registeredDataProviders;
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public void setRegisteredDataProviders(
 			Map<String, Class<? extends DataProvider>> registeredDataProviders) {
 		this.registeredDataProviders = registeredDataProviders;
 	}
-	
+
 	public String getDefaultEncoding() {
 		return defaultEncoding;
 	}
-	
+
 	public void setDefaultEncoding(String defaultEncoding) {
 		this.defaultEncoding = defaultEncoding;
-	}
-
-	@Override
-	public Object newInstanceOf(HandledClass routeClass) throws Exception {
-		return routeClass.getTargetClass().newInstance();
 	}
 
 	@Override
@@ -117,7 +120,7 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	public ExecutorService getRenderingThreadPool() {
 		return renderingThreadPool;
 	}
-	
+
 	public void setRenderingThreadPool(ExecutorService renderingThreadPool) {
 		this.renderingThreadPool = renderingThreadPool;
 	}
@@ -126,7 +129,7 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	public Map<String, Class<? extends OutputRenderer>> getRegisteredOutputRenderers() {
 		return registeredOutputRenderes;
 	}
-	
+
 	public void setRegisteredOutputRenderes(
 			Map<String, Class<? extends OutputRenderer>> registeredOutputRenderes) {
 		this.registeredOutputRenderes = registeredOutputRenderes;
@@ -136,9 +139,30 @@ public class DefaultApplicationContextImpl implements ApplicationContext {
 	public Map<String, Class<? extends InputConverter>> getRegisteredInputConverters() {
 		return registeredInputConverter;
 	}
-	
+
 	public void setRegisteredInputConverter(
 			Map<String, Class<? extends InputConverter>> registeredInputConverter) {
 		this.registeredInputConverter = registeredInputConverter;
+	}
+
+	@Override
+	public void setAttribute(String name, Object value) {
+		this.attributes.put(name, value);
+	}
+
+	@Override
+	public Object getAttribute(String name) {
+		return this.attributes.get(name);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public Map<String, Class<? extends ClassFactory>> getRegisteredClassFactories() {
+		return registeredClassFactories;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public void setRegisteredClassFactories(
+			Map<String, Class<? extends ClassFactory>> registeredClassFactories) {
+		this.registeredClassFactories = registeredClassFactories;
 	}
 }

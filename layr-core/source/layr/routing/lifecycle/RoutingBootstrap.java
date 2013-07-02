@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import layr.api.ApplicationContext;
+import layr.api.ClassFactory;
 import layr.api.ComponentFactory;
 import layr.api.ContentType;
 import layr.api.DataProvider;
@@ -28,20 +30,25 @@ public abstract class RoutingBootstrap {
 	@SuppressWarnings("rawtypes")
 	Map<String, Class<? extends ExceptionHandler>> registeredExceptionHandlers;
 	@SuppressWarnings("rawtypes")
+	Map<String, Class<? extends ClassFactory>> registeredClassFactories;
+	@SuppressWarnings("rawtypes")
 	Map<String, Class<? extends DataProvider>> registeredDataProviders;
 	Map<String, Class<? extends OutputRenderer>> registeredOutputRenderers;
 	Map<String, Class<? extends InputConverter>> registeredInputConverter;
-	
+
 	@SuppressWarnings("rawtypes")
 	HandlerClassExtractor<ExceptionHandler> exceptionHandlerClassExtractor;
 	@SuppressWarnings("rawtypes")
 	HandlerClassExtractor<DataProvider> dataProviderClassExtractor;
+	@SuppressWarnings("rawtypes")
+	HandlerClassExtractor<ClassFactory> classFactoriesClassExtractor;
 
 	public RoutingBootstrap() {
 		registeredWebResources = new ArrayList<HandledClass>();
 		registeredTagLibs = new HashMap<String, ComponentFactory>();
 		registeredOutputRenderers = new HashMap<String, Class<? extends OutputRenderer>>();
 		registeredInputConverter = new HashMap<String, Class<? extends InputConverter>>();
+		classFactoriesClassExtractor = HandlerClassExtractor.newInstance(ClassFactory.class);
 		exceptionHandlerClassExtractor = HandlerClassExtractor.newInstance(ExceptionHandler.class);
 		dataProviderClassExtractor = HandlerClassExtractor.newInstance(DataProvider.class);
 		populateWithDefaultTagLibs( registeredTagLibs );
@@ -75,6 +82,7 @@ public abstract class RoutingBootstrap {
 			registeredExceptionHandlers.put(UnhandledException.class.getCanonicalName(), DefaultUnhandledExceptionHandler.class);
 		
 		registeredDataProviders = dataProviderClassExtractor.getRegisteredHandlers();
+		registeredClassFactories = classFactoriesClassExtractor.getRegisteredHandlers();
 	}
 
 	public abstract ApplicationContext createConfiguration() throws RoutingInitializationException;
@@ -95,6 +103,11 @@ public abstract class RoutingBootstrap {
 		tryToRegisterAnDataProvider(clazz);
 		tryToRegisterAContentTypeRenderer(clazz);
 		tryToRegisterAContentTypeInputConverter(clazz);
+		tryToRegisterAClassFactory(clazz);
+	}
+
+	public void tryToRegisterAClassFactory(Class<?> clazz) {
+		classFactoriesClassExtractor.extract(clazz);
 	}
 
 	public void tryToRegisterAWebResource(Class<?> clazz) {
@@ -167,5 +180,10 @@ public abstract class RoutingBootstrap {
 	
 	public Map<String, Class<? extends InputConverter>> getRegisteredInputConverter() {
 		return registeredInputConverter;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public Map<String, Class<? extends ClassFactory>> getRegisteredClassFactories() {
+		return registeredClassFactories;
 	}
 }

@@ -8,8 +8,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import layr.api.ApplicationContext;
 import layr.commons.Listener;
-import layr.routing.lifecycle.ApplicationContext;
 import layr.routing.lifecycle.ApplicationLifeCycle;
 
 class ServletApplicationLifeCycle extends ApplicationLifeCycle {

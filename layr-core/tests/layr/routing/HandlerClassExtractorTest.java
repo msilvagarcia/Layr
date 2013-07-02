@@ -3,6 +3,7 @@ package layr.routing;
 import java.util.Map;
 
 import junit.framework.Assert;
+import layr.api.ApplicationContext;
 import layr.api.DataProvider;
 import layr.api.ExceptionHandler;
 import layr.api.Handler;
@@ -59,8 +60,10 @@ public class HandlerClassExtractorTest {
 
 	@Handler
 	class ValidHandler implements ExceptionHandler<Throwable>, FakeHandler {
+
 		@Override
-		public Response render(Throwable exception, RequestContext reqContext) {
+		public Response render(ApplicationContext applicationContext,
+				RequestContext requestContext, Throwable exception) {
 			return null;
 		}
 	}

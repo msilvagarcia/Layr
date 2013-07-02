@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+import layr.api.ApplicationContext;
 import layr.api.BuiltResponse;
 import layr.api.OutputRenderer;
 import layr.api.RequestContext;

@@ -1,4 +1,5 @@
 <p xmlns:tpl="urn:layr:template">
+
 	<tpl:include when="#{user.isPremiumUser}">
 		<button class="btn">Premium Panel</button>
 	</tpl:include>
@@ -6,4 +7,5 @@
 		<div class="Banner Advertisement"> ... </div>
 	</tpl:include>
 	<tpl:include src="hello.xhtml" />
+	<span>#{injected}</span>
 </p>

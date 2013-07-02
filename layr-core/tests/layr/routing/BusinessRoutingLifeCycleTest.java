@@ -6,12 +6,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import layr.org.codehaus.jackson.JSONWrapper;
-import layr.routing.impl.NullPointerExceptionHandler;
+import layr.routing.impl.BlahAnnotationClassFactory;
 import layr.routing.impl.RequestContextDataProvider;
 import layr.routing.lifecycle.BusinessRoutingLifeCycle;
 import layr.routing.lifecycle.LifeCycle;
 import layr.routing.sample.HelloResource;
 import layr.routing.sample.HomeResource;
+import layr.routing.sample.NullPointerExceptionHandler;
 
 import org.junit.Test;
 
@@ -30,6 +31,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 		classes.add( NullPointerExceptionHandler.class );
 		classes.add( RequestContextDataProvider.class );
 		classes.add( JSONWrapper.class );
+		classes.add( BlahAnnotationClassFactory.class );
 		return classes;
 	}
 
@@ -38,7 +40,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 		get( "/" );
 		assertEquals( 200, getRequestContext().getStatusCode() );
 		assertEquals( "text/html", getRequestContext().getContentType() );
-		assertEquals( "<p><button class=\"btn\">Premium Panel</button><p>:</p></p>", getRequestContext().getBufferedWroteContentToOutput() );
+		assertEquals( "<p><button class=\"btn\">Premium Panel</button><p>:</p><span>Injected</span></p>", getRequestContext().getBufferedWroteContentToOutput() );
 	}
 
 	@Test
@@ -122,7 +124,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 		assertEquals( "/blah", getRequestContext().getResponseHeaders().get("Location"));
 	}
 
-	@Test//( timeout=2500 )
+	@Test( timeout=12000 )
 	public void stressTestFiveTimes() throws Exception{
 		for ( int i=0; i<5; i++ )
 			stressTest();
@@ -131,8 +133,7 @@ public class BusinessRoutingLifeCycleTest extends RoutingTestSupport {
 	public void stressTest() throws Exception{
 		for ( int i=0; i<MANY_TIMES; i++ ){
 			recreateLifeCycle();
-			get( "/hello/world/1234?requestParam=12.5" );
+			grantThatRenderHome();
 		}
 	}
-
 }

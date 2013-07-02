@@ -1,16 +1,7 @@
-package layr.routing.lifecycle;
+package layr.api;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-
-import layr.api.Cache;
-import layr.api.ComponentFactory;
-import layr.api.DataProvider;
-import layr.api.ExceptionHandler;
-import layr.api.InputConverter;
-import layr.api.OutputRenderer;
-import layr.exceptions.RoutingException;
 
 /**
  * Holds application data useful for all requests.
@@ -21,11 +12,6 @@ public interface ApplicationContext {
 	 * @return a map with TagLibs found during the deploy
 	 */
 	public abstract Map<String, ComponentFactory> getRegisteredTagLibs();
-
-	/**
-	 * @return a list of web resources found during the deploy
-	 */
-	public abstract List<HandledClass> getRegisteredWebResources();
 
 	/**
 	 * @return a map with Exception handlers found during the deploy
@@ -67,13 +53,17 @@ public interface ApplicationContext {
 	public abstract String getDefaultEncoding();
 
 	/**
-	 * Instantiate the route class
-	 * 
-	 * @param routeClass
-	 * @return a new object instance from the RouteClass
-	 * @throws RoutingException
+	 * Set an attribute that will be valid until application be removed or updated.
+	 * @param name
+	 * @param value
 	 */
-	public abstract Object newInstanceOf(HandledClass routeClass) throws Exception;
+	public abstract void setAttribute( String name, Object value );
+
+	/**
+	 * @param name
+	 * @return retrieve an attribute saved in application context.
+	 */
+	public abstract Object getAttribute( String name );
 
 	/**
 	 * Retrieves the ExecutorService that will execute every asynchronous method.
@@ -88,4 +78,14 @@ public interface ApplicationContext {
 	 * @return
 	 */
 	public ExecutorService getRenderingThreadPool();
+
+	/**
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+	Map<String, Class<? extends ClassFactory>> getRegisteredClassFactories();
+
+	@SuppressWarnings("rawtypes")
+	void setRegisteredClassFactories(
+			Map<String, Class<? extends ClassFactory>> registeredClassFactories);
 }

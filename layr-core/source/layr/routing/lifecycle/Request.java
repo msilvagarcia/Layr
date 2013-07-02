@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import layr.api.ApplicationContext;
 import layr.api.DataProvider;
 import layr.api.InputConverter;
 import layr.api.RequestContext;
@@ -131,7 +132,7 @@ public class Request {
 					.getRegisteredDataProviders().get(canonicalName);
 			DataProvider dataProvider = (DataProvider<?>) dataProviderClass
 					.newInstance();
-			return dataProvider.newDataInstance(requestContext);
+			return dataProvider.newDataInstance(applicationContext, requestContext);
 		} catch (Throwable t) {
 			throw new RoutingException(t);
 		}

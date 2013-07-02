@@ -37,8 +37,8 @@ public class HandlerClassExtractor<T> {
 		
 		ParameterizedType ptype = (ParameterizedType)type;
 		if ( interfaceClass.equals( ptype.getRawType() ) ){
-			Class<?> exceptionClass = (Class<?>)ptype.getActualTypeArguments()[0];
-			registeredHandlers.put( exceptionClass.getCanonicalName(), (Class<T>) clazz );
+			Class<?> genericClass = (Class<?>)ptype.getActualTypeArguments()[0];
+			registeredHandlers.put( genericClass.getCanonicalName(), (Class<T>) clazz );
 		}
 	}
 

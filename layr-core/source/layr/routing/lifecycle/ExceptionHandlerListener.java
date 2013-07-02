@@ -1,5 +1,6 @@
 package layr.routing.lifecycle;
 
+import layr.api.ApplicationContext;
 import layr.api.ExceptionHandler;
 import layr.api.RequestContext;
 import layr.api.Response;
@@ -65,7 +66,7 @@ public class ExceptionHandlerListener implements Listener<Exception> {
 			Class<? extends ExceptionHandler> exceptionHandlerClass)
 			throws InstantiationException, IllegalAccessException {
 		ExceptionHandler<?> exceptionHandlerInstance = exceptionHandlerClass.newInstance();
-		return ((ExceptionHandler<T>) exceptionHandlerInstance).render(e, requestContext );
+		return ((ExceptionHandler<T>) exceptionHandlerInstance).render(applicationContext, requestContext, e );
 	}
 
 }

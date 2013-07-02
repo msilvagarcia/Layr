@@ -1,7 +1,7 @@
 package layr.routing.impl;
 
+import layr.api.ApplicationContext;
 import layr.api.Cache;
-import layr.routing.lifecycle.ApplicationContext;
 import layr.routing.lifecycle.RoutingBootstrap;
 
 public class StubRoutingBootstrap extends RoutingBootstrap {
@@ -15,6 +15,7 @@ public class StubRoutingBootstrap extends RoutingBootstrap {
 		configuration.setRegisteredExceptionHandlers( getRegisteredExceptionHandlers() );
 		configuration.setRegisteredOutputRenderes(getRegisteredOutputRenderers());
 		configuration.setRegisteredInputConverter(getRegisteredInputConverter());
+		configuration.setRegisteredClassFactories(getRegisteredClassFactories());
 		configuration.setCache( new Cache() );
 		return configuration;
 	}

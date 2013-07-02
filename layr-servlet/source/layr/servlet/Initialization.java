@@ -6,11 +6,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.HandlesTypes;
 
+import layr.api.ApplicationContext;
 import layr.api.ContentType;
 import layr.api.Handler;
 import layr.api.TagLib;
 import layr.api.WebResource;
-import layr.routing.lifecycle.ApplicationContext;
 import layr.routing.lifecycle.HandledClass;
 import layr.routing.lifecycle.HandledMethod;
 
@@ -26,7 +26,7 @@ public class Initialization implements javax.servlet.ServletContainerInitializer
 	public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
 		try {
 			servletContext.log("Starting Layr initialization.");
-			ServletRoutingBootstrap bootstrap = new ServletRoutingBootstrap();
+			ServletRoutingBootstrap bootstrap = new ServletRoutingBootstrap( servletContext );
 			ApplicationContext applicationContext = bootstrap.configure(classes);
 			servletContext.setAttribute(ApplicationContext.class.getCanonicalName(), applicationContext);
 			logFoundResources(servletContext, bootstrap);

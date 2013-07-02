@@ -1,4 +1,4 @@
-package layr.servlet;
+package layr.ejb;
 
 import java.util.HashMap;
 import java.util.Map;

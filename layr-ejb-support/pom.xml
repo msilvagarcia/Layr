@@ -9,8 +9,8 @@
         <relativePath>../layr-parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>layr-servlet</artifactId>
-    <name>Layr: Servlet 3.0 Wrapper</name>
+    <artifactId>layr-ejb-support</artifactId>
+    <name>Layr: Enterprise Java Beans</name>
     <packaging>jar</packaging>
 
 	<dependencies>
@@ -19,6 +19,12 @@
             <artifactId>geronimo-servlet_3.0_spec</artifactId>
             <version>1.0</version>
             <scope>test</scope>
+        </dependency>
+		<dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>6.0</version>
+            <scope>provided</scope>
         </dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -34,13 +40,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>layr-core</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>layr-jackson-converter</artifactId>
+			<artifactId>layr-servlet</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>

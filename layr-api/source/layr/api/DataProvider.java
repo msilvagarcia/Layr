@@ -4,6 +4,7 @@ import layr.exceptions.DataProviderException;
 
 public interface DataProvider<T> {
 
-	T newDataInstance( RequestContext requestContext ) throws DataProviderException;
+	T newDataInstance( ApplicationContext applicationContext,
+			RequestContext requestContext ) throws DataProviderException;
 
 }

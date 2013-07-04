@@ -20,10 +20,11 @@ public class Initialization implements javax.servlet.ServletContainerInitializer
 	@Override
 	public void onStartup(Set<Class<?>> classes, ServletContext servletContext) throws ServletException {
 		try {
-			servletContext.log("Starting Layr initialization.");
 			EnterpriseJavaBeansContext context = analyse( classes );
 			servletContext.setAttribute(EnterpriseJavaBeansContext.class.getCanonicalName(), context);
+			servletContext.log("Layr EJB support configured.");
 		} catch (Exception e) {
+			servletContext.log("Layr EJB support failed to start.");
 			e.printStackTrace();
 			throw new ServletException(e);
 		}

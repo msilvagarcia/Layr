@@ -7,7 +7,6 @@ import layr.api.Response;
 import layr.commons.Listener;
 import layr.exceptions.ClassFactoryException;
 import layr.exceptions.UnhandledException;
-import layr.routing.impl.StubRequestContext;
 
 public class ExceptionHandlerListener implements Listener<Exception> {
 
@@ -23,7 +22,7 @@ public class ExceptionHandlerListener implements Listener<Exception> {
 	}
 
 	public ExceptionHandlerListener(ApplicationContext configuration,
-			StubRequestContext requestContext) {
+			RequestContext requestContext) {
 		this( configuration, requestContext,
 			new ClassInstantiationFactory(configuration, requestContext) );
 	}

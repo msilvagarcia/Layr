@@ -5,17 +5,27 @@ import layr.api.ExceptionHandler;
 import layr.api.RequestContext;
 import layr.api.Response;
 import layr.commons.Listener;
+import layr.exceptions.ClassFactoryException;
 import layr.exceptions.UnhandledException;
+import layr.routing.impl.StubRequestContext;
 
 public class ExceptionHandlerListener implements Listener<Exception> {
 
 	ApplicationContext applicationContext;
 	RequestContext requestContext;
+	ClassInstantiationFactory classInstantiationFactory;
 
 	public ExceptionHandlerListener(ApplicationContext applicationContext,
-			RequestContext requestContext) {
+			RequestContext requestContext, ClassInstantiationFactory classInstantiationFactory) {
 		this.applicationContext = applicationContext;
 		this.requestContext = requestContext;
+		this.classInstantiationFactory = classInstantiationFactory;
+	}
+
+	public ExceptionHandlerListener(ApplicationContext configuration,
+			StubRequestContext requestContext) {
+		this( configuration, requestContext,
+			new ClassInstantiationFactory(configuration, requestContext) );
 	}
 
 	@Override
@@ -62,11 +72,8 @@ public class ExceptionHandlerListener implements Listener<Exception> {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public <T extends Throwable> Response handleException(T e,
-			Class<? extends ExceptionHandler> exceptionHandlerClass)
-			throws InstantiationException, IllegalAccessException {
-		ExceptionHandler<?> exceptionHandlerInstance = exceptionHandlerClass.newInstance();
+	public <T extends Throwable> Response handleException(T e, Class<? extends ExceptionHandler> exceptionHandlerClass) throws ClassFactoryException {
+		ExceptionHandler<?> exceptionHandlerInstance = (ExceptionHandler<?>) classInstantiationFactory.newInstanceOf(exceptionHandlerClass);
 		return ((ExceptionHandler<T>) exceptionHandlerInstance).render(applicationContext, requestContext, e );
 	}
-
 }

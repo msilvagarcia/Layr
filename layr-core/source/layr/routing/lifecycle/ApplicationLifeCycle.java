@@ -10,12 +10,14 @@ public class ApplicationLifeCycle {
 	Listener<Object> onSuccess;
 	Listener<Exception> onFail;
 	Listener<Exception> exceptionHandler;
+	ClassInstantiationFactory classInstantiationFactory;
 
 	public ApplicationLifeCycle() {
 		super();
 	}
 
 	public void run(ApplicationContext applicationContext, RequestContext requestContext) throws Exception {
+		createClassInstantiationFactory(applicationContext, requestContext);
 		createRequestExceptionHandler(applicationContext, requestContext);
 		LifeCycle[] lifeCycles = createLifeCycles(applicationContext, requestContext);
 
@@ -30,9 +32,14 @@ public class ApplicationLifeCycle {
 		throw new NotFoundException("Not found");
 	}
 
+	private void createClassInstantiationFactory(ApplicationContext applicationContext,
+			RequestContext requestContext) {
+		classInstantiationFactory = new ClassInstantiationFactory(applicationContext, requestContext);
+	}
+
 	protected void createRequestExceptionHandler(ApplicationContext applicationContext,
 			RequestContext requestContext) {
-		exceptionHandler = new ExceptionHandlerListener(applicationContext, requestContext);
+		exceptionHandler = new ExceptionHandlerListener(applicationContext, requestContext, classInstantiationFactory);
 	}
 
 	protected LifeCycle[] createLifeCycles(ApplicationContext applicationContext, RequestContext requestContext) {
@@ -44,7 +51,7 @@ public class ApplicationLifeCycle {
 	}
 
 	protected BusinessRoutingLifeCycle createBusinessRoutingLifeCycle(ApplicationContext applicationContext, RequestContext requestContext) {
-		BusinessRoutingLifeCycle lifeCycle = new BusinessRoutingLifeCycle( applicationContext, requestContext );
+		BusinessRoutingLifeCycle lifeCycle = new BusinessRoutingLifeCycle( applicationContext, requestContext, classInstantiationFactory );
 		lifeCycle.onSuccess(onSuccess);
 		lifeCycle.onFail(exceptionHandler);
 		lifeCycle.onFail(onFail);

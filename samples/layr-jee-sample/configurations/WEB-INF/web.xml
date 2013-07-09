@@ -5,7 +5,7 @@
 	version="3.0">
 
 	<filter-mapping>
-		<filter-name>layr.jee.Application</filter-name>
+		<filter-name>layr.servlet.Application</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 

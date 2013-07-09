@@ -30,8 +30,14 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>layr-jee</artifactId>
+			<artifactId>layr-servlet</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>0.11.8</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 

@@ -2,19 +2,15 @@ package layr.routing.lifecycle;
 
 import static layr.commons.ListenableCall.listenable;
 
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import layr.api.ApplicationContext;
-import layr.api.ClassFactory;
 import layr.api.RequestContext;
 import layr.commons.ListenableCall;
 import layr.commons.Listener;
-import layr.exceptions.ClassFactoryException;
 
 public class BusinessRoutingLifeCycle implements LifeCycle {
 
@@ -23,12 +19,20 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 	Listener<Object> onSuccess;
 	List<Listener<Exception>> onFail;
 	HandledMethod matchedRouteMethod;
-
+	ClassInstantiationFactory classInstantiationFactory;
+	
 	public BusinessRoutingLifeCycle(ApplicationContext configuration,
 			RequestContext requestContext) {
+		this( configuration, requestContext,
+			new ClassInstantiationFactory(configuration, requestContext) );
+	}
+
+	public BusinessRoutingLifeCycle(ApplicationContext configuration,
+			RequestContext requestContext, ClassInstantiationFactory classInstantiationFactory) {
 		this.configuration = configuration;
 		this.requestContext = requestContext;
 		this.onFail = new ArrayList<Listener<Exception>>();
+		this.classInstantiationFactory = classInstantiationFactory;
 	}
 
 	@Override
@@ -63,42 +67,17 @@ public class BusinessRoutingLifeCycle implements LifeCycle {
 		}
 	}
 
-	public ListenableCall createListenableAsyncRunner(HandledMethod routeMethod)
-			throws Exception {
-		Object instance = newInstanceOf(routeMethod.getRouteClass());
+	public ListenableCall createListenableAsyncRunner(HandledMethod routeMethod) throws Exception
+	{
+		Class<?> targetClass = routeMethod.getRouteClass().getTargetClass();
+		Object instance = classInstantiationFactory.newInstanceOf(targetClass);
 		BusinessRoutingMethodRunner runner = new BusinessRoutingMethodRunner(
 				configuration, requestContext, routeMethod, instance);
 		ListenableCall listenable = listenable(runner);
-		listenable
-				.onSuccess(new RendererListener(configuration, requestContext));
+		listenable.onSuccess(new RendererListener(configuration, requestContext));
 		listenable.onSuccess(onSuccess);
 		defineOnFail(listenable);
 		return listenable;
-	}
-
-	public Object newInstanceOf(HandledClass routeClass)
-			throws ClassFactoryException {
-		try {
-			ClassFactory<?> classFactory = getClassFactory(routeClass);
-			return classFactory.newInstance(configuration, requestContext, routeClass.getTargetClass());
-		} catch (InstantiationException e) {
-			throw new ClassFactoryException("Bad ClassFactory instantiation.", e);
-		} catch (IllegalAccessException e) {
-			throw new ClassFactoryException("Bad ClassFactory instantiation.", e);
-		}
-	}
-
-	@SuppressWarnings("rawtypes")
-	private ClassFactory<?> getClassFactory(HandledClass routeClass) throws InstantiationException, IllegalAccessException {
-		Map<String, Class<? extends ClassFactory>> registeredClassFactories = configuration.getRegisteredClassFactories();
-		Class<?> targetClass = routeClass.getTargetClass();
-		Class<? extends ClassFactory> classFactory = null;
-		for (Annotation annotation : targetClass.getAnnotations()) {
-			classFactory = registeredClassFactories.get(annotation.annotationType().getCanonicalName());
-			if ( classFactory != null )
-				return classFactory.newInstance();
-		}
-		return new DefaultClassFactory();
 	}
 
 	public void defineOnFail(ListenableCall listenable) {

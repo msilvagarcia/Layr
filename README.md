@@ -3,25 +3,17 @@
 
 ## What is Layr?
 
-Its an Open Source focused on easy web routing, fast code maintence and free-logic markup.
+Its an Open Source framework focused on easy web routing, fast code maintence and free-logic markup.
+Its main target is:
+- Provide a Logic-free Markup approach to get web interfaces fastly prototyped.
+- Be an easy-to-use, multi-propouse, routing middleware.
+- Provide developers a way to Don't Repeat Themselfs with web routing and web interface protyping.
+- Provide a flexible middleware abbleble to achieve Behavior-Driven Development and Domain-Driven Developement.
+- Be portable and application server indenpendent solution to web developement at any JVM languages.
 
-## Install on your local maven repository
-
-Type on your Terminal/Console:
-```bash
-git clone git://github.com/miere/Layr.git
-cd Layr/layr-parent
-mvn clean install
-```
-
-## Documentation
-Documentation still on earlier development. For now, you can follow some examples on:
-- [Configuring Layr on JEE environment](https://github.com/miere/Layr/wiki/Configuring-Layr-on-JEE-environment)
-- **Configuring Layr on Play-Framework environment** - Comming Soon
-- [Introduction to Layr Routing](https://github.com/miere/Layr/wiki/Introduction-to-Layr-Routing)
-- [This Routing Implementation](https://github.com/miere/Layr/blob/3.0/layr-core/tests/layr/routing/sample/HelloResource.java)
-- [Another Routing Implementation](https://github.com/miere/Layr/blob/3.0/layr-core/tests/layr/routing/sample/HomeResource.java)
-- [Full JEE Sample](https://github.com/miere/Layr/tree/3.0/samples/layr-jee-sample)
+## Useful Links
+- Documentation is available [here](https://github.com/SkullLabs/Layr/wiki)
+- Found a bug or have a doubt enter a new ticket [here](https://github.com/SkullLabs/Layr/issues).
 
 ## Licence
 Layr framework is distributed under [Apache 2 licence](http://www.apache.org/licenses/LICENSE-2.0.html).

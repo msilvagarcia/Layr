@@ -20,13 +20,10 @@ public class EvaluatorTest {
 		context = createContext();
 	}
 
-	@Test
+	@Test( timeout=1000 )
 	public void measureTimeForMultiExpressionStringEvaluation(){
-		long start = System.currentTimeMillis();
 		for ( int i=0; i<STRESS_LOOPS; i++ )
 			grantThatParseSingleExpression();
-		long elapsed = System.currentTimeMillis() - start;
-		Assert.assertTrue( elapsed < 900 );
 	}
 
 	@Test

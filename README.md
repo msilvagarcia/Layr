@@ -8,7 +8,7 @@ Its main target is:
 - Provide a Logic-free Markup approach to get web interfaces fastly prototyped.
 - Be an easy-to-use, multi-propouse, routing middleware.
 - Provide developers a way to Don't Repeat Themselfs with web routing and web interface protyping.
-- Provide a flexible middleware abbleble to achieve Behavior-Driven Development and Domain-Driven Developement.
+- Provide a flexible middleware abble to achieve Behavior-Driven Development and Domain-Driven Developement.
 - Be portable and application server indenpendent solution to web developement at any JVM languages.
 
 ## Useful Links

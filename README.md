@@ -1,5 +1,5 @@
 # Layr - The Fast Web Prototyping
-[![Build Status](https://travis-ci.org/SkullLabs/Layr.png?branch=master)](https://travis-ci.org/miere/Layr)
+[![Build Status](https://travis-ci.org/SkullLabs/Layr.png?branch=master)](https://travis-ci.org/SkullLabs/Layr)
 
 ## What is Layr?
 

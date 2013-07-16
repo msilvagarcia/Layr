@@ -3,17 +3,17 @@
 
 ## What is Layr?
 
-Its an Open Source framework focused on easy web routing, fast code maintence and free-logic markup.
-Its main target is:
+It's an Open Source framework focused on easy web routing, fast code maintence and logic-free markup.
+It's main targets are:
 - Provide a Logic-free Markup approach to get web interfaces fastly prototyped.
 - Be an easy-to-use, multi-propouse, routing middleware.
-- Provide developers a way to Don't Repeat Themselfs with web routing and web interface protyping.
-- Provide a flexible middleware abble to achieve Behavior-Driven Development and Domain-Driven Developement.
-- Be portable and application server indenpendent solution to web developement at any JVM languages.
+- Provide developers a way to Don't Repeat Themselves with web routing and web interface prototyping.
+- Provide a flexible middleware able to achieve Behavior-Driven Development and Domain-Driven Developement.
+- Be a portable and application server independent solution to web developement at any JVM languages.
 
 ## Useful Links
 - Documentation is available [here](https://github.com/SkullLabs/Layr/wiki)
 - Found a bug or have a doubt enter a new ticket [here](https://github.com/SkullLabs/Layr/issues).
 
-## Licence
+## License
 Layr framework is distributed under [Apache 2 licence](http://www.apache.org/licenses/LICENSE-2.0.html).
